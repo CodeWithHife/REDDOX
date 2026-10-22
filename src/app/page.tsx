@@ -1,20 +1,12 @@
-// src/app/page.tsx
-import Hero from "./components/Hero";
-import Details from "./components/Details";
-import Minister from "./components/Minister";
-import Department from "./components/Department";
-import ContactDetails from "./components/ContactDetails";
-import Footer from "./components/Footer";
+import type { Metadata } from "next";
+import ChurchManagerLanding from "./components/ChurchManagerLanding";
+
+export const metadata: Metadata = {
+  title: "Church Manager – Run your church with ease",
+  description:
+    "Members, attendance, giving and events in one live dashboard for pastors, leaders and members.",
+};
 
 export default function Home() {
-  return (
-    <>
-      <Hero />
-      <Details />
-      <Minister />
-      <Department />
-      <ContactDetails />
-      <Footer />
-    </>
-  );
+  return <ChurchManagerLanding />;
 }

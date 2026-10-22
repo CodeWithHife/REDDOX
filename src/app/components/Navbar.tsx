@@ -18,7 +18,6 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 15);
@@ -43,6 +42,11 @@ export default function Navbar() {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  // On the root landing page, the Church Manager has its own dedicated navigation
+  if (pathname === "/") {
+    return null;
+  }
 
   return (
     <header

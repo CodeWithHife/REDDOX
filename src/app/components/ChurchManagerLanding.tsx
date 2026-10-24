@@ -293,10 +293,15 @@ export default function ChurchManagerLanding() {
             <button
               className="burger"
               aria-label="Menu"
+              aria-expanded={mobileOpen}
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               <svg viewBox="0 0 24 24">
-                <path d="M4 6h16M4 12h16M4 18h16" />
+                {mobileOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
               </svg>
             </button>
           </div>
@@ -306,13 +311,25 @@ export default function ChurchManagerLanding() {
           id="m"
           onClick={() => setMobileOpen(false)}
         >
-          <a href="#home">Home</a>
-          <a href="#features">Features</a>
-          <a href="#how">How It Works</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">Contact</a>
-          <Link href="/portal/login">Sign In</Link>
+          <div className="mob-links">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how">How It Works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">Contact</a>
+          </div>
+          <div className="mob-actions">
+            <Link href="/portal/login" className="btn">
+              Sign In
+            </Link>
+            <Link href="/portal/login" className="btn r">
+              Create Account
+              <svg viewBox="0 0 24 24">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -334,7 +351,6 @@ export default function ChurchManagerLanding() {
           <i style={{ left: "97%", animationDelay: "-0s", animationDuration: "10s" }}></i>
         </div>
         <div className="w">
-          <span className="tag">For churches, ministries &amp; fellowships</span>
           <h1>
             Every <em>soul</em> counted.<br />
             Every <u>Sunday</u> remembered.
@@ -354,6 +370,26 @@ export default function ChurchManagerLanding() {
             <Link href="/portal/login" className="btn big">
               Sign In
             </Link>
+          </div>
+          <div className="hero-trust">
+            <span>
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Free up to 50 members
+            </span>
+            <span>
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              No credit card required
+            </span>
+            <span>
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Instant 3-minute setup
+            </span>
           </div>
 
           <div className="dash" aria-label="Dashboard demo">
@@ -485,39 +521,6 @@ export default function ChurchManagerLanding() {
                   <div className="bx">
                     <h4>This Sunday</h4>
                     <div className="fd" id="fd"></div>
-                  </div>
-                </div>
-                <div className="pn ov">
-                  <div className="bx">
-                    <h4>Ministries</h4>
-                    <div className="mb">
-                      <span>Choir</span>
-                      <u style={{ width: "82%" }}></u>
-                    </div>
-                    <div className="mb">
-                      <span>Ushering</span>
-                      <u style={{ width: "68%" }}></u>
-                    </div>
-                    <div className="mb">
-                      <span>Children</span>
-                      <u style={{ width: "90%" }}></u>
-                    </div>
-                    <div className="mb">
-                      <span>Media</span>
-                      <u style={{ width: "55%" }}></u>
-                    </div>
-                  </div>
-                  <div className="bx">
-                    <h4>Next services</h4>
-                    <div className="rw">
-                      <i>25</i>Sunday Service<span>9:00 AM</span>
-                    </div>
-                    <div className="rw">
-                      <i>28</i>Midweek Prayer<span>5:30 PM</span>
-                    </div>
-                    <div className="rw">
-                      <i>31</i>Youth Fellowship<span>4:00 PM</span>
-                    </div>
                   </div>
                 </div>
               </div>

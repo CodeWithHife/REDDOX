@@ -10,8 +10,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "RCCG Rehoboth Chapel | Room for More",
-  description: "Room for More — a family of believers committed to holiness, worship, and reaching every nation for the Lord Jesus Christ.",
+  title: "REDDOX – Church Operations, Reimagined",
+  description: "The all-in-one church operations and member management platform. Care for people, track Sunday attendance, record tithes and giving, and streamline your ministry.",
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",

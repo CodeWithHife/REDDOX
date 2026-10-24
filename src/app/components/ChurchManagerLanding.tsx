@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import "../church-manager.css";
 import AnimatedFAQ from "./AnimatedFAQ";
 
@@ -266,11 +267,18 @@ export default function ChurchManagerLanding() {
         <div className="w nb">
           <a href="#home" className="brand">
             <span className="logo">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 3v18M6 9h12" />
-              </svg>
+              <Image
+                src="/logo.png"
+                alt="REDDOX"
+                width={28}
+                height={28}
+                className="logo-img"
+                priority
+              />
             </span>
-            Church Manager
+            <span className="brand-name">
+              RED<span className="brand-dox">DOX</span>
+            </span>
           </a>
           <div className="links">
             <a href="#home">Home</a>
@@ -353,10 +361,10 @@ export default function ChurchManagerLanding() {
         <div className="w">
           <h1>
             Every <em>soul</em> counted.<br className="hero-br" />
-            Every <u>Sunday</u> remembered.
+            Every <u>service</u> remembered.
           </h1>
           <p className="l">
-            Welcome first-timers, track Sunday attendance, record tithes and
+            Welcome first-timers, track service attendance, record tithes and
             offerings, and keep every ministry in step, all in one place for
             pastors, ushers and members.
           </p>
@@ -372,22 +380,28 @@ export default function ChurchManagerLanding() {
             </Link>
           </div>
           <div className="hero-trust">
-            <span>
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-              Free up to 50 members
+            <span className="hero-trust-item">
+              <span className="trust-check-badge">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3.5 8.2 6.5 11.2 12.5 4.8" />
+                </svg>
+              </span>
+              Zero training needed
             </span>
-            <span>
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
+            <span className="hero-trust-item">
+              <span className="trust-check-badge">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3.5 8.2 6.5 11.2 12.5 4.8" />
+                </svg>
+              </span>
               No credit card required
             </span>
-            <span>
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
+            <span className="hero-trust-item">
+              <span className="trust-check-badge">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3.5 8.2 6.5 11.2 12.5 4.8" />
+                </svg>
+              </span>
               Instant 3-minute setup
             </span>
           </div>
@@ -991,14 +1005,20 @@ export default function ChurchManagerLanding() {
                 style={{ marginBottom: "10px", color: "var(--tx)" }}
               >
                 <span className="logo">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M12 3v18M6 9h12" />
-                  </svg>
+                  <Image
+                    src="/logo.png"
+                    alt="REDDOX"
+                    width={28}
+                    height={28}
+                    className="logo-img"
+                  />
                 </span>
-                Church Manager
+                <span className="brand-name">
+                  RED<span className="brand-dox">DOX</span>
+                </span>
               </div>
-              <p style={{ margin: 0, maxWidth: "300px" }}>
-                Simple tools for churches to care for people, track attendance and
+              <p style={{ margin: 0, maxWidth: "320px" }}>
+                Church operations, reimagined. Simple tools for churches to care for people, track attendance and
                 manage giving.
               </p>
             </div>
@@ -1021,8 +1041,8 @@ export default function ChurchManagerLanding() {
             </div>
           </div>
           <div className="fb">
-            <span>&copy; 2026 Church Manager. All rights reserved.</span>
-            <span>Made for churches</span>
+            <span>&copy; 2026 REDDOX. All rights reserved.</span>
+            <span>Church operations, reimagined</span>
           </div>
         </div>
       </footer>

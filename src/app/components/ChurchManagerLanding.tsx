@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import "../church-manager.css";
+import AnimatedFAQ from "./AnimatedFAQ";
 
 export default function ChurchManagerLanding() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -276,6 +277,7 @@ export default function ChurchManagerLanding() {
             <a href="#features">Features</a>
             <a href="#how">How It Works</a>
             <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
             <a href="#contact">Contact</a>
           </div>
           <div className="cta">
@@ -308,6 +310,7 @@ export default function ChurchManagerLanding() {
           <a href="#features">Features</a>
           <a href="#how">How It Works</a>
           <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
           <a href="#contact">Contact</a>
           <Link href="/portal/login">Sign In</Link>
         </div>
@@ -522,6 +525,44 @@ export default function ChurchManagerLanding() {
           </div>
         </div>
       </header>
+
+      {/* Moving Details Banner under Hero */}
+      <div className="rolling-marquee-container" aria-label="Moving feature highlights">
+        <div className="rolling-marquee-track">
+          {[1, 2].map((group) => (
+            <React.Fragment key={group}>
+              <div className="rolling-marquee-item">
+                <span className="rolling-marquee-star">✦</span>
+                <span>1,420+ Active Churches Connected</span>
+              </div>
+              <div className="rolling-marquee-item">
+                <span className="rolling-marquee-star">✦</span>
+                <span>Instant Sunday Check-In Under 3 Seconds</span>
+              </div>
+              <div className="rolling-marquee-item">
+                <span className="rolling-marquee-star">✦</span>
+                <span>Automated Tithes, Envelopes &amp; Online Giving</span>
+              </div>
+              <div className="rolling-marquee-item">
+                <span className="rolling-marquee-star">✦</span>
+                <span>Role-Based Security for Pastors &amp; Ushers</span>
+              </div>
+              <div className="rolling-marquee-item">
+                <span className="rolling-marquee-star">✦</span>
+                <span>100% Cloud-Backed &amp; Mobile-Ready</span>
+              </div>
+              <div className="rolling-marquee-item">
+                <span className="rolling-marquee-star">✦</span>
+                <span>First-Timer Automated Welcome &amp; Follow-Up</span>
+              </div>
+              <div className="rolling-marquee-item">
+                <span className="rolling-marquee-star">✦</span>
+                <span>Zero Installation — Runs in Any Browser</span>
+              </div>
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
 
       {/* Problem Section */}
       <section id="problem">
@@ -904,67 +945,12 @@ export default function ChurchManagerLanding() {
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* Animated FAQ Section */}
       <section className="alt" id="faq">
         <div className="w">
           <h2 className="rv">Questions, answered</h2>
-          <p className="sub rv">Can&rsquo;t find what you need? Reach out from the footer.</p>
-          <div className="fqs">
-            <details className="fq rv">
-              <summary>
-                Is it free to start?
-                <svg className="chev" viewBox="0 0 24 24">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </summary>
-              <p>Yes. The Starter plan is free for up to 50 members and needs no card.</p>
-            </details>
-            <details className="fq rv">
-              <summary>
-                Can members log in too?
-                <svg className="chev" viewBox="0 0 24 24">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </summary>
-              <p>
-                Yes. Members get their own dashboard to see events, RSVP and view
-                their giving history.
-              </p>
-            </details>
-            <details className="fq rv">
-              <summary>
-                Is our members&rsquo; data safe?
-                <svg className="chev" viewBox="0 0 24 24">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </summary>
-              <p>
-                Data is encrypted and access is role-based, so people only see what
-                they are allowed to.
-              </p>
-            </details>
-            <details className="fq rv">
-              <summary>
-                Does it work on phones?
-                <svg className="chev" viewBox="0 0 24 24">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </summary>
-              <p>Yes. It works on any phone, tablet or computer.</p>
-            </details>
-            <details className="fq rv">
-              <summary>
-                Can we cancel anytime?
-                <svg className="chev" viewBox="0 0 24 24">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </summary>
-              <p>
-                Yes. There are no contracts, and you can export your records before
-                you leave.
-              </p>
-            </details>
-          </div>
+          <p className="sub rv">Can&rsquo;t find what you need? Search below or reach out directly.</p>
+          <AnimatedFAQ />
         </div>
       </section>
 

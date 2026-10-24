@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap');
 
 :root {
   --bg: #f9f1e3;
@@ -11,6 +11,9 @@
   --rd: #b8862d;
   --rd2: #f7ecd2;
   --soft: #f2e7d2;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -35,7 +38,13 @@ html {
   --soft: #f2e7d2;
   background: var(--bg);
   color: var(--tx);
-  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  letter-spacing: -0.012em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   margin: 0;
   min-height: 100vh;
 }
@@ -764,8 +773,10 @@ section {
 
 h2 {
   font-family: "Playfair Display", Georgia, serif;
-  font-size: clamp(26px, 4vw, 36px);
-  margin: 0 0 8px;
+  font-size: clamp(28px, 4.5vw, 40px);
+  letter-spacing: -0.018em;
+  font-weight: 700;
+  margin: 0 0 10px;
   text-align: center;
 }
 
@@ -773,7 +784,21 @@ h2 {
   text-align: center;
   color: var(--mu);
   margin: 0 auto 40px;
-  max-width: 520px;
+  max-width: 540px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+h3 {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+h4 {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.015em;
+  font-weight: 700;
 }
 
 .g {
@@ -1092,56 +1117,175 @@ footer {
   animation: rvu 0.7s ease var(--d, 0ms) backwards;
 }
 
-.fqs {
-  max-width: 720px;
-  margin: 0 auto;
-  display: grid;
-  gap: 10px;
+/* ========================================================
+   MOVING DETAILS BANNER (MARQUEE UNDER HERO)
+   ======================================================== */
+.rolling-marquee-container {
+  width: 100%;
+  overflow: hidden;
+  background: rgba(109, 42, 60, 0.05);
+  border-top: 1px solid rgba(109, 42, 60, 0.12);
+  border-bottom: 1px solid rgba(109, 42, 60, 0.12);
+  padding: 14px 0;
+  position: relative;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  user-select: none;
 }
 
-.fq {
-  background: var(--card);
-  border: 1px solid var(--bd);
-  border-radius: 12px;
-  padding: 0 18px;
-}
-
-.fq summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 16px 0;
-  font-weight: 600;
+.rolling-marquee-track {
   display: flex;
-  justify-content: space-between;
+  width: max-content;
+  animation: rollInfiniteMarquee 30s linear infinite;
+  gap: 28px;
+}
+
+.rolling-marquee-container:hover .rolling-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes rollInfiniteMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.rolling-marquee-item {
+  display: inline-flex;
   align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tx);
+  white-space: nowrap;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.rolling-marquee-star {
+  color: var(--rd);
+  font-size: 15px;
+}
+
+/* ========================================================
+   NORMAL ELEGANT FAQ ACCORDION (WITH PLUS SIGN)
+   ======================================================== */
+.normal-faq-wrapper {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.normal-faq-list {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
-.fq summary::-webkit-details-marker {
-  display: none;
+.normal-faq-item {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+  box-shadow: 0 2px 6px rgba(43, 32, 21, 0.03);
 }
 
-.chev {
-  width: 18px;
-  height: 18px;
+.normal-faq-item:hover {
+  border-color: #d8c29d;
+  box-shadow: 0 4px 14px rgba(43, 32, 21, 0.06);
+}
+
+.normal-faq-item.open {
+  border-color: var(--bl);
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(109, 42, 60, 0.08);
+}
+
+.normal-faq-question-btn {
+  width: 100%;
+  padding: 18px 22px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+}
+
+.normal-faq-title {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  font-size: 17.5px;
+  font-weight: 700;
+  color: var(--tx);
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.normal-faq-item.open .normal-faq-title {
+  color: var(--bl);
+}
+
+/* Plus sign styling & animated rotation into minus/x */
+.normal-faq-plus {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bl2);
+  color: var(--bl);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.normal-faq-plus svg {
+  width: 16px;
+  height: 16px;
   stroke: currentColor;
-  fill: none;
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  flex: none;
-  transition: transform 0.25s;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.fq[open] .chev {
-  transform: rotate(180deg);
+.normal-faq-item.open .normal-faq-plus {
+  background: var(--bl);
+  color: #ffffff;
 }
 
-.fq p {
-  margin: 0 0 16px;
+.normal-faq-item.open .normal-faq-plus svg {
+  transform: rotate(45deg);
+}
+
+/* Smooth CSS Grid Height Transition */
+.normal-faq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  opacity: 0;
+}
+
+.normal-faq-body.expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.normal-faq-inner {
+  overflow: hidden;
+}
+
+.normal-faq-inner p {
+  margin: 0;
+  padding: 0 22px 20px;
   color: var(--mu);
-  animation: dn 0.3s ease;
+  font-size: 15.5px;
+  line-height: 1.68;
+  border-top: 1px solid rgba(43, 32, 21, 0.05);
+  padding-top: 14px;
 }
+
+
 
 .cta2 {
   background: var(--bl);

@@ -58,32 +58,70 @@ export default function ChurchManagerLanding() {
     const ch = document.getElementById("ch");
     const fd = document.getElementById("fd");
 
+    function flash(el: HTMLElement | null) {
+      if (!el) return;
+      el.classList.remove("stat-pulse");
+      void el.offsetWidth;
+      el.classList.add("stat-pulse");
+    }
+
     function bars() {
       if (!ch) return;
+      const todayVal = Math.min(100, Math.max(25, Math.round((present / members) * 100 * 1.55)));
       ch.innerHTML = wk
-        .concat([Math.min(100, Math.round((present / members) * 100 * 1.6))])
-        .map(function (v) {
-          return '<div style="height:' + v + '%"></div>';
-        })
+        .map(
+          (v) =>
+            `<div class="ch-bar" style="height:${v}%"><span class="ch-tip">${v}%</span></div>`
+        )
+        .concat([
+          `<div class="ch-bar today" style="height:${todayVal}%">
+            <span class="ch-glow"></span>
+            <span class="ch-tip today-tip">${todayVal}%</span>
+          </div>`,
+        ])
         .join("");
     }
 
-    function paint() {
+    function paint(updatedKey?: string) {
       const m1 = document.getElementById("m1");
       const m2 = document.getElementById("m2");
       const m3 = document.getElementById("m3");
       const m4 = document.getElementById("m4");
-      if (m1) m1.textContent = members.toString();
-      if (m2) m2.textContent = present.toString();
-      if (m3) m3.textContent = "₦" + giving.toLocaleString("en-NG");
-      if (m4) m4.textContent = ft.toString();
+      if (m1) {
+        m1.textContent = members.toString();
+        if (updatedKey === "m1") flash(m1);
+      }
+      if (m2) {
+        m2.textContent = present.toString();
+        if (updatedKey === "m2") flash(m2);
+      }
+      if (m3) {
+        m3.textContent = "₦" + giving.toLocaleString("en-NG");
+        if (updatedKey === "m3") flash(m3);
+      }
+      if (m4) {
+        m4.textContent = ft.toString();
+        if (updatedKey === "m4") flash(m4);
+      }
       bars();
       if (fd) {
         fd.innerHTML = feed
           .slice(0, 4)
-          .map(function (f) {
+          .map(function (f, idx) {
             return (
-              '<div><i class="' + f.k + '"></i>' + f.t + "<span>" + f.w + "</span></div>"
+              '<div class="feed-item' +
+              (idx === 0 ? " feed-item-new" : "") +
+              '">' +
+              '<i class="' +
+              f.k +
+              '"></i>' +
+              '<span class="feed-text">' +
+              f.t +
+              "</span>" +
+              '<span class="feed-time">' +
+              f.w +
+              "</span>" +
+              "</div>"
             );
           })
           .join("");
@@ -97,9 +135,11 @@ export default function ChurchManagerLanding() {
     function tick() {
       const r = Math.random();
       const n = pick();
+      let updatedKey = "m2";
       if (r < 0.5) {
         present++;
         feed.unshift({ k: "", t: n + " checked in", w: "just now" });
+        updatedKey = "m2";
       } else if (r < 0.85) {
         const a = (Math.floor(Math.random() * 9) + 1) * 1000;
         giving += a;
@@ -108,22 +148,24 @@ export default function ChurchManagerLanding() {
           t: n + " gave ₦" + a.toLocaleString("en-NG") + " tithe",
           w: "just now",
         });
+        updatedKey = "m3";
       } else {
         members++;
         ft++;
         feed.unshift({ k: "", t: "First-timer: " + n, w: "just now" });
+        updatedKey = "m4";
       }
       feed = feed.slice(0, 6);
       feed.forEach(function (f, i) {
         if (i) f.w = i * 3 + "s ago";
       });
-      paint();
+      paint(updatedKey);
     }
 
     for (let i = 0; i < 4; i++) {
       tick();
     }
-    const tickTimer = setInterval(tick, 2200);
+    const tickTimer = setInterval(tick, 1900);
 
     let s = 0;
     const recTimer = setInterval(function () {

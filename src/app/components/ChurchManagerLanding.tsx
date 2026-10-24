@@ -352,7 +352,7 @@ export default function ChurchManagerLanding() {
         </div>
         <div className="w">
           <h1>
-            Every <em>soul</em> counted.<br />
+            Every <em>soul</em> counted.<br className="hero-br" />
             Every <u>Sunday</u> remembered.
           </h1>
           <p className="l">

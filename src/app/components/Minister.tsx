@@ -6,7 +6,7 @@ const ministers = [
   {
     name: "Pastor Tosin Adewale",
     role: "Resident Pastor",
-    tag: "Rehoboth Chapel",
+    tag: "Rehoboth Chapel",  
     image: "/minister/min1.jpg",
     phone: "2349112521558",
   },

@@ -1,182 +1,297 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import "../church-manager.css";
 
-interface FeedItem {
-  id: string;
-  k: "g" | "";
-  t: string;
-  w: string;
-}
-
-const sampleNames = [
-  "Adaeze O.",
-  "Tunde B.",
-  "Grace E.",
-  "Samuel A.",
-  "Ruth L.",
-  "Daniel K.",
-  "Mercy A.",
-  "Emeka N.",
-  "Bukola M.",
-  "Chinedu O.",
-  "Blessing P.",
-  "Femi D.",
-];
-
 export default function ChurchManagerLanding() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "members" | "attendance" | "giving" | "events">("overview");
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Dashboard simulation states
-  const [members, setMembers] = useState(248);
-  const [present, setPresent] = useState(112);
-  const [giving, setGiving] = useState(1250000);
-  const [isSimulating, setIsSimulating] = useState(true);
-  const [currency, setCurrency] = useState<"NGN" | "USD">("USD");
-  const [annualBilling, setAnnualBilling] = useState(false);
+  useEffect(() => {
+    // Add js class to html root
+    document.documentElement.classList.add("js");
+    const prevBg = document.body.style.backgroundColor;
+    const prevColor = document.body.style.color;
+    document.body.style.backgroundColor = "var(--bg)";
+    document.body.style.color = "var(--tx)";
 
-  // Weekly attendance percentages
-  const wk = [62, 71, 78, 85];
-  const todayPercent = Math.min(100, Math.round((present / members) * 100 * 1.6));
-
-  // Live activity feed
-  const [feed, setFeed] = useState<FeedItem[]>([
-    { id: "1", k: "", t: "Adaeze O. checked in", w: "just now" },
-    { id: "2", k: "g", t: "Tunde B. gave ₦5,000", w: "3s ago" },
-    { id: "3", k: "", t: "Grace E. joined the church", w: "6s ago" },
-    { id: "4", k: "", t: "Samuel A. checked in", w: "9s ago" },
-  ]);
-
-  // Contact form submission state
-  const [contactSubmitted, setContactSubmitted] = useState(false);
-  const [contactName, setContactName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactMessage, setContactMessage] = useState("");
-
-  // Random helper
-  const pickRandomName = () => sampleNames[Math.floor(Math.random() * sampleNames.length)];
-
-  // Simulation tick
-  const triggerTick = useCallback(() => {
-    const r = Math.random();
-    const name = sampleNames[Math.floor(Math.random() * sampleNames.length)];
-    const id = Date.now().toString() + Math.random().toString(36).substring(2, 6);
-
-    let newItem: FeedItem;
-
-    if (r < 0.5) {
-      setPresent((prev) => prev + 1);
-      newItem = { id, k: "", t: `${name} checked in`, w: "just now" };
-    } else if (r < 0.85) {
-      const amount = (Math.floor(Math.random() * 9) + 1) * 1000;
-      setGiving((prev) => prev + amount);
-      newItem = { id, k: "g", t: `${name} gave ₦${amount.toLocaleString("en-NG")}`, w: "just now" };
+    // Scroll reveal observer
+    const els = document.querySelectorAll(".rv");
+    let io: IntersectionObserver | null = null;
+    if (!("IntersectionObserver" in window)) {
+      els.forEach((e) => e.classList.add("in"));
     } else {
-      setMembers((prev) => prev + 1);
-      newItem = { id, k: "", t: `${name} joined the church`, w: "just now" };
+      io = new IntersectionObserver(
+        (es, obs) => {
+          es.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+      els.forEach((e) => io?.observe(e));
     }
 
-    setFeed((prev) => {
-      const updated = [newItem, ...prev.slice(0, 5)];
-      return updated.map((item, index) => {
-        if (index === 0) return { ...item, w: "just now" };
-        return { ...item, w: `${index * 3}s ago` };
+    // Dashboard simulation logic
+    let ft = 6;
+    let present = 112;
+    let giving = 1250000;
+    let members = 248;
+    const wk = [62, 71, 78, 85];
+    const names = [
+      "Adaeze O.",
+      "Tunde B.",
+      "Grace E.",
+      "Samuel A.",
+      "Ruth L.",
+      "Daniel K.",
+      "Mercy A.",
+      "Emeka N.",
+    ];
+    let feed: { k: string; t: string; w: string }[] = [];
+
+    const ch = document.getElementById("ch");
+    const fd = document.getElementById("fd");
+
+    function bars() {
+      if (!ch) return;
+      ch.innerHTML = wk
+        .concat([Math.min(100, Math.round((present / members) * 100 * 1.6))])
+        .map(function (v) {
+          return '<div style="height:' + v + '%"></div>';
+        })
+        .join("");
+    }
+
+    function paint() {
+      const m1 = document.getElementById("m1");
+      const m2 = document.getElementById("m2");
+      const m3 = document.getElementById("m3");
+      const m4 = document.getElementById("m4");
+      if (m1) m1.textContent = members.toString();
+      if (m2) m2.textContent = present.toString();
+      if (m3) m3.textContent = "₦" + giving.toLocaleString("en-NG");
+      if (m4) m4.textContent = ft.toString();
+      bars();
+      if (fd) {
+        fd.innerHTML = feed
+          .slice(0, 4)
+          .map(function (f) {
+            return (
+              '<div><i class="' + f.k + '"></i>' + f.t + "<span>" + f.w + "</span></div>"
+            );
+          })
+          .join("");
+      }
+    }
+
+    function pick() {
+      return names[Math.floor(Math.random() * names.length)];
+    }
+
+    function tick() {
+      const r = Math.random();
+      const n = pick();
+      if (r < 0.5) {
+        present++;
+        feed.unshift({ k: "", t: n + " checked in", w: "just now" });
+      } else if (r < 0.85) {
+        const a = (Math.floor(Math.random() * 9) + 1) * 1000;
+        giving += a;
+        feed.unshift({
+          k: "g",
+          t: n + " gave ₦" + a.toLocaleString("en-NG") + " tithe",
+          w: "just now",
+        });
+      } else {
+        members++;
+        ft++;
+        feed.unshift({ k: "", t: "First-timer: " + n, w: "just now" });
+      }
+      feed = feed.slice(0, 6);
+      feed.forEach(function (f, i) {
+        if (i) f.w = i * 3 + "s ago";
+      });
+      paint();
+    }
+
+    for (let i = 0; i < 4; i++) {
+      tick();
+    }
+    const tickTimer = setInterval(tick, 2200);
+
+    let s = 0;
+    const recTimer = setInterval(function () {
+      s++;
+      const rt = document.getElementById("rt");
+      if (rt) {
+        rt.textContent =
+          "REC " + Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
+      }
+    }, 1000);
+
+    const dash = document.querySelector(".dash");
+    const cur = document.getElementById("cur");
+    const rip = document.getElementById("rip");
+    const nv = document.querySelectorAll(".sb div");
+    const ov = document.querySelectorAll(".ov");
+
+    function sl(t: number) {
+      return new Promise<void>(function (r) {
+        setTimeout(r, t);
+      });
+    }
+
+    function go(el: Element | null) {
+      if (!el || !dash || !cur) return Promise.resolve();
+      const a = el.getBoundingClientRect();
+      const b = dash.getBoundingClientRect();
+      cur.style.transform =
+        "translate(" +
+        (a.left - b.left + a.width * 0.45) +
+        "px," +
+        (a.top - b.top + a.height * 0.5) +
+        "px)";
+      return sl(1000);
+    }
+
+    function clk() {
+      if (!cur || !rip) return;
+      const m = cur.style.transform.match(
+        /translate\(([\d.-]+)px,\s*([\d.-]+)px\)/
+      );
+      if (!m) return;
+      rip.style.left = parseFloat(m[1]) - 14 + "px";
+      rip.style.top = parseFloat(m[2]) - 14 + "px";
+      rip.classList.remove("go");
+      void rip.offsetWidth;
+      rip.classList.add("go");
+    }
+
+    function show(idx: number) {
+      for (let k = 0; k < 5; k++) {
+        if (nv[k]) nv[k].className = k === idx ? "on" : "";
+      }
+      ov.forEach(function (e) {
+        e.classList.toggle("off", idx > 0);
+      });
+      for (let k = 1; k < 5; k++) {
+        const vk = document.getElementById("v" + k);
+        if (vk) vk.classList.toggle("on", k === idx);
+      }
+    }
+
+    // Attach click listeners to tabs so manual clicking works too
+    nv.forEach((tab, index) => {
+      tab.addEventListener("click", () => {
+        show(index);
       });
     });
+
+    let active = true;
+    async function loop() {
+      const m2 = document.getElementById("m2");
+      if (m2) await go(m2);
+      await sl(500);
+      while (active) {
+        for (let i = 0; i < 5 && active; i++) {
+          if (nv[i]) {
+            await go(nv[i]);
+            if (!active) break;
+            clk();
+            show(i);
+            await sl(600);
+          }
+          if (!active) break;
+          if (i === 0) {
+            const m3Parent = document.getElementById("m3")?.parentNode as HTMLElement;
+            if (m3Parent) await go(m3Parent);
+          }
+          if (i === 1) {
+            const r = document.querySelectorAll(".mr");
+            for (let j = 1; j < 4 && active; j++) {
+              if (r[j - 1]) r[j - 1].classList.remove("hv");
+              if (r[j]) {
+                r[j].classList.add("hv");
+                await go(r[j]);
+              }
+            }
+          }
+          if (i === 2) {
+            const t = document.querySelectorAll(".tg")[1];
+            if (t) {
+              await go(t);
+              if (!active) break;
+              clk();
+              t.classList.toggle("on");
+              t.classList.toggle("off");
+              t.textContent = t.classList.contains("on") ? "Present" : "Absent";
+            }
+          }
+          if (i === 3) {
+            const gt = document.getElementById("gt");
+            if (gt) await go(gt);
+          }
+          if (i === 4) {
+            const ev = document.querySelector(".ev");
+            if (ev) await go(ev);
+          }
+          if (!active) break;
+          await sl(900);
+        }
+      }
+    }
+
+    loop();
+
+    return () => {
+      active = false;
+      clearInterval(tickTimer);
+      clearInterval(recTimer);
+      io?.disconnect();
+      document.documentElement.classList.remove("js");
+      document.body.style.backgroundColor = prevBg;
+      document.body.style.color = prevColor;
+    };
   }, []);
 
-  // Run simulation interval
-  useEffect(() => {
-    if (!isSimulating) return;
-    const interval = setInterval(() => {
-      triggerTick();
-    }, 2200);
-
-    return () => clearInterval(interval);
-  }, [isSimulating, triggerTick]);
-
-  // Manual actions
-  const handleCheckInManually = () => {
-    const name = pickRandomName();
-    const id = Date.now().toString();
-    setPresent((prev) => prev + 1);
-    setFeed((prev) => [
-      { id, k: "", t: `${name} checked in (manual)`, w: "just now" },
-      ...prev.slice(0, 4),
-    ]);
-  };
-
-  const handleGiveManually = () => {
-    const name = pickRandomName();
-    const id = Date.now().toString();
-    const amount = 10000;
-    setGiving((prev) => prev + amount);
-    setFeed((prev) => [
-      { id, k: "g", t: `${name} gave ₦${amount.toLocaleString("en-NG")} tithe`, w: "just now" },
-      ...prev.slice(0, 4),
-    ]);
-  };
-
-  const handleJoinManually = () => {
-    const name = pickRandomName();
-    const id = Date.now().toString();
-    setMembers((prev) => prev + 1);
-    setFeed((prev) => [
-      { id, k: "", t: `${name} registered as new member`, w: "just now" },
-      ...prev.slice(0, 4),
-    ]);
-  };
-
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setContactSubmitted(true);
-  };
-
-  // Pricing calculations
-  const growthPrice = currency === "USD" 
-    ? (annualBilling ? "$12" : "$15") 
-    : (annualBilling ? "₦12,000" : "₦15,000");
-
-  const ministryPrice = currency === "USD" 
-    ? (annualBilling ? "$31" : "$39") 
-    : (annualBilling ? "₦31,000" : "₦39,000");
-
   return (
-    <div className="cm-theme">
-      {/* Sticky Header / Navbar */}
-      <nav className="cm-nav">
-        <div className="cm-w cm-nb">
-          <Link href="#home" className="cm-brand">
-            <span className="cm-logo">
+    <div className="church-manager-page">
+      {/* Navigation */}
+      <nav>
+        <div className="w nb">
+          <a href="#home" className="brand">
+            <span className="logo">
               <svg viewBox="0 0 24 24">
                 <path d="M12 3v18M6 9h12" />
               </svg>
             </span>
-            <span>Church Manager</span>
-          </Link>
-
-          <div className="cm-links">
+            Church Manager
+          </a>
+          <div className="links">
             <a href="#home">Home</a>
             <a href="#features">Features</a>
             <a href="#how">How It Works</a>
             <a href="#pricing">Pricing</a>
             <a href="#contact">Contact</a>
           </div>
-
-          <div className="cm-cta">
-            <Link href="/portal/login" className="cm-btn">
+          <div className="cta">
+            <Link href="/portal/login" className="btn">
               Sign In
             </Link>
-            <Link href="/portal/login" className="cm-btn r">
+            <Link href="/portal/login" className="btn r">
               Create Account
+              <svg viewBox="0 0 24 24">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
             </Link>
             <button
-              className="cm-burger"
-              aria-label="Toggle navigation menu"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="burger"
+              aria-label="Menu"
+              onClick={() => setMobileOpen(!mobileOpen)}
             >
               <svg viewBox="0 0 24 24">
                 <path d="M4 6h16M4 12h16M4 18h16" />
@@ -184,484 +299,305 @@ export default function ChurchManagerLanding() {
             </button>
           </div>
         </div>
-
-        {/* Mobile Dropdown Drawer */}
         <div
-          className={`cm-mob ${mobileMenuOpen ? "open" : ""}`}
-          onClick={() => setMobileMenuOpen(false)}
+          className={`mob ${mobileOpen ? "open" : ""}`}
+          id="m"
+          onClick={() => setMobileOpen(false)}
         >
           <a href="#home">Home</a>
           <a href="#features">Features</a>
           <a href="#how">How It Works</a>
           <a href="#pricing">Pricing</a>
           <a href="#contact">Contact</a>
-          <Link href="/portal/login" style={{ color: "var(--bl)", fontWeight: 700 }}>
-            Sign In to Portal
-          </Link>
-          <Link href="/portal/login" style={{ color: "var(--rd)", fontWeight: 700 }}>
-            Create Account
-          </Link>
+          <Link href="/portal/login">Sign In</Link>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <header className="cm-hero" id="home">
-        <div className="cm-w">
-          <span className="cm-tag">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-            Built for churches of every size
-          </span>
-
+      <header className="hero" id="home">
+        <div className="bgfx">
+          <b className="ray"></b>
+          <b className="ray r2"></b>
+          <i style={{ left: "6%", animationDelay: "-1s", animationDuration: "10s" }}></i>
+          <i style={{ left: "14%", animationDelay: "-6s", animationDuration: "13s" }}></i>
+          <i style={{ left: "23%", animationDelay: "-3s", animationDuration: "11s" }}></i>
+          <i style={{ left: "33%", animationDelay: "-9s", animationDuration: "14s" }}></i>
+          <i style={{ left: "44%", animationDelay: "-2s", animationDuration: "12s" }}></i>
+          <i style={{ left: "54%", animationDelay: "-7s", animationDuration: "10s" }}></i>
+          <i style={{ left: "63%", animationDelay: "-4s", animationDuration: "13s" }}></i>
+          <i style={{ left: "72%", animationDelay: "-10s", animationDuration: "11s" }}></i>
+          <i style={{ left: "81%", animationDelay: "-5s", animationDuration: "14s" }}></i>
+          <i style={{ left: "90%", animationDelay: "-8s", animationDuration: "12s" }}></i>
+          <i style={{ left: "97%", animationDelay: "-0s", animationDuration: "10s" }}></i>
+        </div>
+        <div className="w">
+          <span className="tag">For churches, ministries &amp; fellowships</span>
           <h1>
-            Shepherd your <em>people</em>,<br />
-            not your <u>spreadsheets</u>.
+            Every <em>soul</em> counted.<br />
+            Every <u>Sunday</u> remembered.
           </h1>
-
           <p className="l">
-            Members, attendance, giving and events in one live dashboard for pastors, leaders and members.
+            Welcome first-timers, track Sunday attendance, record tithes and
+            offerings, and keep every ministry in step, all in one place for
+            pastors, ushers and members.
           </p>
-
-          <div className="cm-hb">
-            <Link href="/portal/login" className="cm-btn r big">
-              Create Account
+          <div className="hb">
+            <Link href="/portal/login" className="btn r big">
+              Get Started
+              <svg viewBox="0 0 24 24">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
             </Link>
-            <Link href="/portal/login" className="cm-btn big">
+            <Link href="/portal/login" className="btn big">
               Sign In
-            </Link>
-            <Link
-              href="/portal"
-              className="cm-btn big"
-              style={{ background: "#fff", borderColor: "var(--bd)", color: "var(--tx)" }}
-            >
-              Instant Demo Portal →
             </Link>
           </div>
 
-          {/* Live Interactive Dashboard Preview */}
-          <div className="cm-dash" aria-label="Live dashboard preview">
-            {/* Window Bar */}
-            <div className="cm-dt">
-              <i title="Close" />
-              <i title="Minimize" />
-              <i title="Maximize" />
-              <div className="cm-live-badge">
-                <span>{isSimulating ? "LIVE FEED ACTIVE" : "SIMULATION PAUSED"}</span>
-              </div>
+          <div className="dash" aria-label="Dashboard demo">
+            <svg className="cur" id="cur" viewBox="0 0 24 24">
+              <path
+                d="M3 2l14 8-6 2-2 7z"
+                fill="#fff"
+                stroke="#222"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="rip" id="rip"></span>
+            <div className="dt">
+              <i></i>
+              <i></i>
+              <i></i>
+              <span id="rt">REC 0:00</span>
             </div>
-
-            {/* Dashboard Inner Container */}
-            <div className="cm-db">
-              {/* Left Sidebar Tabs */}
-              <div className="cm-sb">
-                <button
-                  type="button"
-                  className={activeTab === "overview" ? "on" : ""}
-                  onClick={() => setActiveTab("overview")}
-                >
-                  <span>📊</span> Overview
-                </button>
-                <button
-                  type="button"
-                  className={activeTab === "members" ? "on" : ""}
-                  onClick={() => setActiveTab("members")}
-                >
-                  <span>👥</span> Members
-                </button>
-                <button
-                  type="button"
-                  className={activeTab === "attendance" ? "on" : ""}
-                  onClick={() => setActiveTab("attendance")}
-                >
-                  <span>📈</span> Attendance
-                </button>
-                <button
-                  type="button"
-                  className={activeTab === "giving" ? "on" : ""}
-                  onClick={() => setActiveTab("giving")}
-                >
-                  <span>💵</span> Giving
-                </button>
-                <button
-                  type="button"
-                  className={activeTab === "events" ? "on" : ""}
-                  onClick={() => setActiveTab("events")}
-                >
-                  <span>📅</span> Events
-                </button>
+            <div className="db">
+              <div className="sb">
+                <div className="on">Overview</div>
+                <div>Members</div>
+                <div>Attendance</div>
+                <div>Giving</div>
+                <div>Services</div>
               </div>
-
-              {/* Main Content Area */}
-              <div className="cm-mn">
-                {activeTab === "overview" && (
-                  <>
-                    {/* Key Stats Bar */}
-                    <div className="cm-st">
-                      <div className="cm-s u">
-                        <small>Total members</small>
-                        <b>{members}</b>
-                      </div>
-                      <div className="cm-s">
-                        <small>Present today</small>
-                        <b>{present}</b>
-                      </div>
-                      <div className="cm-s r">
-                        <small>Giving this month</small>
-                        <b>₦{giving.toLocaleString("en-NG")}</b>
-                      </div>
-                    </div>
-
-                    {/* Panels */}
-                    <div className="cm-pn">
-                      {/* Attendance Chart */}
-                      <div className="cm-bx">
-                        <h4>
-                          <span>Weekly attendance</span>
-                          <span style={{ fontSize: "11px", color: "var(--rd)", fontWeight: 700 }}>
-                            {todayPercent}% Today
-                          </span>
-                        </h4>
-                        <div className="cm-ch">
-                          {wk.map((val, idx) => (
-                            <div
-                              key={idx}
-                              style={{ height: `${val}%` }}
-                              title={`Week ${idx + 1}: ${val}% attendance`}
-                            />
-                          ))}
-                          <div
-                            className="today-bar"
-                            style={{ height: `${todayPercent}%` }}
-                            title={`Today: ${todayPercent}% attendance`}
-                          />
-                        </div>
-                        <div className="cm-cl">
-                          <span>Wk1</span>
-                          <span>Wk2</span>
-                          <span>Wk3</span>
-                          <span>Wk4</span>
-                          <span style={{ color: "var(--rd)", fontWeight: 700 }}>Today</span>
-                        </div>
-                      </div>
-
-                      {/* Live Activity Feed */}
-                      <div className="cm-bx">
-                        <h4>
-                          <span>Live activity</span>
-                          <span style={{ fontSize: "11px", color: "var(--mu)", fontWeight: 500 }}>
-                            Real-time
-                          </span>
-                        </h4>
-                        <div className="cm-fd">
-                          {feed.slice(0, 4).map((f) => (
-                            <div key={f.id}>
-                              <i className={f.k} />
-                              <span style={{ color: "var(--tx)", fontWeight: 500 }}>{f.t}</span>
-                              <span>{f.w}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Interactive Simulator Controls */}
-                    <div
-                      style={{
-                        marginTop: "14px",
-                        padding: "10px 14px",
-                        background: "var(--soft)",
-                        borderRadius: "10px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        flexWrap: "wrap",
-                        gap: "8px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                        <span style={{ fontWeight: 700, color: "var(--mu)" }}>SIMULATOR:</span>
-                        <button
-                          type="button"
-                          onClick={() => setIsSimulating(!isSimulating)}
-                          style={{
-                            background: isSimulating ? "#dcfce7" : "#fee2e2",
-                            color: isSimulating ? "#15803d" : "#b91c1c",
-                            border: "none",
-                            borderRadius: "6px",
-                            padding: "3px 8px",
-                            fontWeight: 700,
-                            cursor: "pointer",
-                          }}
-                        >
-                          {isSimulating ? "● Pause Auto-Tick" : "▶ Resume Auto-Tick"}
-                        </button>
-                      </div>
-
-                      <div style={{ display: "flex", gap: "6px" }}>
-                        <button
-                          type="button"
-                          onClick={handleCheckInManually}
-                          style={{
-                            background: "#fff",
-                            border: "1px solid var(--bd)",
-                            borderRadius: "6px",
-                            padding: "4px 8px",
-                            cursor: "pointer",
-                            fontWeight: 600,
-                            color: "var(--bl)",
-                          }}
-                        >
-                          + Check In
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleGiveManually}
-                          style={{
-                            background: "#fff",
-                            border: "1px solid var(--bd)",
-                            borderRadius: "6px",
-                            padding: "4px 8px",
-                            cursor: "pointer",
-                            fontWeight: 600,
-                            color: "var(--rd)",
-                          }}
-                        >
-                          + ₦10k Tithe
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleJoinManually}
-                          style={{
-                            background: "#fff",
-                            border: "1px solid var(--bd)",
-                            borderRadius: "6px",
-                            padding: "4px 8px",
-                            cursor: "pointer",
-                            fontWeight: 600,
-                            color: "var(--tx)",
-                          }}
-                        >
-                          + New Member
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {/* Members Tab View */}
-                {activeTab === "members" && (
+              <div className="mn">
+                <div className="tb">
                   <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                      <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "var(--tx)" }}>
-                        Church Members Directory ({members})
-                      </h4>
-                      <Link href="/portal/admin/members" className="cm-btn" style={{ padding: "4px 10px", fontSize: "12px" }}>
-                        Open in Admin →
-                      </Link>
+                    <b>Good morning, Pastor</b>
+                    <small>Sunday service · 9:00 AM</small>
+                  </div>
+                  <div className="sr">Search members, services…</div>
+                  <i className="av">PA</i>
+                </div>
+                <div className="v" id="v1">
+                  <div className="bx">
+                    <h4>Members · 248</h4>
+                    <div className="rw mr">
+                      <i>AO</i>Adaeze Okoye<span>Choir</span>
                     </div>
-                    <div style={{ background: "#fff", borderRadius: "10px", border: "1px solid var(--bd)", overflow: "hidden", fontSize: "13px" }}>
-                      {[
-                        { name: "Pastor David O.", dept: "Pastoral Board", role: "Lead Pastor", status: "Active" },
-                        { name: "Deaconess Grace E.", dept: "Ushering Unit", role: "Head Usher", status: "Active" },
-                        { name: "Brother Tunde B.", dept: "Choir (Voices of Zion)", role: "Instrumentalist", status: "Active" },
-                        { name: "Sister Adaeze O.", dept: "Media & Technical", role: "Media Lead", status: "Active" },
-                        { name: "Brother Samuel A.", dept: "First Timers", role: "Visitor (Sunday)", status: "New" },
-                      ].map((m, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            padding: "9px 12px",
-                            borderBottom: i < 4 ? "1px solid var(--bd)" : "none",
-                          }}
-                        >
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <div
-                              style={{
-                                width: "28px",
-                                height: "28px",
-                                borderRadius: "50%",
-                                background: i % 2 === 0 ? "var(--bl2)" : "var(--rd2)",
-                                color: i % 2 === 0 ? "var(--bl)" : "var(--rd)",
-                                display: "grid",
-                                placeItems: "center",
-                                fontWeight: 700,
-                                fontSize: "11px",
-                              }}
-                            >
-                              {m.name.charAt(0)}
-                            </div>
-                            <div>
-                              <div style={{ fontWeight: 600, color: "var(--tx)" }}>{m.name}</div>
-                              <div style={{ fontSize: "11px", color: "var(--mu)" }}>{m.dept}</div>
-                            </div>
-                          </div>
-                          <span
-                            style={{
-                              fontSize: "11px",
-                              padding: "2px 8px",
-                              borderRadius: "99px",
-                              background: m.status === "New" ? "var(--rd2)" : "#dcfce7",
-                              color: m.status === "New" ? "var(--rd)" : "#15803d",
-                              fontWeight: 700,
-                            }}
-                          >
-                            {m.status}
-                          </span>
-                        </div>
-                      ))}
+                    <div className="rw mr">
+                      <i>TB</i>Tunde Bakare<span>Ushering</span>
+                    </div>
+                    <div className="rw mr">
+                      <i>GE</i>Grace Eze<span>Children</span>
+                    </div>
+                    <div className="rw mr">
+                      <i>SA</i>Samuel Adeyemi<span>Media</span>
                     </div>
                   </div>
-                )}
-
-                {/* Attendance Tab View */}
-                {activeTab === "attendance" && (
-                  <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                      <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "var(--tx)" }}>
-                        Service Attendance Breakdown
-                      </h4>
-                      <Link href="/portal/admin/attendance" className="cm-btn" style={{ padding: "4px 10px", fontSize: "12px" }}>
-                        View Full Reports →
-                      </Link>
+                </div>
+                <div className="v" id="v2">
+                  <div className="bx">
+                    <h4>Sunday service attendance</h4>
+                    <div className="rw">
+                      <i>AO</i>Adaeze Okoye<span className="tg on">Present</span>
                     </div>
-                    <div style={{ display: "grid", gap: "10px" }}>
-                      {[
-                        { name: "Sunday 1st Service (Early Manna)", count: "118 attendees", pct: 85, color: "var(--bl)" },
-                        { name: "Sunday 2nd Service (Celebration)", count: "214 attendees", pct: 94, color: "var(--rd)" },
-                        { name: "Wednesday Midweek Breakthrough", count: "89 attendees", pct: 65, color: "var(--bl)" },
-                        { name: "Youth Church (Teens & Campus)", count: "76 attendees", pct: 80, color: "var(--tx)" },
-                      ].map((item, idx) => (
-                        <div key={idx} style={{ background: "#fff", border: "1px solid var(--bd)", borderRadius: "10px", padding: "10px 14px" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", fontWeight: 600, marginBottom: "6px" }}>
-                            <span>{item.name}</span>
-                            <span style={{ color: item.color, fontWeight: 700 }}>{item.count}</span>
-                          </div>
-                          <div style={{ height: "7px", background: "var(--soft)", borderRadius: "99px", overflow: "hidden" }}>
-                            <div style={{ width: `${item.pct}%`, height: "100%", background: item.color, borderRadius: "99px" }} />
-                          </div>
-                        </div>
-                      ))}
+                    <div className="rw">
+                      <i>TB</i>Tunde Bakare<span className="tg on">Present</span>
+                    </div>
+                    <div className="rw">
+                      <i>GE</i>Grace Eze<span className="tg off">Absent</span>
+                    </div>
+                    <div className="rw">
+                      <i>SA</i>Samuel Adeyemi<span className="tg on">Present</span>
                     </div>
                   </div>
-                )}
-
-                {/* Giving Tab View */}
-                {activeTab === "giving" && (
-                  <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                      <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "var(--tx)" }}>
-                        Monthly Giving Allocations
-                      </h4>
-                      <Link href="/portal/admin/finances" className="cm-btn" style={{ padding: "4px 10px", fontSize: "12px" }}>
-                        Financial Ledger →
-                      </Link>
+                </div>
+                <div className="v" id="v3">
+                  <div className="bx">
+                    <h4>Giving this month</h4>
+                    <div className="rw" id="gt">
+                      <i>₦</i>Tithes<span>₦640,000</span>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
-                      <div style={{ background: "#fff", border: "1px solid var(--bd)", borderRadius: "10px", padding: "12px" }}>
-                        <small style={{ color: "var(--mu)", fontWeight: 600, fontSize: "11px" }}>TITHES RECORDED</small>
-                        <b style={{ display: "block", fontSize: "20px", color: "var(--bl)", marginTop: "4px" }}>
-                          ₦{(giving * 0.62).toLocaleString("en-NG", { maximumFractionDigits: 0 })}
-                        </b>
-                      </div>
-                      <div style={{ background: "#fff", border: "1px solid var(--bd)", borderRadius: "10px", padding: "12px" }}>
-                        <small style={{ color: "var(--mu)", fontWeight: 600, fontSize: "11px" }}>OFFERINGS & SEED</small>
-                        <b style={{ display: "block", fontSize: "20px", color: "var(--rd)", marginTop: "4px" }}>
-                          ₦{(giving * 0.38).toLocaleString("en-NG", { maximumFractionDigits: 0 })}
-                        </b>
-                      </div>
+                    <div className="rw">
+                      <i>₦</i>Offerings<span>₦380,000</span>
                     </div>
-                    <div style={{ background: "#fff", border: "1px solid var(--bd)", borderRadius: "10px", padding: "12px", fontSize: "12.5px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginBottom: "6px" }}>
-                        <span>Progress Towards Monthly Budget (₦1,500,000)</span>
-                        <span style={{ color: "var(--rd)" }}>{Math.min(100, Math.round((giving / 1500000) * 100))}%</span>
-                      </div>
-                      <div style={{ height: "8px", background: "var(--soft)", borderRadius: "99px", overflow: "hidden" }}>
-                        <div
-                          style={{
-                            width: `${Math.min(100, (giving / 1500000) * 100)}%`,
-                            height: "100%",
-                            background: "linear-gradient(90deg, var(--bl), var(--rd))",
-                            borderRadius: "99px",
-                          }}
-                        />
-                      </div>
+                    <div className="rw">
+                      <i>₦</i>Building fund<span>₦230,000</span>
                     </div>
                   </div>
-                )}
-
-                {/* Events Tab View */}
-                {activeTab === "events" && (
-                  <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                      <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "var(--tx)" }}>
-                        Upcoming Church Events & RSVPs
-                      </h4>
-                      <Link href="/portal/admin/roster" className="cm-btn" style={{ padding: "4px 10px", fontSize: "12px" }}>
-                        Manage Events →
-                      </Link>
+                </div>
+                <div className="v" id="v4">
+                  <div className="bx">
+                    <h4>Upcoming services</h4>
+                    <div className="rw">
+                      <i>25</i>Sunday Service<span>9:00 AM</span>
                     </div>
-                    <div style={{ display: "grid", gap: "8px" }}>
-                      {[
-                        { title: "Sunday Holy Communion Service", date: "This Sunday, 9:00 AM", rsvps: "184 Confirmed" },
-                        { title: "Worship & Miracle Night", date: "Last Friday, 10:00 PM", rsvps: "112 Confirmed" },
-                        { title: "Couples & Marriage Banquet", date: "Nov 14, 5:00 PM", rsvps: "46 Confirmed" },
-                      ].map((ev, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            background: "#fff",
-                            border: "1px solid var(--bd)",
-                            borderRadius: "10px",
-                            padding: "10px 14px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <div>
-                            <div style={{ fontWeight: 700, fontSize: "13.5px", color: "var(--tx)" }}>{ev.title}</div>
-                            <div style={{ fontSize: "11.5px", color: "var(--mu)" }}>{ev.date}</div>
-                          </div>
-                          <span
-                            style={{
-                              background: "var(--bl2)",
-                              color: "var(--bl)",
-                              fontWeight: 700,
-                              fontSize: "11px",
-                              padding: "4px 8px",
-                              borderRadius: "6px",
-                            }}
-                          >
-                            {ev.rsvps}
-                          </span>
-                        </div>
-                      ))}
+                    <div className="rw ev">
+                      <i>28</i>Midweek Bible Study<span>5:30 PM</span>
+                    </div>
+                    <div className="rw">
+                      <i>31</i>Youth Fellowship<span>4:00 PM</span>
                     </div>
                   </div>
-                )}
+                </div>
+                <div className="st ov">
+                  <div className="s u">
+                    <small>Congregation</small>
+                    <b id="m1">248</b>
+                  </div>
+                  <div className="s">
+                    <small>In service today</small>
+                    <b id="m2">0</b>
+                  </div>
+                  <div className="s r">
+                    <small>Tithes &amp; offerings</small>
+                    <b id="m3">₦0</b>
+                  </div>
+                  <div className="s">
+                    <small>First-timers</small>
+                    <b id="m4">0</b>
+                  </div>
+                </div>
+                <div className="pn ov">
+                  <div className="bx">
+                    <h4>Sunday attendance</h4>
+                    <div className="ch" id="ch"></div>
+                    <div className="cl">
+                      <span>Wk1</span>
+                      <span>Wk2</span>
+                      <span>Wk3</span>
+                      <span>Wk4</span>
+                      <span>Today</span>
+                    </div>
+                  </div>
+                  <div className="bx">
+                    <h4>This Sunday</h4>
+                    <div className="fd" id="fd"></div>
+                  </div>
+                </div>
+                <div className="pn ov">
+                  <div className="bx">
+                    <h4>Ministries</h4>
+                    <div className="mb">
+                      <span>Choir</span>
+                      <u style={{ width: "82%" }}></u>
+                    </div>
+                    <div className="mb">
+                      <span>Ushering</span>
+                      <u style={{ width: "68%" }}></u>
+                    </div>
+                    <div className="mb">
+                      <span>Children</span>
+                      <u style={{ width: "90%" }}></u>
+                    </div>
+                    <div className="mb">
+                      <span>Media</span>
+                      <u style={{ width: "55%" }}></u>
+                    </div>
+                  </div>
+                  <div className="bx">
+                    <h4>Next services</h4>
+                    <div className="rw">
+                      <i>25</i>Sunday Service<span>9:00 AM</span>
+                    </div>
+                    <div className="rw">
+                      <i>28</i>Midweek Prayer<span>5:30 PM</span>
+                    </div>
+                    <div className="rw">
+                      <i>31</i>Youth Fellowship<span>4:00 PM</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Features Section */}
-      <section className="cm-section" id="features">
-        <div className="cm-w">
-          <h2>Everything your church needs</h2>
-          <p className="cm-sub">
-            Replace notebooks and scattered chats with one tool your whole team can use.
+      {/* Problem Section */}
+      <section id="problem">
+        <div className="w">
+          <h2 className="rv">Church admin shouldn&rsquo;t steal your Sundays</h2>
+          <p className="sub rv">
+            Most churches run on notebooks, group chats and spreadsheets. Here is
+            what that costs you.
           </p>
+          <div className="g">
+            <div className="c rv" style={{ "--d": "0ms" } as React.CSSProperties}>
+              <div className="ic">
+                <svg viewBox="0 0 24 24">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <path d="M14 2v6h6M8 13h8M8 17h5" />
+                </svg>
+              </div>
+              <h3>Scattered records</h3>
+              <p>
+                Member details live in notebooks, phones and spreadsheets, and
+                nobody has the full picture.
+              </p>
+            </div>
+            <div className="c rv" style={{ "--d": "90ms" } as React.CSSProperties}>
+              <div className="ic">
+                <svg viewBox="0 0 24 24">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="m17 8 5 5M22 8l-5 5" />
+                </svg>
+              </div>
+              <h3>First-timers slip away</h3>
+              <p>
+                Without a simple follow-up, new visitors come once and are never
+                contactated again.
+              </p>
+            </div>
+            <div className="c rv" style={{ "--d": "180ms" } as React.CSSProperties}>
+              <div className="ic">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v10M9.5 9.5c0-1 1-1.5 2.5-1.5s2.5.7 2.5 1.8c0 2.4-5 1.4-5 3.9 0 1.1 1 1.8 2.5 1.8s2.5-.5 2.5-1.5" />
+                </svg>
+              </div>
+              <h3>Giving is hard to track</h3>
+              <p>
+                Tithes and offerings get written down in different places and
+                rarely add up at month end.
+              </p>
+            </div>
+          </div>
+          <p
+            className="rv"
+            style={{
+              textAlign: "center",
+              margin: "32px auto 0",
+              fontWeight: 600,
+              maxWidth: "560px",
+            }}
+          >
+            Church Manager puts every member, service and offering in one place.
+          </p>
+        </div>
+      </section>
 
-          <div className="cm-g">
-            {/* Feature 1 */}
-            <div className="cm-c">
-              <div className="cm-ic">
+      {/* Features Section */}
+      <section className="alt" id="features">
+        <div className="w">
+          <h2 className="rv">Everything your church needs</h2>
+          <p className="sub rv">
+            Replace notebooks and scattered chats with one tool your whole team
+            can use.
+          </p>
+          <div className="g">
+            <div className="c rv" style={{ "--d": "0ms" } as React.CSSProperties}>
+              <div className="ic">
                 <svg viewBox="0 0 24 24">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                   <circle cx="9" cy="7" r="4" />
@@ -669,373 +605,435 @@ export default function ChurchManagerLanding() {
                 </svg>
               </div>
               <h3>Member Management</h3>
-              <p>Keep profiles, departments and contact details organized and searchable.</p>
+              <p>
+                Keep profiles, departments and contact details organized and
+                searchable.
+              </p>
             </div>
-
-            {/* Feature 2 */}
-            <div className="cm-c">
-              <div className="cm-ic">
+            <div className="c rv" style={{ "--d": "90ms" } as React.CSSProperties}>
+              <div className="ic">
                 <svg viewBox="0 0 24 24">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <path d="M22 4 12 14.01l-3-3" />
                 </svg>
               </div>
               <h3>Attendance Tracking</h3>
-              <p>Mark attendance in seconds and see trends across every service.</p>
+              <p>
+                Mark attendance in seconds and see trends across every service.
+              </p>
             </div>
-
-            {/* Feature 3 */}
-            <div className="cm-c">
-              <div className="cm-ic">
+            <div className="c rv" style={{ "--d": "180ms" } as React.CSSProperties}>
+              <div className="ic">
                 <svg viewBox="0 0 24 24">
                   <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z" />
                 </svg>
               </div>
               <h3>Giving Records</h3>
-              <p>Record tithes and offerings and give members their own giving history.</p>
+              <p>
+                Record tithes and offerings and give members their own giving
+                history.
+              </p>
             </div>
-
-            {/* Feature 4 */}
-            <div className="cm-c">
-              <div className="cm-ic">
+            <div className="c rv" style={{ "--d": "270ms" } as React.CSSProperties}>
+              <div className="ic">
                 <svg viewBox="0 0 24 24">
                   <rect x="3" y="4" width="18" height="18" rx="2" />
                   <path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
               </div>
               <h3>Events &amp; RSVPs</h3>
-              <p>Publish services and programs, and let members RSVP in one tap.</p>
+              <p>
+                Publish services and programs, and let members RSVP in one tap.
+              </p>
             </div>
-
-            {/* Feature 5 */}
-            <div className="cm-c">
-              <div className="cm-ic">
+            <div className="c rv" style={{ "--d": "360ms" } as React.CSSProperties}>
+              <div className="ic">
                 <svg viewBox="0 0 24 24">
                   <rect x="3" y="11" width="18" height="11" rx="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
               </div>
               <h3>Role-Based Access</h3>
-              <p>Admins manage everything while members only see what is theirs.</p>
+              <p>
+                Admins manage everything while members only see what is theirs.
+              </p>
             </div>
-
-            {/* Feature 6 */}
-            <div className="cm-c">
-              <div className="cm-ic">
+            <div className="c rv" style={{ "--d": "450ms" } as React.CSSProperties}>
+              <div className="ic">
                 <svg viewBox="0 0 24 24">
                   <path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z" />
                   <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
                 </svg>
               </div>
               <h3>Announcements</h3>
-              <p>Share updates with the whole church or a single department.</p>
+              <p>
+                Share updates with the whole church or a single department.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section className="cm-section cm-alt" id="how">
-        <div className="cm-w">
-          <h2>Up and running in minutes</h2>
-          <p className="cm-sub">No training needed. If you can send a message, you can use it.</p>
-
-          <div className="cm-g">
-            <div className="cm-c">
-              <div className="cm-num">1</div>
+      <section id="how">
+        <div className="w">
+          <h2 className="rv">Up and running in minutes</h2>
+          <p className="sub rv">
+            No training needed. If you can send a message, you can use it.
+          </p>
+          <div className="tl rv">
+            <i className="fill"></i>
+            <div className="step" style={{ "--k": 0 } as React.CSSProperties}>
+              <div className="num">1</div>
               <h3>Create your account</h3>
               <p>Sign up and set up your church profile and departments.</p>
             </div>
-            <div className="cm-c">
-              <div className="cm-num">2</div>
+            <div className="step" style={{ "--k": 1 } as React.CSSProperties}>
+              <div className="num">2</div>
               <h3>Add your members</h3>
               <p>Add people one by one or invite them to join themselves.</p>
             </div>
-            <div className="cm-c">
-              <div className="cm-num">3</div>
+            <div className="step" style={{ "--k": 2 } as React.CSSProperties}>
+              <div className="num">3</div>
               <h3>Manage with ease</h3>
-              <p>Track attendance, record giving and plan events from one dashboard.</p>
+              <p>
+                Track attendance, record giving and plan events from one
+                dashboard.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section className="cm-section" id="pricing">
-        <div className="cm-w">
-          <h2>Simple pricing</h2>
-          <p className="cm-sub">Start free and upgrade as your church grows.</p>
-
-          {/* Pricing Controls: Currency & Billing Frequency */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "20px",
-              marginBottom: "36px",
-              flexWrap: "wrap",
-            }}
-          >
-            {/* Billing Toggle */}
-            <div
-              style={{
-                display: "inline-flex",
-                background: "var(--soft)",
-                padding: "4px",
-                borderRadius: "99px",
-                border: "1px solid var(--bd)",
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => setAnnualBilling(false)}
-                style={{
-                  border: "none",
-                  background: !annualBilling ? "var(--bl)" : "transparent",
-                  color: !annualBilling ? "#fff" : "var(--mu)",
-                  padding: "6px 14px",
-                  borderRadius: "99px",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-              >
-                Monthly
-              </button>
-              <button
-                type="button"
-                onClick={() => setAnnualBilling(true)}
-                style={{
-                  border: "none",
-                  background: annualBilling ? "var(--bl)" : "transparent",
-                  color: annualBilling ? "#fff" : "var(--mu)",
-                  padding: "6px 14px",
-                  borderRadius: "99px",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                }}
-              >
-                Annual <span style={{ color: annualBilling ? "#fee2e2" : "var(--rd)", fontSize: "11px", fontWeight: 800 }}>-20%</span>
-              </button>
+      <section className="alt" id="pricing">
+        <div className="w">
+          <h2 className="rv">Simple pricing</h2>
+          <p className="sub rv">Start free and upgrade as your church grows.</p>
+          <div className="pg">
+            <div className="pc rv" style={{ "--d": "0ms" } as React.CSSProperties}>
+              <h3>Starter</h3>
+              <p className="tg">For small fellowships getting started.</p>
+              <div className="pr">
+                <b>Free</b>
+              </div>
+              <Link href="/portal/login" className="btn">
+                Get Started
+                <svg viewBox="0 0 24 24">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
+              <hr />
+              <ul>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Up to 50 members
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Attendance tracking
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Events &amp; RSVPs
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Member dashboard
+                </li>
+              </ul>
             </div>
-
-            {/* Currency Selector */}
-            <div
-              style={{
-                display: "inline-flex",
-                background: "var(--soft)",
-                padding: "4px",
-                borderRadius: "99px",
-                border: "1px solid var(--bd)",
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => setCurrency("USD")}
-                style={{
-                  border: "none",
-                  background: currency === "USD" ? "#fff" : "transparent",
-                  color: currency === "USD" ? "var(--tx)" : "var(--mu)",
-                  padding: "6px 12px",
-                  borderRadius: "99px",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  boxShadow: currency === "USD" ? "0 2px 4px rgba(0,0,0,0.06)" : "none",
-                }}
-              >
-                USD ($)
-              </button>
-              <button
-                type="button"
-                onClick={() => setCurrency("NGN")}
-                style={{
-                  border: "none",
-                  background: currency === "NGN" ? "#fff" : "transparent",
-                  color: currency === "NGN" ? "var(--tx)" : "var(--mu)",
-                  padding: "6px 12px",
-                  borderRadius: "99px",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  boxShadow: currency === "NGN" ? "0 2px 4px rgba(0,0,0,0.06)" : "none",
-                }}
-              >
-                NGN (₦)
-              </button>
+            <div className="pc rv pop" style={{ "--d": "100ms" } as React.CSSProperties}>
+              <span className="badge">Most popular</span>
+              <h3>Growth</h3>
+              <p className="tg">For churches ready to grow.</p>
+              <div className="pr">
+                <span className="dol">₦</span>
+                <b>15,000</b>
+                <span>/month</span>
+              </div>
+              <Link href="/portal/login" className="btn r">
+                Get Started
+                <svg viewBox="0 0 24 24">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
+              <hr />
+              <ul>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Everything in Starter
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Up to 500 members
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Giving records &amp; reports
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Announcements
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Priority email support
+                </li>
+              </ul>
+            </div>
+            <div className="pc rv" style={{ "--d": "200ms" } as React.CSSProperties}>
+              <h3>Ministry</h3>
+              <p className="tg">For large churches and networks.</p>
+              <div className="pr">
+                <span className="dol">₦</span>
+                <b>35,000</b>
+                <span>/month</span>
+              </div>
+              <Link href="/portal/login" className="btn">
+                Get Started
+                <svg viewBox="0 0 24 24">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
+              <hr />
+              <ul>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Everything in Growth
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Unlimited members
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Multiple admins &amp; roles
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Advanced reports &amp; exports
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4 10-10" />
+                  </svg>
+                  Dedicated onboarding
+                </li>
+              </ul>
             </div>
           </div>
+          <p className="pnote rv">Prices in Nigerian Naira. Cancel anytime.</p>
+        </div>
+      </section>
 
-          <div className="cm-g">
-            {/* Starter */}
-            <div className="cm-c">
-              <h3>Starter</h3>
-              <div className="cm-price">Free</div>
-              <ul>
-                <li>Up to 50 members</li>
-                <li>Attendance &amp; events</li>
-                <li>Member dashboard</li>
-                <li>Community prayer requests</li>
-              </ul>
-              <Link href="/portal/login" className="cm-btn">
-                Get Started
-              </Link>
-            </div>
-
-            {/* Growth */}
-            <div className="cm-c feat">
-              <h3>Growth</h3>
-              <div className="cm-price">
-                {growthPrice}
-                <small> /month</small>
+      {/* Security Section */}
+      <section id="security">
+        <div className="w">
+          <h2 className="rv">Security you can trust</h2>
+          <p className="sub rv">
+            Your congregation trusts you with their details. We treat that seriously.
+          </p>
+          <div className="g">
+            <div className="c rv" style={{ "--d": "0ms" } as React.CSSProperties}>
+              <div className="ic">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
               </div>
-              <ul>
-                <li>Up to 500 members</li>
-                <li>Giving records &amp; reports</li>
-                <li>Announcements broadcast</li>
-                <li>Duty roster scheduling</li>
-                <li>Attendance trends &amp; analytics</li>
-              </ul>
-              <Link href="/portal/login" className="cm-btn r">
-                Create Account
-              </Link>
+              <h3>Role-based access</h3>
+              <p>Admins, leaders and members each see only what they should.</p>
             </div>
-
-            {/* Ministry */}
-            <div className="cm-c">
-              <h3>Ministry</h3>
-              <div className="cm-price">
-                {ministryPrice}
-                <small> /month</small>
+            <div className="c rv" style={{ "--d": "90ms" } as React.CSSProperties}>
+              <div className="ic">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
               </div>
-              <ul>
-                <li>Unlimited members</li>
-                <li>Multiple pastoral admins</li>
-                <li>Priority WhatsApp &amp; phone support</li>
-                <li>Custom church branding</li>
-                <li>Financial exports (Excel/PDF)</li>
-              </ul>
-              <Link href="/portal/login" className="cm-btn">
-                Get Started
-              </Link>
+              <h3>Encrypted data</h3>
+              <p>Information is encrypted in transit and at rest.</p>
+            </div>
+            <div className="c rv" style={{ "--d": "180ms" } as React.CSSProperties}>
+              <div className="ic">
+                <svg viewBox="0 0 24 24">
+                  <path d="M18 10a6 6 0 0 0-11.7-1.5A4.5 4.5 0 0 0 6.5 18H18a4 4 0 0 0 0-8z" />
+                </svg>
+              </div>
+              <h3>Regular backups</h3>
+              <p>Your records are backed up so nothing is lost.</p>
+            </div>
+            <div className="c rv" style={{ "--d": "270ms" } as React.CSSProperties}>
+              <div className="ic">
+                <svg viewBox="0 0 24 24">
+                  <ellipse cx="12" cy="5" rx="8" ry="3" />
+                  <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
+                </svg>
+              </div>
+              <h3>You own your data</h3>
+              <p>Export your member and giving records whenever you want.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="cm-section cm-alt" id="contact">
-        <div className="cm-w">
-          <h2>Get in touch</h2>
-          <p className="cm-sub">Questions or want a walkthrough? Send us a note.</p>
-
-          {contactSubmitted ? (
-            <div
-              style={{
-                maxWidth: "480px",
-                margin: "0 auto",
-                padding: "30px",
-                background: "var(--card)",
-                borderRadius: "14px",
-                border: "1px solid var(--bd)",
-                textAlign: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: "50px",
-                  height: "50px",
-                  background: "#dcfce7",
-                  color: "#15803d",
-                  borderRadius: "50%",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "24px",
-                  margin: "0 auto 16px",
-                }}
-              >
-                ✓
-              </div>
-              <h3 style={{ margin: "0 0 8px", fontSize: "20px" }}>Message Received!</h3>
-              <p style={{ color: "var(--mu)", margin: "0 0 20px" }}>
-                Thanks, {contactName || "friend"}! We will review your message and reply shortly to{" "}
-                <strong>{contactEmail || "your email"}</strong>.
+      {/* FAQ Section */}
+      <section className="alt" id="faq">
+        <div className="w">
+          <h2 className="rv">Questions, answered</h2>
+          <p className="sub rv">Can&rsquo;t find what you need? Reach out from the footer.</p>
+          <div className="fqs">
+            <details className="fq rv">
+              <summary>
+                Is it free to start?
+                <svg className="chev" viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <p>Yes. The Starter plan is free for up to 50 members and needs no card.</p>
+            </details>
+            <details className="fq rv">
+              <summary>
+                Can members log in too?
+                <svg className="chev" viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <p>
+                Yes. Members get their own dashboard to see events, RSVP and view
+                their giving history.
               </p>
-              <button
-                type="button"
-                className="cm-btn"
-                onClick={() => {
-                  setContactSubmitted(false);
-                  setContactName("");
-                  setContactEmail("");
-                  setContactMessage("");
-                }}
-              >
-                Send Another Message
-              </button>
+            </details>
+            <details className="fq rv">
+              <summary>
+                Is our members&rsquo; data safe?
+                <svg className="chev" viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <p>
+                Data is encrypted and access is role-based, so people only see what
+                they are allowed to.
+              </p>
+            </details>
+            <details className="fq rv">
+              <summary>
+                Does it work on phones?
+                <svg className="chev" viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <p>Yes. It works on any phone, tablet or computer.</p>
+            </details>
+            <details className="fq rv">
+              <summary>
+                Can we cancel anytime?
+                <svg className="chev" viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <p>
+                Yes. There are no contracts, and you can export your records before
+                you leave.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      {/* Final Call To Action */}
+      <section>
+        <div className="w">
+          <div className="cta2 rv">
+            <h2>Ready to shepherd with clarity?</h2>
+            <p>
+              Create your free account in minutes and bring your whole church into
+              one place.
+            </p>
+            <div className="hb">
+              <Link href="/portal/login" className="btn r big">
+                Create Account
+                <svg viewBox="0 0 24 24">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
+              <Link href="/portal/login" className="btn big">
+                Sign In
+              </Link>
             </div>
-          ) : (
-            <form className="cm-form" onSubmit={handleContactSubmit}>
-              <input
-                required
-                className="cm-input"
-                placeholder="Your name"
-                value={contactName}
-                onChange={(e) => setContactName(e.target.value)}
-              />
-              <input
-                required
-                type="email"
-                className="cm-input"
-                placeholder="Email address"
-                value={contactEmail}
-                onChange={(e) => setContactEmail(e.target.value)}
-              />
-              <textarea
-                required
-                rows={4}
-                className="cm-textarea"
-                placeholder="How can we help your church or ministry?"
-                value={contactMessage}
-                onChange={(e) => setContactMessage(e.target.value)}
-              />
-              <button className="cm-btn b big" type="submit" style={{ width: "100%" }}>
-                Send Message
-              </button>
-            </form>
-          )}
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="cm-footer">
-        <div className="cm-w cm-footer-inner">
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span className="cm-logo" style={{ width: "26px", height: "26px", borderRadius: "6px" }}>
-              <svg viewBox="0 0 24 24" style={{ width: "15px", height: "15px" }}>
-                <path d="M12 3v18M6 9h12" />
-              </svg>
-            </span>
-            <span style={{ fontWeight: 700, color: "var(--tx)" }}>Church Manager</span>
+      <footer id="contact">
+        <div className="w">
+          <div className="fg">
+            <div>
+              <div
+                className="brand"
+                style={{ marginBottom: "10px", color: "var(--tx)" }}
+              >
+                <span className="logo">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 3v18M6 9h12" />
+                  </svg>
+                </span>
+                Church Manager
+              </div>
+              <p style={{ margin: 0, maxWidth: "300px" }}>
+                Simple tools for churches to care for people, track attendance and
+                manage giving.
+              </p>
+            </div>
+            <div>
+              <h4>Product</h4>
+              <a href="#features">Features</a>
+              <a href="#how">How It Works</a>
+              <a href="#pricing">Pricing</a>
+              <a href="#security">Security</a>
+            </div>
+            <div>
+              <h4>Support</h4>
+              <a href="#faq">FAQ</a>
+              <a href="#contact">Contact us</a>
+            </div>
+            <div>
+              <h4>Account</h4>
+              <Link href="/portal/login">Sign In</Link>
+              <Link href="/portal/login">Create Account</Link>
+            </div>
           </div>
-
-          <div>© 2026 Church Manager. All rights reserved.</div>
-
-          <div style={{ display: "flex", gap: "16px", fontSize: "13px" }}>
-            <Link href="/portal/login" style={{ color: "var(--bl)", fontWeight: 600 }}>
-              Admin Portal
-            </Link>
-            <Link href="/portal/checkin" style={{ color: "var(--mu)" }}>
-              Sunday Check-In
-            </Link>
-            <Link href="/portal/my-profile" style={{ color: "var(--mu)" }}>
-              Member Hub
-            </Link>
+          <div className="fb">
+            <span>&copy; 2026 Church Manager. All rights reserved.</span>
+            <span>Made for churches</span>
           </div>
         </div>
       </footer>

@@ -567,10 +567,10 @@ export default function ChurchManagerLanding() {
       {/* Problem Section */}
       <section id="problem">
         <div className="w">
-          <h2 className="rv">Church admin shouldn&rsquo;t steal your Sundays</h2>
+          <h2 className="rv">Administration made simple</h2>
           <p className="sub rv">
-            Most churches run on notebooks, group chats and spreadsheets. Here is
-            what that costs you.
+            Most churches lose valuable hours to notebooks, group chats and spreadsheets. Here is
+            what that costs your ministry.
           </p>
           <div className="g">
             <div className="c rv" style={{ "--d": "0ms" } as React.CSSProperties}>

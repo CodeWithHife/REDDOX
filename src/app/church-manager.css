@@ -188,7 +188,11 @@ nav {
   font-family: inherit;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(58, 42, 27, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.2s ease,
+              border-color 0.2s ease,
+              color 0.2s ease;
 }
 
 .btn svg {
@@ -206,17 +210,20 @@ nav {
   transform: translateX(4px);
 }
 
+/* Sign In & Secondary Button Hover: Wine Glassmorphism */
 .btn:hover {
-  background: var(--bl);
-  color: #fff;
-  border-color: var(--bl);
+  background: linear-gradient(135deg, rgba(109, 42, 60, 0.22) 0%, rgba(109, 42, 60, 0.12) 100%);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  color: #551d2c;
+  border-color: rgba(109, 42, 60, 0.45);
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(109, 42, 60, 0.35);
+  box-shadow: 0 10px 24px rgba(109, 42, 60, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.5), inset 0 -1px 1px rgba(109, 42, 60, 0.15);
 }
 
 .btn:active {
   transform: translateY(0);
-  box-shadow: none;
+  box-shadow: 0 2px 6px rgba(109, 42, 60, 0.12);
 }
 
 .btn.r,

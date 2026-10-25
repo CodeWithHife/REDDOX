@@ -13,7 +13,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   // If on login page, render cleanly without portal shell
   if (pathname === "/portal/login") {
-    return <div className="min-h-screen bg-[#071326]">{children}</div>;
+    return <>{children}</>;
   }
 
   const memberNav = [

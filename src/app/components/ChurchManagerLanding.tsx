@@ -331,10 +331,10 @@ export default function ChurchManagerLanding() {
             <a href="#contact">Contact</a>
           </div>
           <div className="cta">
-            <Link href="/portal/login" className="btn">
+            <Link href="/portal/login#signin" className="btn">
               Sign In
             </Link>
-            <Link href="/portal/login" className="btn r">
+            <Link href="/portal/login#signup" className="btn r">
               Create Account
               <svg viewBox="0 0 24 24">
                 <path d="M5 12h14M13 6l6 6-6 6" />
@@ -370,10 +370,10 @@ export default function ChurchManagerLanding() {
             <a href="#contact">Contact</a>
           </div>
           <div className="mob-actions">
-            <Link href="/portal/login" className="btn">
+            <Link href="/portal/login#signin" className="btn">
               Sign In
             </Link>
-            <Link href="/portal/login" className="btn r">
+            <Link href="/portal/login#signup" className="btn r">
               Create Account
               <svg viewBox="0 0 24 24">
                 <path d="M5 12h14M13 6l6 6-6 6" />
@@ -411,13 +411,13 @@ export default function ChurchManagerLanding() {
             pastors, ushers and members.
           </p>
           <div className="hb">
-            <Link href="/portal/login" className="btn r big">
+            <Link href="/portal/login#signup" className="btn r big">
               Get Started
               <svg viewBox="0 0 24 24">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </Link>
-            <Link href="/portal/login" className="btn big">
+            <Link href="/portal/login#signin" className="btn big">
               Sign In
             </Link>
           </div>
@@ -817,7 +817,7 @@ export default function ChurchManagerLanding() {
               <div className="pr">
                 <b>Free</b>
               </div>
-              <Link href="/portal/login" className="btn">
+              <Link href="/portal/login#signup" className="btn">
                 Get Started
                 <svg viewBox="0 0 24 24">
                   <path d="M5 12h14M13 6l6 6-6 6" />
@@ -860,7 +860,7 @@ export default function ChurchManagerLanding() {
                 <b>15,000</b>
                 <span>/month</span>
               </div>
-              <Link href="/portal/login" className="btn r">
+              <Link href="/portal/login#signup" className="btn r">
                 Get Started
                 <svg viewBox="0 0 24 24">
                   <path d="M5 12h14M13 6l6 6-6 6" />
@@ -908,7 +908,7 @@ export default function ChurchManagerLanding() {
                 <b>35,000</b>
                 <span>/month</span>
               </div>
-              <Link href="/portal/login" className="btn">
+              <Link href="/portal/login#signup" className="btn">
                 Get Started
                 <svg viewBox="0 0 24 24">
                   <path d="M5 12h14M13 6l6 6-6 6" />
@@ -1023,13 +1023,13 @@ export default function ChurchManagerLanding() {
               one place.
             </p>
             <div className="hb">
-              <Link href="/portal/login" className="btn r big">
+              <Link href="/portal/login#signup" className="btn r big">
                 Create Account
                 <svg viewBox="0 0 24 24">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </Link>
-              <Link href="/portal/login" className="btn big">
+              <Link href="/portal/login#signin" className="btn big">
                 Sign In
               </Link>
             </div>
@@ -1078,8 +1078,8 @@ export default function ChurchManagerLanding() {
             </div>
             <div>
               <h4>Account</h4>
-              <Link href="/portal/login">Sign In</Link>
-              <Link href="/portal/login">Create Account</Link>
+              <Link href="/portal/login#signin">Sign In</Link>
+              <Link href="/portal/login#signup">Create Account</Link>
             </div>
           </div>
           <div className="fb">

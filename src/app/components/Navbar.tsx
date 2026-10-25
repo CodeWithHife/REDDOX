@@ -43,8 +43,8 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  // On the root landing page, the Church Manager has its own dedicated navigation
-  if (pathname === "/") {
+  // On the root landing page and dedicated auth pages, render their own navigation
+  if (pathname === "/" || pathname === "/portal/login" || pathname === "/auth") {
     return null;
   }
 

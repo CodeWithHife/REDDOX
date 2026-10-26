@@ -136,7 +136,7 @@ function SvgIcon({ name, className = "portal-i" }: { name: string; className?: s
 
 // Plan Configurations
 const PLANS = {
-  starter: { n: "Starter", pr: "₦0", mem: 50, qr: false, fin: 0, br: "1 workspace", an: "No" },
+  starter: { n: "Starter", pr: "₦0", mem: 15, qr: false, fin: 0, br: "1 workspace", an: "No" },
   growth: { n: "Growth", pr: "₦15,000/mo", mem: 1000, qr: true, fin: 1, br: "1 workspace", an: "Basic reports" },
   pro: { n: "Pro", pr: "₦35,000/mo", mem: 5000, qr: true, fin: 2, br: "Up to 3", an: "Advanced" },
 };
@@ -303,8 +303,39 @@ export default function ReddoxPortalDashboard() {
     };
   }, []);
 
-  // Sync hash with view
+  // Sync hash with view & load onboarded church profile
   useEffect(() => {
+    // 1. Load onboarded church profile if exists
+    if (typeof window !== "undefined") {
+      const savedProfile = localStorage.getItem("reddox_church_profile");
+      if (savedProfile) {
+        try {
+          const parsed = JSON.parse(savedProfile);
+          if (parsed.churchName) {
+            setChurches((prev) => [
+              { n: parsed.churchName, r: "Admin" },
+              ...prev.slice(1),
+            ]);
+          }
+        } catch (e) {
+          // fallback
+        }
+      }
+
+      // Check query params for instant actions
+      const urlParams = new URLSearchParams(window.location.search);
+      const shouldAddMember = urlParams.get("addMember");
+      const toastParam = urlParams.get("toast");
+
+      if (shouldAddMember === "true") {
+        setActiveView("members");
+        setActiveModal("addMember");
+      }
+      if (toastParam) {
+        showToast(decodeURIComponent(toastParam));
+      }
+    }
+
     const hash = window.location.hash.slice(1);
     if (NAV_ITEMS.some((n) => n.id === hash)) {
       setActiveView(hash);
@@ -795,10 +826,24 @@ export default function ReddoxPortalDashboard() {
                 church={currentChurch}
                 plan={selectedPlan}
                 activity={activity}
-                onSaveProfile={(name: any) => {
+                onSaveProfile={(updatedProfile: any) => {
+                  const newName =
+                    typeof updatedProfile === "string"
+                      ? updatedProfile
+                      : updatedProfile.churchName || currentChurch.n;
                   setChurches((prev) =>
-                    prev.map((c, i) => (i === churchIndex ? { ...c, n: name } : c))
+                    prev.map((c, i) => (i === churchIndex ? { ...c, n: newName } : c))
                   );
+                  if (typeof window !== "undefined" && typeof updatedProfile === "object") {
+                    try {
+                      const existing = localStorage.getItem("reddox_church_profile");
+                      const prevData = existing ? JSON.parse(existing) : {};
+                      localStorage.setItem(
+                        "reddox_church_profile",
+                        JSON.stringify({ ...prevData, ...updatedProfile })
+                      );
+                    } catch (e) {}
+                  }
                   showToast("Church profile saved.");
                 }}
                 onSelectPlan={(k: any) => {
@@ -2165,9 +2210,35 @@ function SettingsView({
   onSelectPlan,
   onExportData,
 }: any) {
-  const [churchName, setChurchName] = useState(church.n);
-  const [contactEmail, setContactEmail] = useState("pastor@gracechapel.org");
-  const [timezone, setTimezone] = useState("West Africa Time (WAT)");
+  const [profileData, setProfileData] = useState({
+    churchName: church.n,
+    contactEmail: "pastor@gracechapel.org",
+    address: "",
+    phone: "",
+    denomination: "Pentecostal",
+    branchesCount: 1,
+    timezone: "West Africa Time (WAT)",
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("reddox_church_profile");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setProfileData((prev) => ({
+            ...prev,
+            churchName: parsed.churchName || church.n,
+            contactEmail: parsed.contactEmail || "pastor@gracechapel.org",
+            address: parsed.address || "",
+            phone: parsed.phone || "",
+            denomination: parsed.denomination || "Pentecostal",
+            branchesCount: parsed.branchesCount || 1,
+          }));
+        } catch (e) {}
+      }
+    }
+  }, [church.n]);
 
   const COMPARISON_ROWS: Array<[string, (p: any) => string]> = [
     ["Members Allowed", (p: any) => p.mem.toLocaleString("en-NG")],
@@ -2194,14 +2265,16 @@ function SettingsView({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSaveProfile(churchName);
+            onSaveProfile(profileData);
           }}
         >
           <div className="portal-fi">
             <label>Church Name</label>
             <input
-              value={churchName}
-              onChange={(e) => setChurchName(e.target.value)}
+              value={profileData.churchName}
+              onChange={(e) =>
+                setProfileData({ ...profileData, churchName: e.target.value })
+              }
               required
             />
           </div>
@@ -2209,15 +2282,80 @@ function SettingsView({
             <label>Contact Email</label>
             <input
               type="email"
-              value={contactEmail}
-              onChange={(e) => setContactEmail(e.target.value)}
+              value={profileData.contactEmail}
+              onChange={(e) =>
+                setProfileData({ ...profileData, contactEmail: e.target.value })
+              }
+            />
+          </div>
+          <div className="portal-fi">
+            <label>Church Address / Location</label>
+            <input
+              value={profileData.address}
+              placeholder="Street, area or landmark"
+              onChange={(e) =>
+                setProfileData({ ...profileData, address: e.target.value })
+              }
+            />
+          </div>
+          <div className="portal-fi">
+            <label>Church Phone Number</label>
+            <input
+              type="tel"
+              value={profileData.phone}
+              placeholder="0801 234 5678"
+              onChange={(e) =>
+                setProfileData({ ...profileData, phone: e.target.value })
+              }
+            />
+          </div>
+          <div className="portal-fi">
+            <label>Denomination</label>
+            <select
+              value={profileData.denomination}
+              onChange={(e) =>
+                setProfileData({ ...profileData, denomination: e.target.value })
+              }
+            >
+              {[
+                "Pentecostal",
+                "Baptist",
+                "Anglican",
+                "Catholic",
+                "Methodist",
+                "Presbyterian",
+                "Orthodox",
+                "Non-denominational",
+                "Other",
+              ].map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="portal-fi">
+            <label>Active Branches</label>
+            <input
+              type="number"
+              min="1"
+              max="50"
+              value={profileData.branchesCount}
+              onChange={(e) =>
+                setProfileData({
+                  ...profileData,
+                  branchesCount: parseInt(e.target.value, 10) || 1,
+                })
+              }
             />
           </div>
           <div className="portal-fi">
             <label>Timezone</label>
             <select
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
+              value={profileData.timezone}
+              onChange={(e) =>
+                setProfileData({ ...profileData, timezone: e.target.value })
+              }
             >
               <option>West Africa Time (WAT)</option>
               <option>Greenwich Mean Time (GMT)</option>

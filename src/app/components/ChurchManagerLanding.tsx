@@ -8,6 +8,7 @@ import AnimatedFAQ from "./AnimatedFAQ";
 
 export default function ChurchManagerLanding() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
 
   useEffect(() => {
     // Add js class to html root
@@ -808,148 +809,238 @@ export default function ChurchManagerLanding() {
       {/* Pricing Section */}
       <section className="alt" id="pricing">
         <div className="w">
-          <h2 className="rv">Simple pricing</h2>
-          <p className="sub rv">Start free and upgrade as your church grows.</p>
+          <h2 className="rv">Simple, predictable pricing</h2>
+          <p className="sub rv">
+            Start free and scale seamlessly as your congregation expands. No hidden charges.
+          </p>
+
+          {/* Monthly / Annual Billing Toggle */}
+          <div className="pricing-toggle-container rv">
+            <div className="pricing-toggle-pill">
+              <button
+                type="button"
+                className={`pricing-toggle-btn ${billingCycle === "monthly" ? "active" : ""}`}
+                onClick={() => setBillingCycle("monthly")}
+              >
+                Monthly billing
+              </button>
+              <button
+                type="button"
+                className={`pricing-toggle-btn ${billingCycle === "annual" ? "active" : ""}`}
+                onClick={() => setBillingCycle("annual")}
+              >
+                <span>Annual billing</span>
+                <span className="pricing-save-badge">Save 2 months free</span>
+              </button>
+            </div>
+          </div>
+
           <div className="pg">
+            {/* PLAN 1: STARTER */}
             <div className="pc rv" style={{ "--d": "0ms" } as React.CSSProperties}>
-              <h3>Starter</h3>
-              <p className="tg">For small fellowships getting started.</p>
+              <h3>STARTER</h3>
+              <p className="tg">Designed for small churches getting started with digital church management.</p>
               <div className="pr">
-                <b>Free</b>
+                <span className="dol">₦</span>
+                <b>0</b>
+                <span>/free forever</span>
               </div>
-              <Link href="/auth#signup" className="btn">
-                Get Started
+              <Link href={`/checkout?plan=starter&billing=${billingCycle}`} className="btn">
+                Get Started Free
                 <svg viewBox="0 0 24 24">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </Link>
               <hr />
+              <h5>Features Included</h5>
               <ul>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Up to 50 members
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Up to 15 members
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Attendance tracking
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  1 church administrator
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Events &amp; RSVPs
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  1 event per month
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Member dashboard
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Manual attendance tracking
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Basic dashboard
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  7-day attendance history
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Basic member records
+                </li>
+              </ul>
+              <ul className="excluded-list">
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                  Financial management
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                  QR attendance
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                  Advanced reports and exports
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                  Sermon and media library
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                  Advanced analytics
                 </li>
               </ul>
             </div>
+
+            {/* PLAN 2: GROWTH (MOST POPULAR) */}
             <div className="pc rv pop" style={{ "--d": "100ms" } as React.CSSProperties}>
-              <span className="badge">Most popular</span>
-              <h3>Growth</h3>
-              <p className="tg">For churches ready to grow.</p>
+              <span className="badge">Most Popular</span>
+              <h3>GROWTH</h3>
+              <p className="tg">Designed for growing churches that need more complete management tools.</p>
               <div className="pr">
                 <span className="dol">₦</span>
-                <b>15,000</b>
-                <span>/month</span>
+                <b>{billingCycle === "annual" ? "150,000" : "15,000"}</b>
+                <span>{billingCycle === "annual" ? "/year" : "/month"}</span>
               </div>
-              <Link href="/auth#signup" className="btn r">
-                Get Started
+              <Link href={`/checkout?plan=growth&billing=${billingCycle}`} className="btn r">
+                Choose Growth
                 <svg viewBox="0 0 24 24">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </Link>
               <hr />
+              <h5>Features Included</h5>
               <ul>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Everything in Starter
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  <strong>Up to 1,000 members</strong>
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Up to 500 members
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Multiple authorized staff accounts
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Giving records &amp; reports
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Member and department management
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Announcements
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  QR attendance &amp; attendance history
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Priority email support
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Unlimited events
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Giving and expense records
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Financial reports and receipts
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Visitor records and follow-up
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Sermon and media library
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Dashboard analytics
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Data exports
                 </li>
               </ul>
             </div>
+
+            {/* PLAN 3: PRO */}
             <div className="pc rv" style={{ "--d": "200ms" } as React.CSSProperties}>
-              <h3>Ministry</h3>
-              <p className="tg">For large churches and networks.</p>
+              <h3>PRO</h3>
+              <p className="tg">Designed for larger churches and churches with multiple branches.</p>
               <div className="pr">
                 <span className="dol">₦</span>
-                <b>35,000</b>
-                <span>/month</span>
+                <b>{billingCycle === "annual" ? "350,000" : "35,000"}</b>
+                <span>{billingCycle === "annual" ? "/year" : "/month"}</span>
               </div>
-              <Link href="/auth#signup" className="btn">
-                Get Started
+              <Link href={`/checkout?plan=pro&billing=${billingCycle}`} className="btn">
+                Choose Pro
                 <svg viewBox="0 0 24 24">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </Link>
               <hr />
+              <h5>Features Included</h5>
               <ul>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  <strong>Up to 5,000 members</strong>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  <strong>Up to 3 branches</strong>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
                   Everything in Growth
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Unlimited members
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Consolidated multi-branch dashboards
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Multiple admins &amp; roles
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Advanced analytics &amp; financial comparisons
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Advanced reports &amp; exports
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Custom staff permissions
                 </li>
                 <li>
-                  <svg viewBox="0 0 24 24">
-                    <path d="m5 12 4 4 10-10" />
-                  </svg>
-                  Dedicated onboarding
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Automated follow-up tools
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Expanded audit logs
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Bulk member imports
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Higher storage and notification limits
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
+                  Priority support
                 </li>
               </ul>
             </div>
           </div>
-          <p className="pnote rv">Prices in Nigerian Naira. Cancel anytime.</p>
+          <p className="pnote rv">
+            Prices in Nigerian Naira (₦). Annual plans save 2 months free. Switch or cancel anytime.
+          </p>
         </div>
       </section>
 

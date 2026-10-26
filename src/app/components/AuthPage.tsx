@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import "../auth.css";
 
@@ -21,6 +21,7 @@ function scorePassword(p: string) {
 }
 
 export default function AuthPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { loginAs } = useAuth();
 
@@ -188,12 +189,22 @@ export default function AuthPage() {
     setTimeout(() => {
       loginAs("admin");
       setIsLoading(false);
-      setDoneState({
-        title: "Account Created!",
-        subtitle: `${churchName.trim()} has been registered successfully on REDDOX.`,
-        accountName: churchName.trim(),
-      });
-    }, 850);
+
+      // Save registered church and pastoral credentials for onboarding
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          "reddox_pending_signup",
+          JSON.stringify({
+            churchName: churchName.trim(),
+            email: signupEmail.trim(),
+            pastorName: "Pastor " + (churchName.trim().split(" ")[0] || "Adewale"),
+          })
+        );
+      }
+
+      // Smoothly transition to 3-step onboarding flow
+      router.push("/onboarding");
+    }, 700);
   };
 
   // Forgot Password Submit

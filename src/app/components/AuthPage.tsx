@@ -306,8 +306,8 @@ export default function AuthPage() {
                 Bring your whole church together.
               </h1>
               <p className="fs-hero-desc">
-                Set up in under two minutes. Completely free for up to 50 members.
-                Built specifically for pastors, ushers, and growing congregations.
+                Set up in under two minutes. Start free with zero card required.
+                Built specifically for pastors, administrators, and growing congregations.
               </p>
               <ul className="fs-hero-list">
                 <li className="fs-hero-item">
@@ -332,7 +332,7 @@ export default function AuthPage() {
                       <path d="m5 12 4 4 10-10" />
                     </svg>
                   </span>
-                  <span>Empower every member with their own private hub</span>
+                  <span>Role-based access for pastors, treasurers & ministry leaders</span>
                 </li>
               </ul>
             </div>

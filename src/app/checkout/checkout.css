@@ -1,0 +1,453 @@
+/* src/app/checkout/checkout.css */
+
+:root {
+  --chk-bg: #f9f1e3;
+  --chk-tx: #2b2015;
+  --chk-mu: #75654f;
+  --chk-bd: #e8d9bf;
+  --chk-bl: #6d2a3c;
+  --chk-bl2: #f3e4e6;
+  --chk-rd: #b8862d;
+  --chk-rd2: #f7ecd2;
+  --chk-er: #b3261e;
+  --chk-ok: #2e7d32;
+  --chk-ok2: #e8f5e9;
+}
+
+.checkout-shell {
+  min-height: 100dvh;
+  background: var(--chk-bg);
+  color: var(--chk-tx);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 60px;
+}
+
+/* Ambient Glowing Background Orbs */
+.checkout-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.checkout-glow i {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  filter: blur(100px);
+  opacity: 0.85;
+  width: 480px;
+  height: 480px;
+  left: 5%;
+  top: -10%;
+  animation: chkDrift 24s ease-in-out infinite;
+}
+
+.checkout-glow i + i {
+  left: auto;
+  right: -5%;
+  top: auto;
+  bottom: 5%;
+  animation-delay: -12s;
+}
+
+@keyframes chkDrift {
+  50% {
+    transform: translate(40px, -30px) scale(1.08);
+  }
+}
+
+/* Top Nav Bar */
+.checkout-nav {
+  position: relative;
+  z-index: 20;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkout-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 700 18px "Playfair Display", Georgia, serif;
+  color: var(--chk-tx);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+}
+
+.checkout-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--chk-bl);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.checkout-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--chk-mu);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--chk-bd);
+  transition: all 0.2s ease;
+}
+
+.checkout-back:hover {
+  background: #fff;
+  color: var(--chk-bl);
+  transform: translateX(-2px);
+}
+
+/* Main Container */
+.checkout-main {
+  position: relative;
+  z-index: 10;
+  max-width: 1040px;
+  margin: 10px auto 0;
+  padding: 0 20px;
+}
+
+.checkout-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.checkout-header h1 {
+  font: 600 32px/1.2 "Playfair Display", Georgia, serif;
+  margin: 0 0 8px;
+  color: var(--chk-tx);
+}
+
+.checkout-header p {
+  margin: 0;
+  color: var(--chk-mu);
+  font-size: 15px;
+}
+
+/* Billing Toggle inside Checkout */
+.checkout-cycle-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--chk-bd);
+  border-radius: 99px;
+  padding: 4px;
+  margin: 18px auto 0;
+  box-shadow: 0 4px 14px rgba(43, 32, 21, 0.05);
+}
+
+.checkout-cycle-btn {
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 0;
+  background: transparent;
+  color: var(--chk-mu);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkout-cycle-btn.active {
+  background: var(--chk-bl);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(109, 42, 60, 0.25);
+}
+
+.checkout-savings-pill {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: #ffd98a;
+  color: #5c3f05;
+  font-weight: 800;
+}
+
+/* Two-Column Grid */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Glassmorphic Card */
+.chk-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: 0 10px 30px rgba(43, 32, 21, 0.06);
+}
+
+.chk-card h3 {
+  font: 600 20px "Playfair Display", Georgia, serif;
+  margin: 0 0 16px;
+  color: var(--chk-tx);
+}
+
+/* Plan Summary Box */
+.chk-plan-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(43, 32, 21, 0.08);
+}
+
+.chk-plan-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--chk-rd2);
+  color: #7a5a12;
+  margin-bottom: 6px;
+}
+
+.chk-plan-title {
+  font: 700 24px "Playfair Display", Georgia, serif;
+  color: var(--chk-tx);
+  margin: 0 0 4px;
+}
+
+.chk-plan-tagline {
+  margin: 0;
+  color: var(--chk-mu);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.chk-plan-price-box {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.chk-plan-price-num {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--chk-bl);
+  line-height: 1;
+}
+
+.chk-plan-price-cycle {
+  font-size: 12px;
+  color: var(--chk-mu);
+  display: block;
+  margin-top: 3px;
+}
+
+/* Feature List */
+.chk-features {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0;
+  display: grid;
+  gap: 10px;
+}
+
+.chk-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--chk-tx);
+}
+
+.chk-feature-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--chk-bl2);
+  color: var(--chk-bl);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.chk-feature-icon svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  fill: none;
+}
+
+/* Order Summary Box */
+.chk-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--chk-mu);
+}
+
+.chk-summary-row.total {
+  border-top: 2px dashed var(--chk-bd);
+  margin-top: 10px;
+  padding-top: 14px;
+  color: var(--chk-tx);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.chk-summary-row.total .amount {
+  color: var(--chk-bl);
+  font-size: 22px;
+}
+
+/* Action Button */
+.chk-btn {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  border: 0;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+}
+
+.chk-btn.primary {
+  background: var(--chk-bl);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(109, 42, 60, 0.3);
+}
+
+.chk-btn.primary:hover {
+  background: #501d2a;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(109, 42, 60, 0.4);
+}
+
+.chk-btn.secondary {
+  background: var(--chk-tx);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(43, 32, 21, 0.2);
+}
+
+.chk-btn.secondary:hover {
+  background: #000;
+  transform: translateY(-2px);
+}
+
+.chk-btn:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Security and Trust Badges */
+.chk-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--chk-mu);
+}
+
+.chk-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chk-trust-item svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--chk-rd);
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Payment Status States */
+.chk-status-box {
+  text-align: center;
+  padding: 36px 20px;
+}
+
+.chk-status-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+}
+
+.chk-status-icon.success {
+  background: var(--chk-ok2);
+  color: var(--chk-ok);
+}
+
+.chk-status-icon.pending {
+  background: var(--chk-rd2);
+  color: var(--chk-rd);
+}
+
+.chk-status-icon.failed {
+  background: #fde8e7;
+  color: var(--chk-er);
+}
+
+.chk-status-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  fill: none;
+}
+
+.chk-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(184, 134, 45, 0.25);
+  border-top-color: var(--chk-rd);
+  border-radius: 50%;
+  animation: chkSpin 0.8s linear infinite;
+  margin: 0 auto 14px;
+}
+
+@keyframes chkSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

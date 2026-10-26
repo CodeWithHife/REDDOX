@@ -43,8 +43,8 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  // On the root landing page and dedicated auth pages, render their own navigation
-  if (pathname === "/" || pathname === "/portal/login" || pathname === "/auth") {
+  // On the root landing page, auth, and portal dashboard, render their own navigation
+  if (pathname === "/" || pathname === "/portal/login" || pathname === "/auth" || pathname?.startsWith("/portal")) {
     return null;
   }
 

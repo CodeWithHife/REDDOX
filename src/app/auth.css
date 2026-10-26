@@ -1,6 +1,6 @@
 /* ========================================================
    Full-Screen Edge-to-Edge Animated REDDOX Auth Styles
-   "Gum to screen" layout - No floating cards
+   Mobile-First & Fully Responsive
    Desktop: 2-column split (44% Branded Hero, 56% Form)
    Mobile: Side panel completely removed, full-width responsive form
    ======================================================== */
@@ -20,8 +20,10 @@
   --er: #b3261e;
   --ok: #1e7e48;
   
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   padding: 0;
   display: flex;
@@ -33,6 +35,8 @@
   box-sizing: border-box;
   overflow-x: hidden;
   position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .fs-auth * {
@@ -296,13 +300,16 @@
 .fs-form-panel {
   flex: 1;
   min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   background: var(--bg-form);
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 32px 48px;
+  padding: 32px 48px 48px;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Ambient subtle background orbs on form side */
@@ -336,13 +343,21 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 580px;
+  max-width: 520px;
   margin: 0 auto 28px;
   position: relative;
   z-index: 10;
 }
 
-/* Mobile brand logo (visible only on mobile) */
+/* Row containing brand and back button */
+.fs-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Mobile brand logo (visible on mobile screens) */
 .fs-mobile-brand {
   display: none;
   align-items: center;
@@ -365,7 +380,7 @@
 
 .fs-mobile-title {
   font-family: var(--font-heading, "Outfit", sans-serif);
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.03em;
   color: #1f1912;
@@ -384,11 +399,12 @@
   color: var(--mu) !important;
   padding: 8px 14px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   border: 1px solid var(--bd);
   backdrop-filter: blur(8px);
   transition: all 0.2s ease;
   text-decoration: none !important;
+  white-space: nowrap;
 }
 
 .fs-back-btn:hover {
@@ -398,11 +414,11 @@
   transform: translateX(-2px);
 }
 
-/* Animated Pill Switcher between Sign In and Create Account */
+/* Segmented Pill Switcher between Sign In and Create Account */
 .fs-switch-tabs {
   display: inline-flex;
   align-items: center;
-  background: rgba(232, 217, 191, 0.45);
+  background: rgba(232, 217, 191, 0.5);
   border: 1px solid var(--bd);
   padding: 4px;
   border-radius: 14px;
@@ -423,6 +439,7 @@
   position: relative;
   z-index: 2;
   white-space: nowrap;
+  touch-action: manipulation;
 }
 
 .fs-tab-btn.active {
@@ -442,18 +459,18 @@
   margin: auto auto;
   position: relative;
   z-index: 5;
-  padding: 10px 0 30px;
+  padding: 6px 0 24px;
 }
 
 /* Animated entrance wrapper */
 .fs-fade-in {
-  animation: fsSlideUp 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fsSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes fsSlideUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -528,19 +545,22 @@
 .fs-input-box input {
   width: 100%;
   height: 50px;
-  padding: 0 44px 0 44px;
+  padding: 0 46px 0 44px;
   border-radius: 12px;
   border: 1.5px solid var(--bd);
   background: #ffffff;
   font: inherit;
-  font-size: 14.5px;
+  font-size: 16px !important; /* CRITICAL: 16px prevents iOS Safari automatic zoom */
   color: var(--tx);
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(43, 32, 21, 0.02);
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .fs-input-box input::placeholder {
   color: #a8997f;
+  font-size: 14.5px;
 }
 
 .fs-input-box input:focus {
@@ -556,11 +576,11 @@
 /* Password Eye Toggle */
 .fs-eye-btn {
   position: absolute;
-  right: 6px;
+  right: 4px;
   top: 50%;
-  margin-top: -19px;
-  width: 38px;
-  height: 38px;
+  margin-top: -22px;
+  width: 44px;
+  height: 44px;
   border: 0;
   background: none;
   cursor: pointer;
@@ -568,6 +588,7 @@
   display: grid;
   place-items: center;
   transition: background 0.15s;
+  touch-action: manipulation;
 }
 
 .fs-eye-btn:hover {
@@ -657,6 +678,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
   margin: 4px 0 22px;
   font-size: 13.5px;
 }
@@ -698,6 +721,7 @@
   cursor: pointer;
   box-shadow: 0 8px 24px rgba(109, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  touch-action: manipulation;
 }
 
 .fs-btn:hover {
@@ -766,7 +790,7 @@
 /* Done State */
 .fs-done-box {
   text-align: center;
-  padding: 40px 20px;
+  padding: 40px 16px;
   animation: fsSlideUp 0.5s ease both;
 }
 
@@ -845,37 +869,100 @@
   background: var(--bl-light);
 }
 
-/* ==========================================
-   MOBILE RESPONSIVENESS:
-   "when it is in mobile remove the image by the side"
-   ========================================== */
+/* =========================================================
+   COMPREHENSIVE MOBILE RESPONSIVENESS (Max-Width 900px)
+   ========================================================= */
 @media (max-width: 900px) {
-  /* Completely eliminate side hero panel on mobile */
+  /* 1. Completely eliminate side hero panel on mobile */
   .fs-hero {
     display: none !important;
   }
 
+  /* 2. Full-width form panel with comfortable mobile margins */
   .fs-form-panel {
     width: 100% !important;
     min-height: 100vh !important;
-    padding: 24px 20px 40px !important;
+    min-height: 100dvh !important;
+    padding: 20px 20px 48px !important;
+  }
+
+  /* 3. Mobile top bar layout */
+  .fs-form-top {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .fs-top-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
   }
 
   .fs-mobile-brand {
     display: flex !important;
   }
 
-  .fs-form-title {
-    font-size: 27px;
-  }
-
+  /* 4. Full-width segmented tab switch on mobile */
   .fs-switch-tabs {
-    padding: 3px;
+    width: 100% !important;
+    display: flex !important;
+    padding: 4px !important;
   }
 
   .fs-tab-btn {
-    padding: 7px 14px;
-    font-size: 12.5px;
+    flex: 1 !important;
+    text-align: center !important;
+    justify-content: center !important;
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+  }
+
+  /* 5. Typography on mobile */
+  .fs-form-title {
+    font-size: 27px !important;
+    line-height: 1.2 !important;
+  }
+
+  .fs-form-subtitle {
+    font-size: 14px !important;
+    margin-bottom: 20px !important;
+  }
+}
+
+/* Extra small mobile screens (iPhone SE, Galaxy S, <= 480px) */
+@media (max-width: 480px) {
+  .fs-form-panel {
+    padding: 16px 16px 40px !important;
+  }
+
+  .fs-form-title {
+    font-size: 24px !important;
+  }
+
+  .fs-back-btn {
+    font-size: 12.5px !important;
+    padding: 6px 11px !important;
+  }
+
+  .fs-mobile-title {
+    font-size: 18px !important;
+  }
+
+  .fs-mobile-brand-box {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .fs-btn {
+    height: 50px !important;
+    font-size: 15px !important;
+  }
+
+  .fs-bottom-switch {
+    font-size: 13.5px !important;
+    margin-top: 20px !important;
   }
 }
 

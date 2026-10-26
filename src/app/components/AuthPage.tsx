@@ -392,49 +392,53 @@ export default function AuthPage() {
 
         {/* Form Top Navigation Bar */}
         <nav className="fs-form-top">
-          {/* Mobile brand (shown only on mobile when side panel is hidden) */}
-          <Link href="/" className="fs-mobile-brand">
-            <span className="fs-mobile-brand-box">
-              <Image
-                src="/logo.png"
-                alt="REDDOX"
-                width={26}
-                height={26}
-                className="logo-img"
-                priority
-              />
-            </span>
-            <span className="fs-mobile-title">
-              RED<span className="fs-mobile-dox">DOX</span>
-            </span>
-          </Link>
+          <div className="fs-top-row">
+            {/* Mobile brand (shown only on mobile when side panel is hidden) */}
+            <Link href="/" className="fs-mobile-brand">
+              <span className="fs-mobile-brand-box">
+                <Image
+                  src="/logo.png"
+                  alt="REDDOX"
+                  width={28}
+                  height={28}
+                  className="logo-img"
+                  priority
+                />
+              </span>
+              <span className="fs-mobile-title">
+                RED<span className="fs-mobile-dox">DOX</span>
+              </span>
+            </Link>
 
-          {/* Back to Home Link */}
-          <Link href="/" className="fs-back-btn">
-            <span>&larr;</span> Back to Home
-          </Link>
+            {/* Back to Home Link */}
+            <Link href="/" className="fs-back-btn">
+              <span>&larr;</span> Back to Home
+            </Link>
+          </div>
 
           {/* Pill Switcher between Sign In & Create Account */}
-          <div className="fs-switch-tabs" role="tablist">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === "signin"}
-              className={`fs-tab-btn ${mode === "signin" ? "active" : ""}`}
-              onClick={() => switchMode("signin")}
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === "signup"}
-              className={`fs-tab-btn ${mode === "signup" ? "active" : ""}`}
-              onClick={() => switchMode("signup")}
-            >
-              Create Account
-            </button>
-          </div>
+          {mode !== "forgot" && (
+            <div className="fs-switch-tabs" role="tablist">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "signin"}
+                className={`fs-tab-btn ${mode === "signin" ? "active" : ""}`}
+                onClick={() => switchMode("signin")}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "signup"}
+                className={`fs-tab-btn ${mode === "signup" ? "active" : ""}`}
+                onClick={() => switchMode("signup")}
+              >
+                Create Account
+              </button>
+            </div>
+          )}
         </nav>
 
         {/* Centered Edge-to-Edge Form Container */}

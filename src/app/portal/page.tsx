@@ -486,6 +486,16 @@ export default function ReddoxPortalDashboard() {
                 </button>
               );
             })}
+
+            {/* Sign Out Button - Immediately after Settings */}
+            <button
+              onClick={handleSignOut}
+              className="portal-out"
+              title="Sign out of your account"
+            >
+              <SvgIcon name="out" />
+              <span>Sign out</span>
+            </button>
           </nav>
 
           {/* Plan Usage Box */}
@@ -542,12 +552,6 @@ export default function ReddoxPortalDashboard() {
               </small>
             )}
           </div>
-
-          {/* Sign Out Button */}
-          <button onClick={handleSignOut} className="portal-out">
-            <SvgIcon name="out" />
-            <span>Sign out</span>
-          </button>
         </aside>
 
         {/* Mobile Drawer Backdrop */}
@@ -578,44 +582,54 @@ export default function ReddoxPortalDashboard() {
                 onClick={() =>
                   setActiveDropdown(activeDropdown === "church" ? "" : "church")
                 }
+                title={`Active Workspace: ${currentChurch.n}`}
               >
-                <span
-                  className="portal-a"
-                  style={{ width: 30, height: 30, fontSize: 11 }}
-                >
+                <span className="portal-chb-badge">
                   {getInitials(currentChurch.n)}
                 </span>
-                <div>
-                  {currentChurch.n}
-                  <small>{currentChurch.r}</small>
+                <div className="portal-chb-text">
+                  <span className="portal-chb-name">{currentChurch.n}</span>
+                  <div className="portal-chb-meta">
+                    <span className="portal-chb-role">{currentChurch.r}</span>
+                    <span className="portal-chb-dot" />
+                    <span className="portal-chb-branch">Main Branch</span>
+                  </div>
                 </div>
-                <SvgIcon name="chev" />
+                <SvgIcon name="chev" className="portal-chb-chev" />
               </button>
               {activeDropdown === "church" && (
                 <div className="portal-dd l">
-                  <h4>Your Churches</h4>
+                  <div className="portal-user-card" style={{ marginBottom: 8 }}>
+                    <span className="portal-chb-badge" style={{ width: 34, height: 34, fontSize: 13 }}>
+                      {getInitials(currentChurch.n)}
+                    </span>
+                    <div>
+                      <strong>{currentChurch.n}</strong>
+                      <small>Workspace · {currentChurch.r} Access</small>
+                    </div>
+                  </div>
+                  <div className="portal-dd-sep" />
+                  <h4>Switch Workspace</h4>
                   {churches.map((ch, idx) => (
                     <button
                       key={idx}
+                      className={`portal-dd-item ${idx === churchIndex ? "active" : ""}`}
                       onClick={() => {
                         setChurchIndex(idx);
                         setActiveDropdown("");
                         showToast(`Switched to ${ch.n} (${ch.r} role)`);
                       }}
                     >
-                      <span
-                        className="portal-a"
-                        style={{ width: 30, height: 30, fontSize: 11 }}
-                      >
+                      <span className="portal-dd-badge">
                         {getInitials(ch.n)}
                       </span>
-                      <p>
-                        {ch.n}
-                        <br />
+                      <div className="portal-dd-info">
+                        <strong>{ch.n}</strong>
                         <small>
-                          {ch.r} {idx === churchIndex ? "· current" : ""}
+                          {ch.r} {idx === churchIndex ? "· Active" : ""}
                         </small>
-                      </p>
+                      </div>
+                      {idx === churchIndex && <span className="portal-dd-check">✓</span>}
                     </button>
                   ))}
                 </div>
@@ -626,7 +640,7 @@ export default function ReddoxPortalDashboard() {
             <div className="portal-srch">
               <SvgIcon name="search" />
               <input
-                placeholder="Search members, tithes…"
+                placeholder="Search members, tithes, events…"
                 value={memberSearch}
                 onChange={(e) => {
                   setMemberSearch(e.target.value);
@@ -642,19 +656,25 @@ export default function ReddoxPortalDashboard() {
             <div className="portal-tr">
               {/* Active Plan Pill Indicator */}
               <div
-                className="portal-plan-pill"
+                className={`portal-plan-pill ${selectedPlan}`}
                 onClick={() => changeView("settings")}
-                title={`Active Plan: ${currentPlan.n}`}
+                title={`Active Plan: ${currentPlan.n} (${members.length}/${currentPlan.mem.toLocaleString("en-NG")} members)`}
               >
                 <span className="portal-plan-dot" />
-                <span className="portal-plan-name">{currentPlan.n}</span>
+                <div className="portal-plan-details">
+                  <span className="portal-plan-name">{currentPlan.n}</span>
+                  <span className="portal-plan-count">
+                    {members.length}/{currentPlan.mem.toLocaleString("en-NG")}
+                  </span>
+                </div>
                 {selectedPlan === "starter" ? (
                   <Link
                     href="/checkout?plan=growth"
                     onClick={(e) => e.stopPropagation()}
                     className="portal-plan-up"
                   >
-                    Upgrade
+                    <span>Upgrade</span>
+                    <span className="portal-plan-arrow">&rarr;</span>
                   </Link>
                 ) : selectedPlan === "growth" ? (
                   <Link
@@ -662,9 +682,12 @@ export default function ReddoxPortalDashboard() {
                     onClick={(e) => e.stopPropagation()}
                     className="portal-plan-up"
                   >
-                    Pro &rarr;
+                    <span>Pro</span>
+                    <span className="portal-plan-arrow">&rarr;</span>
                   </Link>
-                ) : null}
+                ) : (
+                  <span className="portal-plan-pro-tag">✦ Pro Active</span>
+                )}
               </div>
 
               {/* Notifications Dropdown */}
@@ -712,20 +735,41 @@ export default function ReddoxPortalDashboard() {
                 )}
               </div>
 
-              {/* User Avatar Menu */}
+              {/* User Profile Menu */}
               <div className="portal-ddw">
                 <button
-                  className="portal-av"
+                  className="portal-user-btn"
                   aria-label="User menu"
                   onClick={() =>
                     setActiveDropdown(activeDropdown === "user" ? "" : "user")
                   }
                 >
-                  {user?.name ? getInitials(user.name) : "PA"}
+                  <div className="portal-av-wrap">
+                    <span className="portal-av">
+                      {user?.name ? getInitials(user.name) : "PT"}
+                    </span>
+                    <span className="portal-av-online" />
+                  </div>
+                  <div className="portal-user-text">
+                    <span className="portal-user-name">
+                      {user?.name || "Pastor Tosin"}
+                    </span>
+                    <span className="portal-user-role">Administrator</span>
+                  </div>
+                  <SvgIcon name="chev" className="portal-user-chev" />
                 </button>
                 {activeDropdown === "user" && (
                   <div className="portal-dd">
-                    <h4>{user?.name || "Pastor Tosin Adewale"}</h4>
+                    <div className="portal-user-card">
+                      <span className="portal-av lg">
+                        {user?.name ? getInitials(user.name) : "PT"}
+                      </span>
+                      <div>
+                        <strong>{user?.name || "Pastor Tosin Adewale"}</strong>
+                        <small>{user?.email || "pastor@church.org"}</small>
+                      </div>
+                    </div>
+                    <div className="portal-dd-sep" />
                     <button
                       onClick={() => {
                         setActiveDropdown("");
@@ -744,7 +788,7 @@ export default function ReddoxPortalDashboard() {
                       <SvgIcon name="bell" />
                       <p>Notifications</p>
                     </button>
-                    <button onClick={handleSignOut}>
+                    <button onClick={handleSignOut} className="portal-dd-danger">
                       <SvgIcon name="out" />
                       <p>Sign out</p>
                     </button>

@@ -339,25 +339,18 @@ export default function OnboardingPage() {
               <div className="ob-eyebrow">You’re all set</div>
               <h1>Welcome to REDDOX, {account.name.split(" ").pop()}</h1>
               <p className="ob-sub" style={{ maxWidth: 460, margin: "0 auto" }}>
-                <b>{account.church}</b>’s workspace is ready. The best next step is to add your first member.
+                <b>{account.church}</b>’s workspace is ready to go.
               </p>
               <div className="ob-acts">
                 <button
                   type="button"
                   className="ob-btn p"
-                  onClick={() => router.push("/portal?addMember=true#members")}
+                  onClick={() => router.push("/portal")}
                 >
-                  <span>Add Your First Member</span>
+                  <span>Go to Dashboard</span>
                   <svg viewBox="0 0 24 24">
                     <path d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
-                </button>
-                <button
-                  type="button"
-                  className="ob-btn"
-                  onClick={() => router.push("/portal")}
-                >
-                  Go to dashboard
                 </button>
               </div>
             </div>

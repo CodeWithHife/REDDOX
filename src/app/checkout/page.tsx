@@ -72,9 +72,12 @@ function CheckoutContent() {
 
       const data = await res.json();
       if (data.success) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("reddox_active_plan", "starter");
+        }
         setPaymentStatus("success");
         setTimeout(() => {
-          router.push("/portal?toast=Starter%20plan%20activated!");
+          router.push("/portal?plan=starter&toast=Starter%20plan%20activated!");
         }, 1200);
       } else {
         setPaymentStatus("failed");
@@ -133,9 +136,12 @@ function CheckoutContent() {
 
       const verifyData = await verifyRes.json();
       if (verifyData.success) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("reddox_active_plan", selectedPlanId);
+        }
         setPaymentStatus("success");
         setTimeout(() => {
-          router.push(`/portal?toast=${encodeURIComponent(`${currentPlan.name} plan activated!`)}`);
+          router.push(`/portal?plan=${selectedPlanId}&toast=${encodeURIComponent(`${currentPlan.name} plan activated!`)}`);
         }, 1500);
       } else {
         setPaymentStatus("failed");

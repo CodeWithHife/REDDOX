@@ -294,6 +294,9 @@ export default function OnboardingPage() {
 
       if (typeof window !== "undefined") {
         localStorage.setItem("reddox_church_profile", JSON.stringify(profile));
+        if (!localStorage.getItem("reddox_active_plan")) {
+          localStorage.setItem("reddox_active_plan", "starter");
+        }
         localStorage.removeItem(ONBOARDING_STORAGE_KEY);
         localStorage.removeItem("reddox_pending_signup");
       }
@@ -345,7 +348,7 @@ export default function OnboardingPage() {
                 <button
                   type="button"
                   className="ob-btn p"
-                  onClick={() => router.push("/portal")}
+                  onClick={() => router.push("/portal?plan=starter")}
                 >
                   <span>Go to Dashboard</span>
                   <svg viewBox="0 0 24 24">

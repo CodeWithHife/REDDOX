@@ -136,9 +136,51 @@ function SvgIcon({ name, className = "portal-i" }: { name: string; className?: s
 
 // Plan Configurations
 const PLANS = {
-  starter: { n: "Starter", pr: "₦0", mem: 15, qr: false, fin: 0, br: "1 workspace", an: "No" },
-  growth: { n: "Growth", pr: "₦15,000/mo", mem: 1000, qr: true, fin: 1, br: "1 workspace", an: "Basic reports" },
-  pro: { n: "Pro", pr: "₦35,000/mo", mem: 5000, qr: true, fin: 2, br: "Up to 3", an: "Advanced" },
+  starter: {
+    id: "starter" as const,
+    n: "Starter",
+    pr: "₦0",
+    mem: 15,
+    admins: 1,
+    eventsPerMonth: 1,
+    qr: false,
+    fin: false,
+    med: false,
+    reports: "basic",
+    exports: false,
+    br: "1 workspace",
+    an: "Basic 7-day stats",
+  },
+  growth: {
+    id: "growth" as const,
+    n: "Growth",
+    pr: "₦15,000/mo",
+    mem: 1000,
+    admins: 10,
+    eventsPerMonth: 999999,
+    qr: true,
+    fin: true,
+    med: true,
+    reports: "growth",
+    exports: true,
+    br: "1 workspace",
+    an: "Full reports & analytics",
+  },
+  pro: {
+    id: "pro" as const,
+    n: "Pro",
+    pr: "₦35,000/mo",
+    mem: 5000,
+    admins: 50,
+    eventsPerMonth: 999999,
+    qr: true,
+    fin: true,
+    med: true,
+    reports: "advanced",
+    exports: true,
+    br: "Up to 3 branches",
+    an: "Advanced multi-branch intelligence",
+  },
 };
 
 const DEPARTMENTS = ["Choir", "Ushering", "Children", "Media", "Prayer"];
@@ -180,7 +222,7 @@ export default function ReddoxPortalDashboard() {
 
   // Navigation & View State
   const [activeView, setActiveView] = useState("dashboard");
-  const [selectedPlan, setSelectedPlan] = useState<"starter" | "growth" | "pro">("growth");
+  const [selectedPlan, setSelectedPlan] = useState<"starter" | "growth" | "pro">("starter");
   const [churchIndex, setChurchIndex] = useState(0);
   const [activeDropdown, setActiveDropdown] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -303,7 +345,7 @@ export default function ReddoxPortalDashboard() {
     };
   }, []);
 
-  // Sync hash with view & load onboarded church profile
+  // Sync hash with view & load onboarded church profile & active plan
   useEffect(() => {
     // 1. Load onboarded church profile if exists
     if (typeof window !== "undefined") {
@@ -322,8 +364,22 @@ export default function ReddoxPortalDashboard() {
         }
       }
 
-      // Check query params for instant actions
+      // 2. Load active subscription plan from query params or localStorage
       const urlParams = new URLSearchParams(window.location.search);
+      const planParam = urlParams.get("plan");
+      const storedPlan = localStorage.getItem("reddox_active_plan");
+
+      if (planParam === "starter" || planParam === "growth" || planParam === "pro") {
+        setSelectedPlan(planParam);
+        localStorage.setItem("reddox_active_plan", planParam);
+      } else if (storedPlan === "starter" || storedPlan === "growth" || storedPlan === "pro") {
+        setSelectedPlan(storedPlan);
+      } else {
+        setSelectedPlan("starter");
+        localStorage.setItem("reddox_active_plan", "starter");
+      }
+
+      // Check query params for instant actions
       const shouldAddMember = urlParams.get("addMember");
       const toastParam = urlParams.get("toast");
 
@@ -434,9 +490,12 @@ export default function ReddoxPortalDashboard() {
 
           {/* Plan Usage Box */}
           <div className="portal-plan">
-            <b>{currentPlan.n} plan</b>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+              <b>{currentPlan.n} plan</b>
+              <span className="portal-chip" style={{ fontSize: 10, padding: "2px 6px" }}>{currentPlan.pr}</span>
+            </div>
             <small>
-              {members.length} of {currentPlan.mem.toLocaleString("en-NG")} members
+              {members.length} of {currentPlan.mem.toLocaleString("en-NG")} members ({Math.round((members.length / currentPlan.mem) * 100)}%)
             </small>
             <div className="portal-pb">
               <i
@@ -445,10 +504,43 @@ export default function ReddoxPortalDashboard() {
                     2,
                     Math.min(100, (members.length / currentPlan.mem) * 100)
                   )}%`,
+                  background: members.length >= currentPlan.mem ? "var(--er)" : undefined,
                 }}
               />
             </div>
-            <small>Essential security included</small>
+            {selectedPlan === "starter" ? (
+              <Link
+                href="/checkout?plan=growth"
+                className="portal-btn sm p"
+                style={{
+                  marginTop: 8,
+                  width: "100%",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  fontSize: 12,
+                }}
+              >
+                Upgrade to Growth &rarr;
+              </Link>
+            ) : selectedPlan === "growth" ? (
+              <Link
+                href="/checkout?plan=pro"
+                className="portal-btn sm"
+                style={{
+                  marginTop: 8,
+                  width: "100%",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  fontSize: 12,
+                }}
+              >
+                Upgrade to Pro &rarr;
+              </Link>
+            ) : (
+              <small style={{ color: "var(--rd)", fontWeight: 600, display: "block", marginTop: 4 }}>
+                ✦ Pro Tier Active
+              </small>
+            )}
           </div>
 
           {/* Sign Out Button */}
@@ -468,16 +560,6 @@ export default function ReddoxPortalDashboard() {
             MAIN VIEW AREA
             ========================================= */}
         <main className="portal-main">
-          {/* Demo status bar */}
-          <div className={`portal-demo ${isOnline ? "" : "off"}`}>
-            <span>&#9432;</span>
-            <span>
-              {isOnline
-                ? "Live Workspace. Member records, finances, duty rosters, and Sunday attendance active."
-                : "You’re offline. Changes will sync once internet connectivity is restored."}
-            </span>
-          </div>
-
           {/* Top Bar Navigation */}
           <header className="portal-tb">
             {/* Mobile Hamburger Toggle */}
@@ -558,6 +640,33 @@ export default function ReddoxPortalDashboard() {
 
             {/* Top Right Actions */}
             <div className="portal-tr">
+              {/* Active Plan Pill Indicator */}
+              <div
+                className="portal-plan-pill"
+                onClick={() => changeView("settings")}
+                title={`Active Plan: ${currentPlan.n}`}
+              >
+                <span className="portal-plan-dot" />
+                <span className="portal-plan-name">{currentPlan.n}</span>
+                {selectedPlan === "starter" ? (
+                  <Link
+                    href="/checkout?plan=growth"
+                    onClick={(e) => e.stopPropagation()}
+                    className="portal-plan-up"
+                  >
+                    Upgrade
+                  </Link>
+                ) : selectedPlan === "growth" ? (
+                  <Link
+                    href="/checkout?plan=pro"
+                    onClick={(e) => e.stopPropagation()}
+                    className="portal-plan-up"
+                  >
+                    Pro &rarr;
+                  </Link>
+                ) : null}
+              </div>
+
               {/* Notifications Dropdown */}
               <div className="portal-ddw">
                 <button
@@ -660,6 +769,7 @@ export default function ReddoxPortalDashboard() {
                 plan={currentPlan}
                 church={currentChurch}
                 onOpenModal={(m: any) => setActiveModal(m)}
+                onUpgrade={() => router.push("/checkout?plan=growth")}
               />
             )}
 
@@ -673,7 +783,12 @@ export default function ReddoxPortalDashboard() {
                 onSearchChange={setMemberSearch}
                 onDeptChange={setMemberDeptFilter}
                 onPageChange={setMemberPage}
-                onAddMember={() => setActiveModal("addMember")}
+                onAddMember={() => {
+                  if (members.length >= currentPlan.mem) {
+                    showToast(`Limit reached: ${currentPlan.n} plan allows up to ${currentPlan.mem} members.`);
+                  }
+                  setActiveModal("addMember");
+                }}
                 onEditMember={(m: any) => {
                   setEditingMember(m);
                   setActiveModal("editMember");
@@ -683,7 +798,13 @@ export default function ReddoxPortalDashboard() {
                   setMembers(members.filter((x) => x.id !== id));
                   showToast(`${target?.n || "Member"} removed`);
                 }}
-                onExport={() => showToast("Exporting member records to CSV…")}
+                onExport={() => {
+                  if (!currentPlan.exports) {
+                    showToast("Exports require Growth or Pro plan.");
+                  } else {
+                    showToast("Exporting member records to CSV…");
+                  }
+                }}
               />
             )}
 
@@ -721,7 +842,13 @@ export default function ReddoxPortalDashboard() {
             {activeView === "events" && (
               <EventsView
                 events={events}
-                onCreateEvent={() => setActiveModal("createEvent")}
+                plan={currentPlan}
+                onCreateEvent={() => {
+                  if (currentPlan.eventsPerMonth === 1 && events.length >= 1) {
+                    showToast("Starter plan allows 1 event per month. Upgrade to Growth for unlimited events.");
+                  }
+                  setActiveModal("createEvent");
+                }}
                 onRegister={(idx: any) => {
                   setEvents((prev) =>
                     prev.map((ev, i) => (i === idx ? { ...ev, r: ev.r + 1 } : ev))
@@ -766,6 +893,7 @@ export default function ReddoxPortalDashboard() {
             {activeView === "sermons" && (
               <SermonsView
                 sermons={sermons}
+                plan={currentPlan}
                 onAddSermon={() => setActiveModal("addSermon")}
                 onRemoveSermon={(idx: any) => {
                   setSermons(sermons.filter((_, i) => i !== idx));
@@ -781,15 +909,27 @@ export default function ReddoxPortalDashboard() {
                 events={events}
                 giving={giving}
                 plan={currentPlan}
-                onExport={() => showToast("Exporting executive summary report…")}
+                onExport={() => {
+                  if (!currentPlan.exports) {
+                    showToast("Executive export requires Growth or Pro plan.");
+                  } else {
+                    showToast("Exporting executive summary report…");
+                  }
+                }}
               />
             )}
 
             {activeView === "staff" && (
               <StaffView
                 staff={staff}
+                plan={currentPlan}
                 churchRole={currentChurch.r}
-                onInviteStaff={() => setActiveModal("inviteStaff")}
+                onInviteStaff={() => {
+                  if (currentPlan.admins === 1 && staff.length >= 1) {
+                    showToast("Starter plan includes 1 administrator. Upgrade to Growth to invite staff.");
+                  }
+                  setActiveModal("inviteStaff");
+                }}
                 onRoleChange={(idx: any, role: any) => {
                   setStaff((prev) =>
                     prev.map((s, i) => (i === idx ? { ...s, r: role } : s))
@@ -847,10 +987,20 @@ export default function ReddoxPortalDashboard() {
                   showToast("Church profile saved.");
                 }}
                 onSelectPlan={(k: any) => {
-                  setSelectedPlan(k as any);
-                  showToast(`Switched plan to ${PLANS[k as keyof typeof PLANS].n}`);
+                  const planKey: keyof typeof PLANS = (k === "starter" || k === "growth" || k === "pro") ? k : "starter";
+                  setSelectedPlan(planKey);
+                  if (typeof window !== "undefined") {
+                    localStorage.setItem("reddox_active_plan", planKey);
+                  }
+                  showToast(`Switched plan to ${PLANS[planKey].n}`);
                 }}
-                onExportData={() => showToast("Exporting complete church database…")}
+                onExportData={() => {
+                  if (!currentPlan.exports) {
+                    showToast("Database export requires Growth or Pro plan.");
+                  } else {
+                    showToast("Exporting complete church database…");
+                  }
+                }}
               />
             )}
           </div>
@@ -940,6 +1090,8 @@ export default function ReddoxPortalDashboard() {
 
       {activeModal === "createEvent" && (
         <CreateEventModal
+          plan={currentPlan}
+          currentCount={events.length}
           onClose={() => setActiveModal(null)}
           onSave={(ev: any) => {
             setEvents([...events, ev]);
@@ -949,6 +1101,10 @@ export default function ReddoxPortalDashboard() {
             ]);
             showToast("Event created successfully.");
             setActiveModal(null);
+          }}
+          onUpgrade={() => {
+            setActiveModal(null);
+            router.push("/checkout?plan=growth");
           }}
         />
       )}
@@ -999,11 +1155,17 @@ export default function ReddoxPortalDashboard() {
 
       {activeModal === "inviteStaff" && (
         <InviteStaffModal
+          plan={currentPlan}
+          currentCount={staff.length}
           onClose={() => setActiveModal(null)}
           onSave={(inv: any) => {
             setStaff([...staff, { ...inv, s: "Invited" }]);
             showToast("Invitation recorded (Demo: email delivery simulated).");
             setActiveModal(null);
+          }}
+          onUpgrade={() => {
+            setActiveModal(null);
+            router.push("/checkout?plan=growth");
           }}
         />
       )}
@@ -1055,6 +1217,24 @@ function DashboardView({
         </div>
       </div>
 
+      {/* Starter Plan Banner */}
+      {plan.id === "starter" && (
+        <div className="portal-starter-banner">
+          <div className="portal-starter-banner-content">
+            <span className="portal-starter-tag">Starter</span>
+            <div className="portal-starter-text">
+              <strong>Starter Plan (Free Forever) Active · 15 Member Quota</strong>
+              <p>
+                Managing {memberCount} of 15 members (manual attendance, 1 event/month). Upgrade to Growth for 1,000 members, tithes &amp; offerings, and QR attendance.
+              </p>
+            </div>
+          </div>
+          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none", flexShrink: 0 }}>
+            Upgrade to Growth &rarr;
+          </Link>
+        </div>
+      )}
+
       {/* KPI Stats Grid */}
       <div className="portal-gs">
         <div className="portal-cd portal-st">
@@ -1064,7 +1244,7 @@ function DashboardView({
           <small>Members</small>
           <b>{memberCount}</b>
           <span className="portal-chip">
-            {memberCount} of {plan.mem.toLocaleString("en-NG")}
+            {memberCount} of {plan.mem.toLocaleString("en-NG")} ({Math.round((memberCount / plan.mem) * 100)}%)
           </span>
         </div>
 
@@ -1085,7 +1265,9 @@ function DashboardView({
           </div>
           <small>Upcoming Events</small>
           <b>{events.length}</b>
-          <span className="portal-chip">Next: {events[0]?.t || "None"}</span>
+          <span className="portal-chip">
+            {plan.eventsPerMonth === 1 ? `${events.length} of 1/mo limit` : `Next: ${events[0]?.t || "None"}`}
+          </span>
         </div>
 
         <div className="portal-cd portal-st">
@@ -1107,14 +1289,20 @@ function DashboardView({
             <span className="portal-chip">{giving.length} gifts</span>
           </div>
         ) : (
-          <div className="portal-cd portal-st">
+          <Link
+            href="/checkout?plan=growth"
+            className="portal-cd portal-st"
+            style={{ textDecoration: "none", color: "inherit", cursor: "pointer", border: "1px dashed var(--bd)" }}
+          >
             <div className="portal-ico">
               <SvgIcon name="lock" />
             </div>
-            <small>Finances</small>
-            <b style={{ fontSize: 17 }}>Growth Plan</b>
-            <span className="portal-chip">Not on Starter</span>
-          </div>
+            <small>Finances (Tithes &amp; Offerings)</small>
+            <b style={{ fontSize: 16 }}>Growth &amp; Pro</b>
+            <span className="portal-chip" style={{ background: "var(--bl2)", color: "var(--bl)" }}>
+              Upgrade to Unlock &rarr;
+            </span>
+          </Link>
         )}
       </div>
 
@@ -1248,6 +1436,39 @@ function MembersView({
       </div>
 
       <div className="portal-cd">
+        {plan.id === "starter" && (
+          <div
+            style={{
+              background: members.length >= 15 ? "rgba(179,38,30,0.08)" : "rgba(109,42,60,0.05)",
+              border: `1px solid ${members.length >= 15 ? "var(--er)" : "var(--bd)"}`,
+              borderRadius: 12,
+              padding: "12px 16px",
+              marginBottom: 16,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <strong style={{ color: members.length >= 15 ? "var(--er)" : "var(--bl)", display: "block" }}>
+                {members.length >= 15
+                  ? "⚠️ Starter Plan Member Limit Reached (15 of 15)"
+                  : `Starter Plan Capacity: ${members.length} of 15 members used (${Math.round((members.length / 15) * 100)}%)`}
+              </strong>
+              <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
+                {members.length >= 15
+                  ? "You have reached the maximum 15 members on the free Starter plan. Upgrade to Growth to add up to 1,000 members."
+                  : "Churches with over 15 members can upgrade to Growth at any time for 1,000 members and full ministry tools."}
+              </p>
+            </div>
+            <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
+              Upgrade to Growth (₦15k/mo) &rarr;
+            </Link>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="portal-fl">
           <input
@@ -1432,14 +1653,31 @@ function AttendanceView({
           </div>
         </div>
       ) : (
-        <div className="portal-cd portal-lock">
-          <div className="portal-ico">
-            <SvgIcon name="lock" />
+        <div
+          className="portal-cd portal-lock"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 16,
+            flexWrap: "wrap",
+            border: "1px dashed var(--bd)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div className="portal-ico" style={{ margin: 0 }}>
+              <SvgIcon name="lock" />
+            </div>
+            <div>
+              <b style={{ display: "block", fontSize: 15 }}>QR Attendance is available on Growth &amp; Pro</b>
+              <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 13 }}>
+                The Starter plan includes manual one-tap attendance tracking below. Upgrade to Growth for self-service QR check-in &amp; kiosk mode.
+              </p>
+            </div>
           </div>
-          <div>
-            <b>QR Attendance is available on Growth &amp; Pro</b>
-            <p>Manual one-tap attendance check-in is included on all plans.</p>
-          </div>
+          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
+            Unlock QR Attendance &rarr;
+          </Link>
         </div>
       )}
 
@@ -1520,13 +1758,15 @@ function AttendanceView({
 /* =====================================================================
    VIEW 4: EVENTS & RSVPS
    ===================================================================== */
-function EventsView({ events, onCreateEvent, onRegister, onRemoveEvent }: any) {
+function EventsView({ events, plan, onCreateEvent, onRegister, onRemoveEvent }: any) {
   return (
     <>
       <div className="portal-hd">
         <div>
           <h1>Events</h1>
-          <p>{events.length} events scheduled</p>
+          <p>
+            {events.length} events scheduled · {plan?.eventsPerMonth === 1 ? "Starter tier (1 event/month limit)" : "Unlimited events"}
+          </p>
         </div>
         <div className="portal-acts">
           <button onClick={onCreateEvent} className="portal-btn p">
@@ -1535,6 +1775,37 @@ function EventsView({ events, onCreateEvent, onRegister, onRemoveEvent }: any) {
           </button>
         </div>
       </div>
+
+      {plan?.id === "starter" && (
+        <div
+          style={{
+            background: "rgba(109,42,60,0.05)",
+            border: "1px solid var(--bd)",
+            borderRadius: 12,
+            padding: "12px 16px",
+            marginBottom: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <strong style={{ color: "var(--bl)", display: "block" }}>
+              Starter Plan Limit: 1 Event Per Month
+            </strong>
+            <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
+              {events.length >= 1
+                ? "You have reached your 1-event monthly allowance on Starter. Upgrade to Growth for unlimited scheduled events & registrations."
+                : "Free Starter churches can publish 1 event per month. Upgrade to Growth for unlimited scheduled events."}
+            </p>
+          </div>
+          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
+            Upgrade to Growth &rarr;
+          </Link>
+        </div>
+      )}
 
       <div className="portal-cd">
         {events.length ? (
@@ -1598,6 +1869,33 @@ function FinancesView({
         </div>
         <h3>Restricted Access</h3>
         <p>Your current staff role does not have financial ledger permissions.</p>
+      </div>
+    );
+  }
+
+  if (!plan?.fin) {
+    return (
+      <div className="portal-cd portal-emp" style={{ padding: "54px 24px", textAlign: "center", maxWidth: 640, margin: "20px auto" }}>
+        <div className="portal-ico" style={{ margin: "0 auto 16px", width: 56, height: 56 }}>
+          <SvgIcon name="lock" />
+        </div>
+        <span className="portal-pill" style={{ marginBottom: 12, display: "inline-block" }}>
+          Growth &amp; Pro Feature
+        </span>
+        <h2 style={{ fontFamily: "var(--font-playfair), Georgia, serif", fontSize: 24, margin: "8px 0 12px" }}>
+          Financial Management is Locked
+        </h2>
+        <p style={{ margin: "0 auto 24px", color: "var(--mu)", lineHeight: 1.6, fontSize: 15 }}>
+          The free Starter plan includes member management and manual attendance. To record tithes, offerings, ministry expenses, track donor histories, and export financial statements, upgrade to the Growth plan.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <Link href="/checkout?plan=growth" className="portal-btn p" style={{ textDecoration: "none" }}>
+            Upgrade to Growth (₦15,000/mo) &rarr;
+          </Link>
+          <a href="#settings" className="portal-btn" style={{ textDecoration: "none" }}>
+            Compare All Plans
+          </a>
+        </div>
       </div>
     );
   }
@@ -1838,7 +2136,34 @@ function VisitorsView({ visitors, onRecordVisitor, onStatusChange }: any) {
 /* =====================================================================
    VIEW 7: SERMONS & MEDIA
    ===================================================================== */
-function SermonsView({ sermons, onAddSermon, onRemoveSermon }: any) {
+function SermonsView({ sermons, plan, onAddSermon, onRemoveSermon }: any) {
+  if (!plan?.med) {
+    return (
+      <div className="portal-cd portal-emp" style={{ padding: "54px 24px", textAlign: "center", maxWidth: 640, margin: "20px auto" }}>
+        <div className="portal-ico" style={{ margin: "0 auto 16px", width: 56, height: 56 }}>
+          <SvgIcon name="lock" />
+        </div>
+        <span className="portal-pill" style={{ marginBottom: 12, display: "inline-block" }}>
+          Growth &amp; Pro Feature
+        </span>
+        <h2 style={{ fontFamily: "var(--font-playfair), Georgia, serif", fontSize: 24, margin: "8px 0 12px" }}>
+          Sermon &amp; Media Library is Locked
+        </h2>
+        <p style={{ margin: "0 auto 24px", color: "var(--mu)", lineHeight: 1.6, fontSize: 15 }}>
+          Archive Sunday message recordings, audio files, sermon series, and outlines for your congregation. Included with Growth and Pro subscriptions.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <Link href="/checkout?plan=growth" className="portal-btn p" style={{ textDecoration: "none" }}>
+            Upgrade to Growth &rarr;
+          </Link>
+          <a href="#settings" className="portal-btn" style={{ textDecoration: "none" }}>
+            View Plan Comparison
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="portal-hd">
@@ -1946,6 +2271,35 @@ function ReportsView({ members, sessions, events, giving, plan, onExport }: any)
         </div>
       </div>
 
+      {plan?.id === "starter" && (
+        <div
+          style={{
+            background: "rgba(109,42,60,0.05)",
+            border: "1px solid var(--bd)",
+            borderRadius: 12,
+            padding: "12px 16px",
+            marginBottom: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <strong style={{ color: "var(--bl)", display: "block" }}>
+              Starter Plan: Basic 7-Day Attendance Reports
+            </strong>
+            <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
+              Data exports, multi-month attendance trends, and financial reports require Growth or Pro.
+            </p>
+          </div>
+          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
+            Upgrade to Growth &rarr;
+          </Link>
+        </div>
+      )}
+
       <div className="portal-gs">
         <div className="portal-cd portal-st">
           <small>Total Members</small>
@@ -1959,10 +2313,17 @@ function ReportsView({ members, sessions, events, giving, plan, onExport }: any)
           <small>Events Held</small>
           <b>{events.length}</b>
         </div>
-        <div className="portal-cd portal-st">
-          <small>Giving Recorded</small>
-          <b>{formatNaira(totalGiving)}</b>
-        </div>
+        {plan?.fin ? (
+          <div className="portal-cd portal-st">
+            <small>Giving Recorded</small>
+            <b>{formatNaira(totalGiving)}</b>
+          </div>
+        ) : (
+          <div className="portal-cd portal-st">
+            <small>Giving Recorded</small>
+            <b style={{ fontSize: 16 }}>Locked</b>
+          </div>
+        )}
       </div>
 
       <div className="portal-g2">
@@ -2017,10 +2378,21 @@ function ReportsView({ members, sessions, events, giving, plan, onExport }: any)
 
       <div className="portal-cd">
         <h3>Advanced ministry intelligence</h3>
-        <p style={{ margin: 0, color: "var(--mu)" }}>
-          Retention metrics, first-timer guest conversion ratios, and departmental duty
-          insights are continuously updated with service activity.
-        </p>
+        {plan?.id === "pro" ? (
+          <p style={{ margin: 0, color: "var(--mu)" }}>
+            Multi-branch retention metrics, first-timer guest conversion ratios, and departmental duty
+            insights are continuously updated with live service activity.
+          </p>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+            <p style={{ margin: 0, color: "var(--mu)" }}>
+              Multi-branch comparisons and executive ministry health metrics are included in the Pro tier.
+            </p>
+            <Link href="/checkout?plan=pro" className="portal-btn sm" style={{ textDecoration: "none" }}>
+              Unlock Pro Intelligence &rarr;
+            </Link>
+          </div>
+        )}
       </div>
     </>
   );
@@ -2029,7 +2401,7 @@ function ReportsView({ members, sessions, events, giving, plan, onExport }: any)
 /* =====================================================================
    VIEW 9: STAFF & ROLES
    ===================================================================== */
-function StaffView({ staff, churchRole, onInviteStaff, onRoleChange, onRevokeAccess }: any) {
+function StaffView({ staff, plan, churchRole, onInviteStaff, onRoleChange, onRevokeAccess }: any) {
   if (churchRole === "Staff") {
     return (
       <div className="portal-cd portal-emp">
@@ -2047,7 +2419,9 @@ function StaffView({ staff, churchRole, onInviteStaff, onRoleChange, onRevokeAcc
       <div className="portal-hd">
         <div>
           <h1>Staff &amp; Roles</h1>
-          <p>Manage access permissions for pastors, department leaders, and ushers</p>
+          <p>
+            Manage access permissions for pastors, department leaders, and ushers · {plan?.admins === 1 ? "1 admin limit (Starter)" : `Up to ${plan?.admins} staff accounts`}
+          </p>
         </div>
         <div className="portal-acts">
           <button onClick={onInviteStaff} className="portal-btn p">
@@ -2056,6 +2430,35 @@ function StaffView({ staff, churchRole, onInviteStaff, onRoleChange, onRevokeAcc
           </button>
         </div>
       </div>
+
+      {plan?.id === "starter" && (
+        <div
+          style={{
+            background: "rgba(109,42,60,0.05)",
+            border: "1px solid var(--bd)",
+            borderRadius: 12,
+            padding: "12px 16px",
+            marginBottom: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <strong style={{ color: "var(--bl)", display: "block" }}>
+              Starter Plan: 1 Administrator Account Included
+            </strong>
+            <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
+              Multi-staff logins, departmental role permissions, and treasurer access are available on Growth (up to 10 staff) and Pro (up to 50 staff).
+            </p>
+          </div>
+          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
+            Upgrade to Growth &rarr;
+          </Link>
+        </div>
+      )}
 
       <div className="portal-cd">
         <div className="portal-tw">
@@ -2241,11 +2644,13 @@ function SettingsView({
   }, [church.n]);
 
   const COMPARISON_ROWS: Array<[string, (p: any) => string]> = [
-    ["Members Allowed", (p: any) => p.mem.toLocaleString("en-NG")],
-    ["Essential Security", () => "Included"],
-    ["Record Integrity", () => "Preserved"],
-    ["QR Attendance", (p: any) => (p.qr ? "Yes" : "No")],
-    ["Financial Tools", (p: any) => ["No", "Core", "Core + Advanced"][p.fin]],
+    ["Member Capacity", (p: any) => p.mem.toLocaleString("en-NG") + " members"],
+    ["Administrator Accounts", (p: any) => p.admins === 1 ? "1 Admin" : `Up to ${p.admins} staff`],
+    ["Monthly Events", (p: any) => p.eventsPerMonth === 1 ? "1 event / month" : "Unlimited events"],
+    ["QR Attendance", (p: any) => (p.qr ? "Yes (Kiosk & mobile)" : "No (Manual only)")],
+    ["Financial Management (Tithes & Expenses)", (p: any) => (p.fin ? "Included (Full ledger)" : "Locked")],
+    ["Sermon & Media Library", (p: any) => (p.med ? "Included (Audio/Video/Notes)" : "Locked")],
+    ["Data Exports (CSV / PDF)", (p: any) => (p.exports ? "Included" : "Locked")],
     ["Branches Allowed", (p: any) => p.br],
     ["Analytics Depth", (p: any) => p.an],
   ];
@@ -2407,17 +2812,26 @@ function SettingsView({
             </tbody>
           </table>
         </div>
-        <div className="portal-acts" style={{ marginTop: 14 }}>
+        <div className="portal-acts" style={{ marginTop: 14, flexWrap: "wrap", gap: 10 }}>
           {(["starter", "growth", "pro"] as const).map((k) => (
             <button
               key={k}
               className={`portal-btn ${plan === k ? "p" : ""}`}
               onClick={() => onSelectPlan(k)}
             >
-              {plan === k ? "Active: " : "Switch to "}
+              {plan === k ? "✓ Active: " : "Switch (Demo): "}
               {PLANS[k].n}
             </button>
           ))}
+          {plan !== "pro" && (
+            <Link
+              href={plan === "starter" ? "/checkout?plan=growth" : "/checkout?plan=pro"}
+              className="portal-btn p"
+              style={{ textDecoration: "none" }}
+            >
+              {plan === "starter" ? "Go to Checkout: Upgrade to Growth →" : "Go to Checkout: Upgrade to Pro →"}
+            </Link>
+          )}
         </div>
       </div>
 
@@ -2804,11 +3218,13 @@ function AddExpenseModal({ onClose, onSave }: any) {
 /* =====================================================================
    MODAL 5: CREATE EVENT
    ===================================================================== */
-function CreateEventModal({ onClose, onSave }: any) {
+function CreateEventModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }: any) {
   const [title, setTitle] = useState("");
   const [dateStr, setDateStr] = useState("");
   const [timeStr, setTimeStr] = useState("6:00 PM");
   const [error, setError] = useState("");
+
+  const isStarterAtLimit = plan?.eventsPerMonth === 1 && currentCount >= 1;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -2835,6 +3251,20 @@ function CreateEventModal({ onClose, onSave }: any) {
         noValidate
       >
         <h2>Create church event</h2>
+
+        {isStarterAtLimit && (
+          <div className="portal-nt" style={{ background: "rgba(184, 134, 45, 0.12)", border: "1px solid var(--bd)" }}>
+            <strong>Starter Plan Quota (1 Event/Month)</strong>
+            <p style={{ margin: "4px 0 8px", fontSize: 12.5, color: "var(--mu)" }}>
+              Starter includes 1 monthly calendar event. Upgrade to Growth to publish unlimited events, ticket registrations, and send automated reminders.
+            </p>
+            {onUpgrade && (
+              <button type="button" onClick={onUpgrade} className="portal-btn sm p">
+                Upgrade to Growth &rarr;
+              </button>
+            )}
+          </div>
+        )}
 
         <div className={`portal-fi ${error ? "bad" : ""}`}>
           <label>Event Title</label>
@@ -3131,10 +3561,12 @@ function AddSermonModal({ onClose, onSave }: any) {
 /* =====================================================================
    MODAL 9: INVITE STAFF
    ===================================================================== */
-function InviteStaffModal({ onClose, onSave }: any) {
+function InviteStaffModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }: any) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("Leader");
   const [error, setError] = useState("");
+
+  const isStarterAtLimit = plan?.admins === 1 && currentCount >= 1;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -3155,6 +3587,20 @@ function InviteStaffModal({ onClose, onSave }: any) {
         noValidate
       >
         <h2>Invite pastoral staff</h2>
+
+        {isStarterAtLimit && (
+          <div className="portal-nt" style={{ background: "rgba(184, 134, 45, 0.12)", border: "1px solid var(--bd)" }}>
+            <strong>Starter Plan Limit (1 Administrator)</strong>
+            <p style={{ margin: "4px 0 8px", fontSize: 12.5, color: "var(--mu)" }}>
+              Starter includes 1 admin login. Upgrade to Growth (10 staff logins) or Pro (50 staff logins) to invite pastoral team members and departmental leaders.
+            </p>
+            {onUpgrade && (
+              <button type="button" onClick={onUpgrade} className="portal-btn sm p">
+                Upgrade to Growth &rarr;
+              </button>
+            )}
+          </div>
+        )}
 
         <div className={`portal-fi ${error ? "bad" : ""}`}>
           <label>Email Address</label>

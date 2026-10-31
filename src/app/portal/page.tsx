@@ -714,8 +714,9 @@ export default function ReddoxPortalDashboard() {
             MAIN VIEW AREA
             ========================================= */}
         <main className="portal-main">
-          {/* Top Bar Navigation */}
-          <header className="portal-tb">
+          {/* Top Bar Navigation (Hidden in Settings view) */}
+          {activeView !== "settings" && (
+            <header className="portal-tb">
             {/* Mobile Hamburger Toggle */}
             <button
               className="portal-ic burger"
@@ -979,6 +980,7 @@ export default function ReddoxPortalDashboard() {
               </div>
             </div>
           </header>
+        )}
 
           {/* =========================================
               VIEW CONTENT ROUTER
@@ -2910,11 +2912,9 @@ function SettingsView({
 }: any) {
   const [activeTab, setActiveTab] = useState<"profile" | "account" | "plan" | "branches" | "data">("profile");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [dirty, setDirty] = useState(false);
 
   // Logo state
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const logoInputRef = useRef<HTMLInputElement>(null);
 
   // Church Profile Form
   const [profileData, setProfileData] = useState({
@@ -2924,6 +2924,16 @@ function SettingsView({
     phone: "0801 234 5678",
     contactEmail: "contact@gracechapel.org",
     address: "Plot 14, Commercial Avenue, Ikeja, Lagos",
+    website: "www.gracechapel.org",
+    timezone: "West Africa Time (WAT)",
+  });
+
+  // Section Edit State (allows updating flexible contact fields while onboarding identity stays locked)
+  const [isEditingContact, setIsEditingContact] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    address: "Plot 14, Commercial Avenue, Ikeja, Lagos",
+    phone: "0801 234 5678",
+    contactEmail: "contact@gracechapel.org",
     website: "www.gracechapel.org",
     timezone: "West Africa Time (WAT)",
   });
@@ -2962,11 +2972,24 @@ function SettingsView({
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          setProfileData((prev) => ({
-            ...prev,
-            ...parsed,
+          const loadedProfile = {
             churchName: parsed.churchName || church.n,
-          }));
+            denomination: parsed.denomination || "Pentecostal",
+            leadPastor: parsed.leadPastor || "Pastor Adewale",
+            phone: parsed.phone || "0801 234 5678",
+            contactEmail: parsed.contactEmail || "contact@gracechapel.org",
+            address: parsed.address || "Plot 14, Commercial Avenue, Ikeja, Lagos",
+            website: parsed.website || "www.gracechapel.org",
+            timezone: parsed.timezone || "West Africa Time (WAT)",
+          };
+          setProfileData(loadedProfile);
+          setContactForm({
+            address: loadedProfile.address,
+            phone: loadedProfile.phone,
+            contactEmail: loadedProfile.contactEmail,
+            website: loadedProfile.website,
+            timezone: loadedProfile.timezone,
+          });
         } catch (e) {}
       }
       const savedLogo = localStorage.getItem("reddox_church_logo");
@@ -2976,6 +2999,35 @@ function SettingsView({
     }
   }, [church.n]);
 
+  const handleSaveContactSection = () => {
+    const updated = {
+      ...profileData,
+      ...contactForm,
+    };
+    setProfileData(updated);
+    if (typeof window !== "undefined") {
+      try {
+        const existing = localStorage.getItem("reddox_church_profile");
+        const prevData = existing ? JSON.parse(existing) : {};
+        localStorage.setItem("reddox_church_profile", JSON.stringify({ ...prevData, ...updated }));
+      } catch (e) {}
+    }
+    onSaveProfile?.(updated);
+    setIsEditingContact(false);
+    showToast?.("Parish contact details updated successfully.");
+  };
+
+  const handleCancelContactEdit = () => {
+    setContactForm({
+      address: profileData.address,
+      phone: profileData.phone,
+      contactEmail: profileData.contactEmail,
+      website: profileData.website,
+      timezone: profileData.timezone,
+    });
+    setIsEditingContact(false);
+  };
+
   const handleCopy = (text: string, key: string) => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(text);
@@ -2983,86 +3035,6 @@ function SettingsView({
       showToast?.(`Copied ${key.toUpperCase()} to clipboard.`);
       setTimeout(() => setCopiedKey(null), 2200);
     }
-  };
-
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type)) {
-      showToast?.("Please choose a PNG, JPG, WebP, or SVG image.");
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      showToast?.("That image is over 2 MB. Please select a smaller file.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const res = ev.target?.result as string;
-      setLogoUrl(res);
-      if (typeof window !== "undefined") {
-        localStorage.setItem("reddox_church_logo", res);
-      }
-      showToast?.("Church logo updated.");
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleRemoveLogo = () => {
-    setLogoUrl(null);
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("reddox_church_logo");
-    }
-    showToast?.("Church logo removed.");
-  };
-
-  const handleSaveProfile = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!profileData.churchName.trim()) {
-      showToast?.("Please enter your church name.");
-      return;
-    }
-    onSaveProfile(profileData);
-    setDirty(false);
-    showToast?.("Church profile saved successfully.");
-  };
-
-  const handleDiscardProfile = () => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("reddox_church_profile");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setProfileData((prev) => ({
-            ...prev,
-            ...parsed,
-            churchName: parsed.churchName || church.n,
-          }));
-        } catch (e) {}
-      } else {
-        setProfileData({
-          churchName: church.n,
-          denomination: "Pentecostal",
-          leadPastor: "Pastor Adewale",
-          phone: "0801 234 5678",
-          contactEmail: "contact@gracechapel.org",
-          address: "Plot 14, Commercial Avenue, Ikeja, Lagos",
-          website: "www.gracechapel.org",
-          timezone: "West Africa Time (WAT)",
-        });
-      }
-    }
-    setDirty(false);
-    showToast?.("Changes discarded.");
-  };
-
-  const handleSaveAccount = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!accountData.name.trim()) {
-      showToast?.("Please enter your full name.");
-      return;
-    }
-    showToast?.("Account details saved.");
   };
 
   const calculatePwStrength = (v: string) => {
@@ -3172,21 +3144,6 @@ function SettingsView({
 
   return (
     <div className="portal-settings-wrap">
-      {/* Hidden Logo File Input */}
-      <input
-        ref={logoInputRef}
-        type="file"
-        accept="image/png,image/jpeg,image/webp,image/svg+xml"
-        style={{ display: "none" }}
-        onChange={handleLogoUpload}
-      />
-
-      {/* Top Demo Notice */}
-      <div className="portal-demo-banner">
-        <SvgIcon name="shield" />
-        <span>Live Church Workspace Settings &bull; Role-Based Access Protected</span>
-      </div>
-
       {/* Hero Section */}
       <section className="portal-settings-hero">
         <span className="portal-rn" />
@@ -3194,8 +3151,8 @@ function SettingsView({
         <div className="portal-hid">
           <div
             className="portal-av"
-            onClick={() => logoInputRef.current?.click()}
-            title="Click to change church logo"
+            title="Registered Church Emblem"
+            style={{ cursor: "default" }}
           >
             {logoUrl ? (
               <img src={logoUrl} alt="Church logo" />
@@ -3203,7 +3160,7 @@ function SettingsView({
               getInitials(profileData.churchName)
             )}
             <b>
-              <SvgIcon name="cam" />
+              <SvgIcon name="church" />
             </b>
           </div>
           <div>
@@ -3247,7 +3204,7 @@ function SettingsView({
       </nav>
 
       {/* ==============================================================
-          TAB 1: CHURCH PROFILE
+          TAB 1: CHURCH PROFILE (READ-ONLY ONBOARDING RECORD)
           ============================================================== */}
       {activeTab === "profile" && (
         <div>
@@ -3258,78 +3215,49 @@ function SettingsView({
                 <SvgIcon name="church" />
               </div>
               <h3>Church identity</h3>
-              <p>This is how your parish appears across check-in kiosks and reports.</p>
+              <p>Primary ministry identification parameters recorded during church onboarding.</p>
             </div>
             <div>
               <div className="portal-fg">
                 <div className="portal-field">
-                  <label>Church name *</label>
+                  <label>
+                    <span>Church name</span>
+                    <span className="portal-ro-tag">Locked</span>
+                  </label>
                   <div className="portal-input-wrap">
                     <SvgIcon name="church" />
                     <input
                       value={profileData.churchName}
-                      onChange={(e) => {
-                        setProfileData({ ...profileData, churchName: e.target.value });
-                        setDirty(true);
-                      }}
-                      placeholder="e.g. Grace Chapel"
-                      required
+                      readOnly
+                      disabled
                     />
                   </div>
                 </div>
                 <div className="portal-field">
                   <label>
                     <span>Denomination</span>
-                    <span className="opt">Optional</span>
+                    <span className="portal-ro-tag">Locked</span>
                   </label>
                   <div className="portal-input-wrap">
                     <SvgIcon name="user" />
-                    <select
+                    <input
                       value={profileData.denomination}
-                      onChange={(e) => {
-                        setProfileData({ ...profileData, denomination: e.target.value });
-                        setDirty(true);
-                      }}
-                    >
-                      {[
-                        "Pentecostal",
-                        "Baptist",
-                        "Anglican",
-                        "Catholic",
-                        "Methodist",
-                        "Presbyterian",
-                        "Non-denominational",
-                        "Other",
-                      ].map((d) => (
-                        <option key={d} value={d}>
-                          {d}
-                        </option>
-                      ))}
-                    </select>
+                      readOnly
+                      disabled
+                    />
                   </div>
                 </div>
               </div>
 
               <div style={{ display: "flex", gap: 10, marginTop: 16, alignItems: "center" }}>
-                <button
-                  type="button"
-                  className="portal-btn sm"
-                  onClick={() => logoInputRef.current?.click()}
-                >
-                  <SvgIcon name="cam" />
-                  <span>Upload logo</span>
-                </button>
-                {logoUrl && (
-                  <button
-                    type="button"
-                    className="portal-btn sm"
-                    onClick={handleRemoveLogo}
-                  >
-                    <span>Remove logo</span>
-                  </button>
-                )}
+                <span className="portal-verified-chip">
+                  <SvgIcon name="check" />
+                  <span>Verified Onboarding Identity</span>
+                </span>
               </div>
-              <p className="portal-hint">PNG, JPG, WebP or SVG format, up to 2 MB.</p>
+              <p className="portal-hint">
+                Church name and denomination were registered during account initialization and are locked for multi-tenant database compliance.
+              </p>
             </div>
           </section>
 
@@ -3340,125 +3268,243 @@ function SettingsView({
                 <SvgIcon name="pin" />
               </div>
               <h3>Contact details</h3>
-              <p>Members and ministry leaders can reach the church administration through these channels.</p>
+              <p>Registered address, primary contact lines, and regional timezone.</p>
             </div>
             <div>
-              <div className="portal-fg">
-                <div className="portal-field w">
-                  <label>Address or parish location</label>
-                  <div className="portal-input-wrap">
-                    <SvgIcon name="pin" />
-                    <input
-                      value={profileData.address}
-                      onChange={(e) => {
-                        setProfileData({ ...profileData, address: e.target.value });
-                        setDirty(true);
-                      }}
-                      placeholder="Street, area or landmark"
-                    />
-                  </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                <div>
+                  <h4 style={{ margin: "0 0 2px", fontSize: 15, fontWeight: 700, color: "var(--tx)" }}>
+                    Parish Contact Channels
+                  </h4>
+                  <small style={{ color: "var(--mu)" }}>
+                    {isEditingContact
+                      ? "Edit your church's address, phone, email, and public website below."
+                      : "Public channels used by parish members and visitors."}
+                  </small>
                 </div>
-
-                <div className="portal-field">
-                  <label>Phone number</label>
-                  <div className="portal-input-wrap">
-                    <SvgIcon name="call" />
-                    <input
-                      type="tel"
-                      value={profileData.phone}
-                      onChange={(e) => {
-                        setProfileData({ ...profileData, phone: e.target.value });
-                        setDirty(true);
-                      }}
-                      placeholder="0801 234 5678"
-                    />
-                  </div>
-                </div>
-
-                <div className="portal-field">
-                  <label>
-                    <span>Contact email</span>
-                    <span className="opt">Optional</span>
-                  </label>
-                  <div className="portal-input-wrap">
-                    <SvgIcon name="mail" />
-                    <input
-                      type="email"
-                      value={profileData.contactEmail}
-                      onChange={(e) => {
-                        setProfileData({ ...profileData, contactEmail: e.target.value });
-                        setDirty(true);
-                      }}
-                      placeholder="contact@yourchurch.org"
-                    />
-                  </div>
-                </div>
-
-                <div className="portal-field">
-                  <label>
-                    <span>Website</span>
-                    <span className="opt">Optional</span>
-                  </label>
-                  <div className="portal-input-wrap">
-                    <SvgIcon name="globe" />
-                    <input
-                      value={profileData.website}
-                      onChange={(e) => {
-                        setProfileData({ ...profileData, website: e.target.value });
-                        setDirty(true);
-                      }}
-                      placeholder="www.yourchurch.org"
-                    />
-                  </div>
-                </div>
-
-                <div className="portal-field">
-                  <label>Timezone</label>
-                  <div className="portal-input-wrap">
-                    <SvgIcon name="clock" />
-                    <select
-                      value={profileData.timezone}
-                      onChange={(e) => {
-                        setProfileData({ ...profileData, timezone: e.target.value });
-                        setDirty(true);
-                      }}
-                    >
-                      <option value="West Africa Time (WAT)">West Africa Time (WAT - UTC+1)</option>
-                      <option value="Greenwich Mean Time (GMT)">Greenwich Mean Time (GMT)</option>
-                      <option value="East Africa Time (EAT)">East Africa Time (EAT - UTC+3)</option>
-                    </select>
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  className={`portal-btn sm ${isEditingContact ? "" : "p"}`}
+                  onClick={() => {
+                    if (isEditingContact) {
+                      handleCancelContactEdit();
+                    } else {
+                      setIsEditingContact(true);
+                    }
+                  }}
+                >
+                  <SvgIcon name={isEditingContact ? "out" : "gear"} />
+                  <span>{isEditingContact ? "Cancel Editing" : "Edit this section"}</span>
+                </button>
               </div>
+
+              {isEditingContact ? (
+                /* Editable Mode for Contact Fields */
+                <div>
+                  <div className="portal-fg">
+                    <div className="portal-field w">
+                      <label>
+                        <span>Address or parish location</span>
+                        <span className="opt">Editable</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="pin" />
+                        <input
+                          value={contactForm.address}
+                          onChange={(e) => setContactForm({ ...contactForm, address: e.target.value })}
+                          placeholder="Street, area or landmark"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>
+                        <span>Phone number</span>
+                        <span className="opt">Editable</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="call" />
+                        <input
+                          type="tel"
+                          value={contactForm.phone}
+                          onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                          placeholder="0801 234 5678"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>
+                        <span>Contact email</span>
+                        <span className="opt">Editable</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="mail" />
+                        <input
+                          type="email"
+                          value={contactForm.contactEmail}
+                          onChange={(e) => setContactForm({ ...contactForm, contactEmail: e.target.value })}
+                          placeholder="contact@yourchurch.org"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>
+                        <span>Website</span>
+                        <span className="opt">Editable</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="globe" />
+                        <input
+                          value={contactForm.website}
+                          onChange={(e) => setContactForm({ ...contactForm, website: e.target.value })}
+                          placeholder="www.yourchurch.org"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>Timezone</label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="clock" />
+                        <select
+                          value={contactForm.timezone}
+                          onChange={(e) => setContactForm({ ...contactForm, timezone: e.target.value })}
+                        >
+                          <option value="West Africa Time (WAT)">West Africa Time (WAT - UTC+1)</option>
+                          <option value="Greenwich Mean Time (GMT)">Greenwich Mean Time (GMT)</option>
+                          <option value="East Africa Time (EAT)">East Africa Time (EAT - UTC+3)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: 10, marginTop: 18 }}>
+                    <button
+                      type="button"
+                      className="portal-btn sm p"
+                      onClick={handleSaveContactSection}
+                    >
+                      <SvgIcon name="check" />
+                      <span>Save Section Updates</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="portal-btn sm"
+                      onClick={handleCancelContactEdit}
+                    >
+                      <span>Cancel</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Read-Only Mode for Contact Fields */
+                <div>
+                  <div className="portal-fg">
+                    <div className="portal-field w">
+                      <label>
+                        <span>Address or parish location</span>
+                        <span className="portal-ro-tag">Address</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="pin" />
+                        <input
+                          value={profileData.address}
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>
+                        <span>Phone number</span>
+                        <span className="portal-ro-tag">Phone</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="call" />
+                        <input
+                          type="tel"
+                          value={profileData.phone}
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>
+                        <span>Contact email</span>
+                        <span className="portal-ro-tag">Email</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="mail" />
+                        <input
+                          type="email"
+                          value={profileData.contactEmail}
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>
+                        <span>Website</span>
+                        <span className="portal-ro-tag">Website</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="globe" />
+                        <input
+                          value={profileData.website}
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>
+                        <span>Timezone</span>
+                        <span className="portal-ro-tag">Timezone</span>
+                      </label>
+                      <div className="portal-input-wrap">
+                        <SvgIcon name="clock" />
+                        <input
+                          value={profileData.timezone}
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: 18,
+                      padding: "12px 16px",
+                      borderRadius: 14,
+                      background: "rgba(109, 42, 60, 0.05)",
+                      border: "1px solid rgba(109, 42, 60, 0.15)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      fontSize: 13,
+                      color: "var(--tx)",
+                    }}
+                  >
+                    <div style={{ color: "var(--bl)", display: "flex", flexShrink: 0 }}>
+                      <SvgIcon name="lock" />
+                    </div>
+                    <span>
+                      <strong>Onboarding Protection:</strong> Core church identity (Name &amp; Denomination) is locked. You can click <strong>&ldquo;Edit this section&rdquo;</strong> above to update your contact channels.
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
-
-          {/* Floating Unsaved Changes Bar */}
-          {dirty && (
-            <div className="portal-sbar">
-              <span>
-                <i className="dt" />
-                Unsaved changes
-              </span>
-              <div style={{ display: "flex", gap: 10 }}>
-                <button
-                  type="button"
-                  className="portal-btn sm"
-                  onClick={handleDiscardProfile}
-                  style={{ background: "transparent", color: "#fff", borderColor: "rgba(255,255,255,0.4)" }}
-                >
-                  Discard
-                </button>
-                <button
-                  type="button"
-                  className="portal-btn sm p"
-                  onClick={() => handleSaveProfile()}
-                >
-                  Save changes
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       )}
 
@@ -3480,17 +3526,19 @@ function SettingsView({
               <span className="portal-verified-chip" style={{ marginBottom: 14 }}>
                 Owner of {profileData.churchName}
               </span>
-              <form onSubmit={handleSaveAccount}>
+              <div>
                 <div className="portal-fg">
                   <div className="portal-field">
-                    <label>Full name</label>
+                    <label>
+                      <span>Full name</span>
+                      <span className="portal-ro-tag">Onboarding Admin</span>
+                    </label>
                     <div className="portal-input-wrap">
                       <SvgIcon name="user" />
                       <input
                         value={accountData.name}
-                        onChange={(e) => setAccountData({ ...accountData, name: e.target.value })}
-                        placeholder="e.g. Pastor Adewale"
-                        required
+                        readOnly
+                        disabled
                       />
                     </div>
                   </div>
@@ -3498,14 +3546,14 @@ function SettingsView({
                   <div className="portal-field">
                     <label>
                       <span>Phone</span>
-                      <span className="opt">Optional</span>
+                      <span className="portal-ro-tag">Verified</span>
                     </label>
                     <div className="portal-input-wrap">
                       <SvgIcon name="call" />
                       <input
                         value={accountData.phone}
-                        onChange={(e) => setAccountData({ ...accountData, phone: e.target.value })}
-                        placeholder="0801 234 5678"
+                        readOnly
+                        disabled
                       />
                     </div>
                   </div>
@@ -3513,7 +3561,7 @@ function SettingsView({
                   <div className="portal-field w">
                     <label>
                       <span>Sign-in email address</span>
-                      <span className="portal-ro-tag">Read-Only</span>
+                      <span className="portal-ro-tag">Primary Auth</span>
                     </label>
                     <div className="portal-input-wrap">
                       <SvgIcon name="lock" />
@@ -3524,17 +3572,11 @@ function SettingsView({
                       />
                     </div>
                     <p className="portal-hint">
-                      Your sign-in email is cryptographically locked for security. Contact REDDOX Support to request a transfer.
+                      Your sign-in email is cryptographically locked for security. Contact REDDOX Support to request an administrator ownership transfer.
                     </p>
                   </div>
                 </div>
-
-                <div style={{ marginTop: 16 }}>
-                  <button type="submit" className="portal-btn p">
-                    Save details
-                  </button>
-                </div>
-              </form>
+              </div>
             </div>
           </section>
 

@@ -438,7 +438,7 @@ export default function ReddoxPortalDashboard() {
   };
 
   return (
-    <div className="portal-root">
+    <div className="portal-root" suppressHydrationWarning>
       {/* Background Luminous Light Orbs */}
       <div className="portal-glow">
         <i />
@@ -504,8 +504,8 @@ export default function ReddoxPortalDashboard() {
               <b>{currentPlan.n} plan</b>
               <span className="portal-chip" style={{ fontSize: 10, padding: "2px 6px" }}>{currentPlan.pr}</span>
             </div>
-            <small>
-              {members.length} of {currentPlan.mem.toLocaleString("en-NG")} members ({Math.round((members.length / currentPlan.mem) * 100)}%)
+            <small suppressHydrationWarning>
+              {`${members.length} of ${currentPlan.mem.toLocaleString("en-NG")} members (${Math.round((members.length / currentPlan.mem) * 100)}%)`}
             </small>
             <div className="portal-pb">
               <i
@@ -650,6 +650,19 @@ export default function ReddoxPortalDashboard() {
                   }
                 }}
               />
+              {memberSearch ? (
+                <button
+                  type="button"
+                  className="portal-srch-clear"
+                  onClick={() => setMemberSearch("")}
+                  title="Clear search"
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              ) : (
+                <span className="portal-srch-kbd" title="Quick search">/</span>
+              )}
             </div>
 
             {/* Top Right Actions */}
@@ -814,6 +827,7 @@ export default function ReddoxPortalDashboard() {
                 church={currentChurch}
                 onOpenModal={(m: any) => setActiveModal(m)}
                 onUpgrade={() => router.push("/checkout?plan=growth")}
+                onNavigate={changeView}
               />
             )}
 
@@ -1263,13 +1277,13 @@ function DashboardView({
 
       {/* Starter Plan Banner */}
       {plan.id === "starter" && (
-        <div className="portal-starter-banner">
+        <div className="portal-starter-banner" suppressHydrationWarning>
           <div className="portal-starter-banner-content">
             <span className="portal-starter-tag">Starter</span>
             <div className="portal-starter-text">
               <strong>Starter Plan (Free Forever) Active · 15 Member Quota</strong>
-              <p>
-                Managing {memberCount} of 15 members (manual attendance, 1 event/month). Upgrade to Growth for 1,000 members, tithes &amp; offerings, and QR attendance.
+              <p suppressHydrationWarning>
+                {`Managing ${memberCount} of 15 members (manual attendance, 1 event/month). Upgrade to Growth for 1,000 members, tithes & offerings, and QR attendance.`}
               </p>
             </div>
           </div>
@@ -1281,56 +1295,88 @@ function DashboardView({
 
       {/* KPI Stats Grid */}
       <div className="portal-gs">
+        {/* Card 1: Members */}
         <div className="portal-cd portal-st">
-          <div className="portal-ico">
-            <SvgIcon name="users" />
+          <div className="portal-st-head">
+            <div className="portal-ico">
+              <SvgIcon name="users" />
+            </div>
+            <span className="portal-trend pos">↑ +2 every Sunday</span>
           </div>
-          <small>Members</small>
-          <b>{memberCount}</b>
-          <span className="portal-chip">
-            {memberCount} of {plan.mem.toLocaleString("en-NG")} ({Math.round((memberCount / plan.mem) * 100)}%)
+          <span className="portal-st-lbl">Total Members</span>
+          <div className="portal-st-val-row">
+            <b>{memberCount}</b>
+          </div>
+          <span className="portal-st-sub" suppressHydrationWarning>
+            {`${memberCount} of ${plan.mem} quota · +2 this week`}
           </span>
         </div>
 
+        {/* Card 2: Attendance */}
         <div className="portal-cd portal-st">
-          <div className="portal-ico">
-            <SvgIcon name="check" />
+          <div className="portal-st-head">
+            <div className="portal-ico" style={{ background: "#e6f4ea", color: "#137333" }}>
+              <SvgIcon name="check" />
+            </div>
+            <span className="portal-trend pos">↑ +5% vs prev</span>
           </div>
-          <small>Last Attendance</small>
-          <b>{attendancePct}%</b>
-          <span className="portal-chip">
-            {lastSession.p.length} of {memberCount} · {lastSession.d}
+          <span className="portal-st-lbl">Sunday Attendance</span>
+          <div className="portal-st-val-row">
+            <b>{attendancePct}%</b>
+          </div>
+          <span className="portal-st-sub">
+            {lastSession.p.length} of {memberCount} present · {lastSession.d}
           </span>
         </div>
 
+        {/* Card 3: First-Timers */}
         <div className="portal-cd portal-st">
-          <div className="portal-ico">
-            <SvgIcon name="cal" />
+          <div className="portal-st-head">
+            <div className="portal-ico">
+              <SvgIcon name="uplus" />
+            </div>
+            <span className="portal-trend pos">↑ +2 every Sunday</span>
           </div>
-          <small>Upcoming Events</small>
-          <b>{events.length}</b>
-          <span className="portal-chip">
-            {plan.eventsPerMonth === 1 ? `${events.length} of 1/mo limit` : `Next: ${events[0]?.t || "None"}`}
+          <span className="portal-st-lbl">First-Timers</span>
+          <div className="portal-st-val-row">
+            <b>48</b>
+          </div>
+          <span className="portal-st-sub">
+            48 recorded · 2 new this week
           </span>
         </div>
 
+        {/* Card 4: Visitors Follow-Up */}
         <div className="portal-cd portal-st">
-          <div className="portal-ico">
-            <SvgIcon name="uplus" />
+          <div className="portal-st-head">
+            <div className="portal-ico">
+              <SvgIcon name="shield" />
+            </div>
+            <span className="portal-trend warn">2 Pending</span>
           </div>
-          <small>Visitors to Follow Up</small>
-          <b>{pendingVisitors}</b>
-          <span className="portal-chip">of {visitors.length} recorded</span>
+          <span className="portal-st-lbl">Visitors to Follow Up</span>
+          <div className="portal-st-val-row">
+            <b>{pendingVisitors}</b>
+          </div>
+          <span className="portal-st-sub">
+            of {visitors.length} visitors · 2 pending call
+          </span>
         </div>
 
+        {/* Card 5: Finances */}
         {plan.fin ? (
           <div className="portal-cd portal-st">
-            <div className="portal-ico">
-              <SvgIcon name="coin" />
+            <div className="portal-st-head">
+              <div className="portal-ico">
+                <SvgIcon name="coin" />
+              </div>
+              <span className="portal-trend pos">This Month</span>
             </div>
-            <small>Giving Recorded</small>
-            <b>{formatNaira(totalGiving)}</b>
-            <span className="portal-chip">{giving.length} gifts</span>
+            <span className="portal-st-lbl">Giving Recorded</span>
+            <div className="portal-st-val-row">
+              <b>{formatNaira(totalGiving)}</b>
+            </div>
+            <span className="portal-st-sub">{giving.length} contributions received</span>
           </div>
         ) : (
           <Link
@@ -1338,19 +1384,24 @@ function DashboardView({
             className="portal-cd portal-st"
             style={{ textDecoration: "none", color: "inherit", cursor: "pointer", border: "1px dashed var(--bd)" }}
           >
-            <div className="portal-ico">
-              <SvgIcon name="lock" />
+            <div className="portal-st-head">
+              <div className="portal-ico">
+                <SvgIcon name="lock" />
+              </div>
+              <span className="portal-trend gold">Growth &amp; Pro</span>
             </div>
-            <small>Finances (Tithes &amp; Offerings)</small>
-            <b style={{ fontSize: 16 }}>Growth &amp; Pro</b>
-            <span className="portal-chip" style={{ background: "var(--bl2)", color: "var(--bl)" }}>
+            <span className="portal-st-lbl">Tithes &amp; Offerings</span>
+            <div className="portal-st-val-row">
+              <b style={{ fontSize: 22 }}>Locked</b>
+            </div>
+            <span className="portal-st-sub" style={{ color: "var(--bl)", fontWeight: 600 }}>
               Upgrade to Unlock &rarr;
             </span>
           </Link>
         )}
       </div>
 
-      {/* 2-Column Grid: Attendance Chart & Upcoming Events */}
+      {/* 2-Column Grid: Attendance Chart & First-timers */}
       <div className="portal-g2">
         <div className="portal-cd">
           <h3>Attendance summary</h3>
@@ -1378,31 +1429,47 @@ function DashboardView({
         </div>
 
         <div className="portal-cd">
-          <h3>Upcoming events</h3>
-          {events.length ? (
-            events.slice(0, 4).map((x: any, i: number) => (
-              <div key={i} className="portal-li">
-                <span className="portal-dt">
-                  <b>{x.d}</b>
-                  {x.mo}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <h3 style={{ margin: 0 }}>First-timers &amp; follow-ups</h3>
+            <span className="portal-chip go" style={{ margin: 0, fontSize: 11 }}>
+              {pendingVisitors} pending
+            </span>
+          </div>
+          {visitors.length ? (
+            visitors.slice(0, 4).map((v: any, i: number) => (
+              <div key={v.id || i} className="portal-li">
+                <span className="portal-a" style={{ background: "var(--rd2)", color: "#7a5a12" }}>
+                  {getInitials(v.n)}
                 </span>
                 <p>
-                  <strong>{x.t}</strong>
+                  <strong>{v.n}</strong>
                   <br />
-                  <small>{x.tm}</small>
+                  <small>{v.nt || "First-time visitor"} · {v.d}</small>
                 </p>
-                <span className="portal-pill">{x.r} registered</span>
+                <span
+                  className={`portal-pill ${
+                    v.s === "New"
+                      ? "go"
+                      : v.s === "Became member"
+                      ? "ok"
+                      : v.s === "Contacted"
+                      ? ""
+                      : "no"
+                  }`}
+                >
+                  {v.s}
+                </span>
               </div>
             ))
           ) : (
             <div className="portal-emp">
               <div className="portal-ico">
-                <SvgIcon name="cal" />
+                <SvgIcon name="uplus" />
               </div>
-              <h3>No upcoming events</h3>
-              <p>Create an event so members can register.</p>
-              <button onClick={() => onOpenModal("createEvent")} className="portal-btn p">
-                Create event
+              <h3>No visitors recorded</h3>
+              <p>Record first-timers to track follow-up progress.</p>
+              <button onClick={() => onOpenModal("recordVisitor")} className="portal-btn p">
+                Add first-timer
               </button>
             </div>
           )}

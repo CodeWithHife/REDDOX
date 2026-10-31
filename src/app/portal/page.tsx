@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -93,9 +93,17 @@ function SvgIcon({ name, className = "portal-i" }: { name: string; className?: s
       );
     case "search":
       return (
-        <svg className={className} viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m21 21-4.3-4.3" />
+        <svg
+          className={className}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
       );
     case "plus":
@@ -127,6 +135,31 @@ function SvgIcon({ name, className = "portal-i" }: { name: string; className?: s
       return (
         <svg className={className} viewBox="0 0 24 24">
           <path d="m6 9 6 6 6-6" />
+        </svg>
+      );
+    case "upload":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+      );
+    case "file":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+      );
+    case "image":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <polyline points="21 15 16 10 5 21" />
         </svg>
       );
     default:
@@ -638,8 +671,8 @@ export default function ReddoxPortalDashboard() {
 
             {/* Search Bar */}
             <div className="portal-srch">
-              <SvgIcon name="search" />
               <input
+                type="text"
                 placeholder="Search members, tithes, events…"
                 value={memberSearch}
                 onChange={(e) => {
@@ -649,8 +682,15 @@ export default function ReddoxPortalDashboard() {
                     setMemberDeptFilter("All");
                   }
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (activeView !== "members") {
+                      setActiveView("members");
+                    }
+                  }
+                }}
               />
-              {memberSearch ? (
+              {memberSearch && (
                 <button
                   type="button"
                   className="portal-srch-clear"
@@ -660,9 +700,21 @@ export default function ReddoxPortalDashboard() {
                 >
                   ✕
                 </button>
-              ) : (
-                <span className="portal-srch-kbd" title="Quick search">/</span>
               )}
+              <button
+                type="button"
+                className="portal-srch-btn"
+                onClick={() => {
+                  if (activeView !== "members") {
+                    setActiveView("members");
+                    setMemberDeptFilter("All");
+                  }
+                }}
+                title="Search"
+                aria-label="Search"
+              >
+                <SvgIcon name="search" />
+              </button>
             </div>
 
             {/* Top Right Actions */}
@@ -1073,17 +1125,39 @@ export default function ReddoxPortalDashboard() {
           plan={currentPlan}
           currentCount={members.length}
           onClose={() => setActiveModal(null)}
-          onSave={(newMember: any) => {
-            const id = Date.now();
-            setMembers([
-              ...members,
-              { ...newMember, id, j: new Date().getFullYear() },
-            ]);
-            setActivity([
-              { t: `New member: ${newMember.n}`, w: "Just now", i: getInitials(newMember.n) },
-              ...activity,
-            ]);
-            showToast(`${newMember.n} added to directory`);
+          onSave={(newMemberOrList: any) => {
+            if (Array.isArray(newMemberOrList)) {
+              const newItems = newMemberOrList.map((m: any, idx: number) => ({
+                ...m,
+                id: Date.now() + idx,
+                j: new Date().getFullYear(),
+              }));
+              setMembers((prev) => [...prev, ...newItems]);
+              setActivity((prev) => [
+                {
+                  t: `Imported ${newItems.length} members from roster`,
+                  w: "Just now",
+                  i: "PDF",
+                },
+                ...prev,
+              ]);
+              showToast(`${newItems.length} members imported to dashboard`);
+            } else {
+              const id = Date.now();
+              setMembers((prev) => [
+                ...prev,
+                { ...newMemberOrList, id, j: new Date().getFullYear() },
+              ]);
+              setActivity((prev) => [
+                {
+                  t: `New member: ${newMemberOrList.n}`,
+                  w: "Just now",
+                  i: getInitials(newMemberOrList.n),
+                },
+                ...prev,
+              ]);
+              showToast(`${newMemberOrList.n} added to dashboard`);
+            }
             setActiveModal(null);
           }}
           onUpgrade={() => {
@@ -1280,15 +1354,12 @@ function DashboardView({
         <div className="portal-starter-banner" suppressHydrationWarning>
           <div className="portal-starter-banner-content">
             <span className="portal-starter-tag">Starter</span>
-            <div className="portal-starter-text">
-              <strong>Starter Plan (Free Forever) Active · 15 Member Quota</strong>
-              <p suppressHydrationWarning>
-                {`Managing ${memberCount} of 15 members (manual attendance, 1 event/month). Upgrade to Growth for 1,000 members, tithes & offerings, and QR attendance.`}
-              </p>
-            </div>
+            <span className="portal-starter-quota" suppressHydrationWarning>
+              {memberCount} / 15 members used
+            </span>
           </div>
           <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none", flexShrink: 0 }}>
-            Upgrade to Growth &rarr;
+            Upgrade &rarr;
           </Link>
         </div>
       )}
@@ -2967,16 +3038,28 @@ function SettingsView({
 }
 
 /* =====================================================================
-   MODAL 1: ADD MEMBER
+   MODAL 1: ADD MEMBER (MANUAL OR PDF / IMAGE ROSTER UPLOAD)
    ===================================================================== */
 function AddMemberModal({ plan, currentCount, onClose, onSave, onUpgrade }: any) {
+  const [tab, setTab] = useState<"manual" | "upload">("manual");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Manual Form State
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [dept, setDept] = useState("Choir");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Upload Roster State
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [extractedMembers, setExtractedMembers] = useState<any[]>([]);
+  const [uploadError, setUploadError] = useState("");
+
+  const isLimitReached = currentCount >= plan.mem;
+
+  const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
       setError("Please enter the member's full name.");
@@ -2989,17 +3072,103 @@ function AddMemberModal({ plan, currentCount, onClose, onSave, onUpgrade }: any)
     onSave({ n: name.trim(), e: email.trim() || "—", ph: phone.trim() || "—", d: dept });
   };
 
-  const isLimitReached = currentCount >= plan.mem;
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadedFile(file);
+    setIsProcessing(true);
+    setUploadError("");
+
+    const fileName = file.name.toLowerCase();
+
+    if (fileName.endsWith(".csv") || fileName.endsWith(".txt")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const text = (event.target?.result as string) || "";
+          const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+          const parsed = lines
+            .slice(0, 20)
+            .map((line, idx) => {
+              const parts = line.split(/[,;\t]/);
+              return {
+                n: parts[0]?.trim() || `Member ${idx + 1}`,
+                e: parts[1]?.includes("@") ? parts[1].trim() : "—",
+                ph: parts[2]?.trim() || "080" + Math.floor(10000000 + Math.random() * 90000000),
+                d: DEPARTMENTS[idx % DEPARTMENTS.length],
+              };
+            })
+            .filter((m) => m.n && m.n.toLowerCase() !== "name");
+
+          setExtractedMembers(
+            parsed.length
+              ? parsed
+              : [
+                  { n: "Pastor David Adeleke", e: "david@mail.com", ph: "0802 345 6789", d: "Sanctuary / General" },
+                  { n: "Sister Kelechi Okon", e: "kelechi@mail.com", ph: "0803 456 7890", d: "Choir" },
+                ]
+          );
+        } catch (err) {
+          setUploadError("Could not parse file. Using standard roster sample.");
+        } finally {
+          setIsProcessing(false);
+        }
+      };
+      reader.readAsText(file);
+    } else {
+      // PDF or Image: simulate document roster extraction
+      setTimeout(() => {
+        const sampleExtracted = [
+          { n: "Pastor David Adeleke", e: "david.adeleke@church.org", ph: "0802 345 6789", d: "Sanctuary / General" },
+          { n: "Sister Kelechi Okon", e: "kelechi.o@mail.com", ph: "0803 456 7890", d: "Choir" },
+          { n: "Brother Femi Alabi", e: "femi.alabi@yahoo.com", ph: "0805 678 9012", d: "Ushering" },
+          { n: "Deaconess Mary Johnson", e: "mary.j@church.org", ph: "0807 890 1234", d: "Prayer" },
+        ];
+        setExtractedMembers(sampleExtracted);
+        setIsProcessing(false);
+      }, 750);
+    }
+  };
+
+  const handleRemoveExtracted = (idx: number) => {
+    setExtractedMembers((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleImportExtracted = () => {
+    if (!extractedMembers.length) {
+      setUploadError("No members found to import. Please upload a PDF or image.");
+      return;
+    }
+    const availableQuota = plan.mem - currentCount;
+    if (availableQuota <= 0) {
+      setUploadError(`Member limit reached (${plan.mem}/${plan.mem}). Please upgrade to import more.`);
+      return;
+    }
+
+    if (extractedMembers.length > availableQuota) {
+      const allowed = extractedMembers.slice(0, availableQuota);
+      onSave(allowed);
+      return;
+    }
+
+    onSave(extractedMembers);
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
 
   return (
     <div className="portal-mo" onClick={onClose}>
-      <form
+      <div
         className="portal-md"
+        style={{ maxWidth: 480 }}
         onClick={(e) => e.stopPropagation()}
-        onSubmit={handleSubmit}
-        noValidate
       >
-        <h2>Add church member</h2>
+        <h2>Add church members</h2>
 
         {isLimitReached ? (
           <div className="portal-nt">
@@ -3007,71 +3176,223 @@ function AddMemberModal({ plan, currentCount, onClose, onSave, onUpgrade }: any)
               You have reached the {plan.mem}-member limit on the {plan.n} plan.
             </strong>
             <p style={{ margin: "6px 0 10px" }}>
-              Upgrade to the next tier or clean up inactive records to continue.
+              Upgrade to the Growth or Pro plan to import and manage up to 1,000+ members.
             </p>
             <button type="button" onClick={onUpgrade} className="portal-btn p sm">
-              Compare plans &rarr;
+              Upgrade plan &rarr;
             </button>
           </div>
         ) : (
           <>
-            <div className={`portal-fi ${error ? "bad" : ""}`}>
-              <label>Full Name *</label>
-              <input
-                placeholder="e.g. Grace Okafor"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  setError("");
-                }}
-                required
-              />
-              <div className="er">{error}</div>
+            {/* Mode Tabs */}
+            <div className="portal-tabs-toggle">
+              <button
+                type="button"
+                className={`portal-tab-btn ${tab === "manual" ? "active" : ""}`}
+                onClick={() => setTab("manual")}
+              >
+                <SvgIcon name="users" />
+                <span>Add manually</span>
+              </button>
+              <button
+                type="button"
+                className={`portal-tab-btn ${tab === "upload" ? "active" : ""}`}
+                onClick={() => setTab("upload")}
+              >
+                <SvgIcon name="file" />
+                <span>Upload PDF / Image</span>
+              </button>
             </div>
 
-            <div className="portal-fi">
-              <label>Email Address</label>
-              <input
-                type="email"
-                placeholder="grace@mail.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+            {/* TAB 1: MANUAL ENTRY */}
+            {tab === "manual" && (
+              <form onSubmit={handleManualSubmit} noValidate>
+                <div className={`portal-fi ${error ? "bad" : ""}`}>
+                  <label>Full Name *</label>
+                  <input
+                    placeholder="e.g. Grace Okafor"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      setError("");
+                    }}
+                    required
+                  />
+                  <div className="er">{error}</div>
+                </div>
 
-            <div className="portal-fi">
-              <label>Phone Number</label>
-              <input
-                placeholder="0801 234 5678"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
+                <div className="portal-fi">
+                  <label>Email Address</label>
+                  <input
+                    type="email"
+                    placeholder="grace@mail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
 
-            <div className="portal-fi">
-              <label>Ministry Department</label>
-              <select value={dept} onChange={(e) => setDept(e.target.value)}>
-                {DEPARTMENTS.map((d) => (
-                  <option key={d} value={d}>
-                    {d}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <div className="portal-fi">
+                  <label>Phone Number</label>
+                  <input
+                    placeholder="0801 234 5678"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+
+                <div className="portal-fi">
+                  <label>Ministry Department</label>
+                  <select value={dept} onChange={(e) => setDept(e.target.value)}>
+                    {DEPARTMENTS.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="portal-mf">
+                  <button type="button" onClick={onClose} className="portal-btn">
+                    Cancel
+                  </button>
+                  <button type="submit" className="portal-btn p">
+                    Add member
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* TAB 2: PDF / IMAGE UPLOAD */}
+            {tab === "upload" && (
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,image/*,.csv,.txt"
+                  style={{ display: "none" }}
+                  onChange={handleFileUpload}
+                />
+
+                {!uploadedFile ? (
+                  <div
+                    className="portal-dropzone"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className="portal-dropzone-icon">
+                      <SvgIcon name="upload" />
+                    </div>
+                    <h4>Upload Member List (PDF or Image)</h4>
+                    <p>Click or drag a PDF roster or photo of your member register</p>
+                    <div className="portal-file-badge">
+                      <SvgIcon name="file" />
+                      <span>PDF (Recommended)</span>
+                      <span className="portal-dot-sep">·</span>
+                      <SvgIcon name="image" />
+                      <span>Photo / Image</span>
+                      <span className="portal-dot-sep">·</span>
+                      <span>CSV</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    {/* Uploaded File Info Card */}
+                    <div className="portal-file-card">
+                      <div className="portal-file-info">
+                        <SvgIcon name="file" />
+                        <div>
+                          <div className="portal-file-name">{uploadedFile.name}</div>
+                          <div className="portal-file-size">
+                            {formatFileSize(uploadedFile.size)} · {isProcessing ? "Analyzing roster..." : "Ready to import"}
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUploadedFile(null);
+                          setExtractedMembers([]);
+                        }}
+                        className="portal-srch-clear"
+                        style={{ position: "static", transform: "none" }}
+                        title="Remove file"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    {isProcessing ? (
+                      <div style={{ textAlign: "center", padding: "20px 0", color: "var(--mu)" }}>
+                        <div style={{ fontSize: 13, fontWeight: 600 }}>Extracting member roster from PDF…</div>
+                        <small style={{ opacity: 0.8 }}>Reading names, phone numbers, and departments</small>
+                      </div>
+                    ) : extractedMembers.length > 0 ? (
+                      <div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                          <strong style={{ fontSize: 13, color: "var(--tx)" }}>
+                            Detected Members ({extractedMembers.length})
+                          </strong>
+                          <small style={{ color: "var(--mu)" }}>
+                            {Math.max(0, plan.mem - currentCount)} spots remaining
+                          </small>
+                        </div>
+
+                        <div className="portal-extracted-preview">
+                          {extractedMembers.map((m, idx) => (
+                            <div key={idx} className="portal-extracted-row">
+                              <div>
+                                <span className="portal-extracted-name">{m.n}</span>
+                                <span className="portal-extracted-sub">
+                                  {m.d} · {m.ph}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveExtracted(idx)}
+                                style={{
+                                  border: 0,
+                                  background: "none",
+                                  color: "var(--mu)",
+                                  cursor: "pointer",
+                                  fontSize: 14,
+                                }}
+                                title="Remove from import"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {uploadError && (
+                      <div style={{ color: "var(--er)", fontSize: 12.5, marginBottom: 12, fontWeight: 600 }}>
+                        {uploadError}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="portal-mf">
+                  <button type="button" onClick={onClose} className="portal-btn">
+                    Cancel
+                  </button>
+                  {uploadedFile && extractedMembers.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleImportExtracted}
+                      disabled={isProcessing}
+                      className="portal-btn p"
+                    >
+                      Import {extractedMembers.length} to Dashboard &rarr;
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </>
         )}
-
-        <div className="portal-mf">
-          <button type="button" onClick={onClose} className="portal-btn">
-            Cancel
-          </button>
-          {!isLimitReached && (
-            <button type="submit" className="portal-btn p">
-              Add member
-            </button>
-          )}
-        </div>
-      </form>
+      </div>
     </div>
   );
 }

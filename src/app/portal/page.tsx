@@ -408,12 +408,99 @@ export default function ReddoxPortalDashboard() {
   ]);
 
   const [sessions, setSessions] = useState([
-    { id: 1, n: "Sunday Service", d: "Oct 25", p: [1, 2, 4, 5, 7, 8, 10, 11] },
-    { id: 2, n: "Sunday Service", d: "Oct 18", p: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11] },
-    { id: 3, n: "Sunday Service", d: "Oct 11", p: [1, 2, 4, 5, 8, 10, 11] },
-    { id: 4, n: "Sunday Service", d: "Oct 4", p: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12] },
-    { id: 5, n: "Sunday Service", d: "Sep 27", p: [1, 4, 5, 7, 8, 10] },
-    { id: 6, n: "Sunday Service", d: "Sep 20", p: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12] },
+    {
+      id: 1,
+      category: "Sunday Celebration Service",
+      n: "Sunday Celebration Service (1st Service)",
+      d: "Oct 25",
+      time: "09:00 AM",
+      preacher: "Pastor Tosin Adewale",
+      notes: "Theme: Divine Supernatural Enlargement",
+      p: [1, 2, 4, 5, 7, 8, 10, 11],
+      qrScans: [
+        { id: "qr-1", memberId: 1, name: "Adaeze Okoye", time: "08:45 AM", device: "Mobile QR Scan" },
+        { id: "qr-2", memberId: 4, name: "Samuel Adeyemi", time: "08:52 AM", device: "Entrance Kiosk" },
+        { id: "qr-3", memberId: 10, name: "Chidi Obi", time: "09:02 AM", device: "Mobile QR Scan" },
+      ],
+      visitors: [
+        { id: 101, n: "Kemi Ajayi", ph: "0803 111 2233", em: "kemi@mail.com", g: "Female", w: "Tunde Bakare", dept: "Choir", nt: "Invited by colleague, interested in music ministry", tm: "08:55 AM", s: "New" },
+        { id: 102, n: "Obinna Eze", ph: "0805 444 7788", em: "obinna@mail.com", g: "Male", w: "Ruth Lawal", dept: "Youth", nt: "New resident in Abeokuta, seeking church home", tm: "09:10 AM", s: "Follow-up due" },
+      ],
+    },
+    {
+      id: 2,
+      category: "Sunday Celebration Service",
+      n: "Sunday Celebration Service",
+      d: "Oct 18",
+      time: "09:00 AM",
+      preacher: "Pastor Tosin Adewale",
+      notes: "Thanksgiving & Anointing Service",
+      p: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11],
+      qrScans: [
+        { id: "qr-4", memberId: 2, name: "Tunde Bakare", time: "08:50 AM", device: "Mobile QR Scan" },
+        { id: "qr-5", memberId: 5, name: "Ruth Lawal", time: "08:55 AM", device: "Entrance Kiosk" },
+      ],
+      visitors: [
+        { id: 103, n: "Halima Yusuf", ph: "0802 888 9900", em: "halima@mail.com", g: "Female", w: "Tunde Bakare", dept: "Media", nt: "Wants prayer for career direction", tm: "09:05 AM", s: "Contacted" },
+      ],
+    },
+    {
+      id: 3,
+      category: "Midweek Bible Study",
+      n: "Midweek Digging Deep",
+      d: "Oct 14",
+      time: "05:30 PM",
+      preacher: "Pastor Adewale",
+      notes: "Book of Ephesians Chapter 3 Expository",
+      p: [1, 2, 4, 5, 8, 10, 11],
+      qrScans: [
+        { id: "qr-6", memberId: 1, name: "Adaeze Okoye", time: "05:15 PM", device: "Mobile QR Scan" },
+      ],
+      visitors: [],
+    },
+    {
+      id: 4,
+      category: "Youth Fellowship",
+      n: "Youth Fire & Destiny Ignite",
+      d: "Oct 10",
+      time: "04:00 PM",
+      preacher: "Bro Samuel Adeyemi",
+      notes: "Youth Career and Destiny Alignment",
+      p: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12],
+      qrScans: [
+        { id: "qr-7", memberId: 4, name: "Samuel Adeyemi", time: "04:05 PM", device: "Mobile QR Scan" },
+        { id: "qr-8", memberId: 11, name: "Bisi Ade", time: "04:10 PM", device: "Mobile QR Scan" },
+      ],
+      visitors: [
+        { id: 104, n: "Peter Danjuma", ph: "0807 222 3344", em: "peter@mail.com", g: "Male", w: "Ruth Lawal", dept: "Youth", nt: "University student from FUNAAB", tm: "04:15 PM", s: "Became member" },
+      ],
+    },
+    {
+      id: 5,
+      category: "Faith Clinic & Prayer",
+      n: "Midweek Faith Clinic & Deliverance",
+      d: "Sep 27",
+      time: "05:30 PM",
+      preacher: "Pastor Adewale",
+      notes: "Healing and Deliverance Night",
+      p: [1, 4, 5, 7, 8, 10],
+      qrScans: [],
+      visitors: [],
+    },
+    {
+      id: 6,
+      category: "Workers & Leaders Meeting",
+      n: "Monthly Workers & Ministers Meeting",
+      d: "Sep 20",
+      time: "07:30 AM",
+      preacher: "Pastor Adewale",
+      notes: "Spiritual Preparedness and Ministry Excellence",
+      p: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12],
+      qrScans: [
+        { id: "qr-9", memberId: 2, name: "Tunde Bakare", time: "07:30 AM", device: "Mobile QR Scan" },
+      ],
+      visitors: [],
+    },
   ]);
   const [currentSessionId, setCurrentSessionId] = useState(1);
 
@@ -1062,9 +1149,81 @@ export default function ReddoxPortalDashboard() {
                       s.id === currentSessionId ? { ...s, p: members.map((m) => m.id) } : s
                     )
                   );
-                  showToast("Everyone marked present for this session.");
+                  showToast("All members marked present for this session.");
+                }}
+                onClearAllPresent={() => {
+                  setSessions((prev) =>
+                    prev.map((s) =>
+                      s.id === currentSessionId ? { ...s, p: [] } : s
+                    )
+                  );
+                  showToast("Attendance reset for this session.");
+                }}
+                onAddQrScan={(scan: any) => {
+                  setSessions((prev) =>
+                    prev.map((s) => {
+                      if (s.id !== currentSessionId) return s;
+                      const existing = s.qrScans || [];
+                      if (existing.some((q: any) => q.memberId === scan.memberId)) {
+                        return s;
+                      }
+                      return {
+                        ...s,
+                        qrScans: [scan, ...existing],
+                      };
+                    })
+                  );
+                  showToast(`QR Check-in recorded for ${scan.name}`);
+                }}
+                onRemoveQrScan={(scanId: any) => {
+                  setSessions((prev) =>
+                    prev.map((s) => {
+                      if (s.id !== currentSessionId) return s;
+                      return {
+                        ...s,
+                        qrScans: (s.qrScans || []).filter((q: any) => q.id !== scanId),
+                      };
+                    })
+                  );
+                  showToast("QR scan entry removed.");
+                }}
+                onAddSessionVisitor={(vis: any) => {
+                  setSessions((prev) =>
+                    prev.map((s) => {
+                      if (s.id !== currentSessionId) return s;
+                      return {
+                        ...s,
+                        visitors: [vis, ...(s.visitors || [])],
+                      };
+                    })
+                  );
+                  setVisitors((prev) => [
+                    {
+                      id: vis.id,
+                      n: vis.n,
+                      d: vis.d || "Today",
+                      w: vis.w || "Ushering Unit",
+                      s: "New",
+                      nt: vis.nt || `First-timer at ${vis.serviceCategory || "Service"}`,
+                    },
+                    ...prev,
+                  ]);
+                  showToast(`Visitor ${vis.n} recorded for this service.`);
+                }}
+                onRemoveSessionVisitor={(visitorId: any) => {
+                  setSessions((prev) =>
+                    prev.map((s) => {
+                      if (s.id !== currentSessionId) return s;
+                      return {
+                        ...s,
+                        visitors: (s.visitors || []).filter((v: any) => v.id !== visitorId),
+                      };
+                    })
+                  );
+                  showToast("Visitor record removed from session.");
                 }}
                 onNewSession={() => setActiveModal("newSession")}
+                showToast={showToast}
               />
             )}
 
@@ -1369,9 +1528,23 @@ export default function ReddoxPortalDashboard() {
           onClose={() => setActiveModal(null)}
           onSave={(sess: any) => {
             const id = Date.now();
-            setSessions([{ id, ...sess, p: [] }, ...sessions]);
+            setSessions([
+              {
+                id,
+                category: sess.category || "Sunday Celebration Service",
+                n: sess.n,
+                d: sess.d,
+                time: sess.time || "09:00 AM",
+                preacher: sess.preacher || "Pastor in charge",
+                notes: sess.notes || "",
+                p: [],
+                qrScans: [],
+                visitors: [],
+              },
+              ...sessions,
+            ]);
             setCurrentSessionId(id);
-            showToast("New service session created.");
+            showToast(`New ${sess.category || "service"} attendance session created.`);
             setActiveModal(null);
           }}
         />
@@ -1884,8 +2057,18 @@ function MembersView({
 }
 
 /* =====================================================================
-   VIEW 3: ATTENDANCE TRACKER
+   VIEW 3: ATTENDANCE TRACKER (SERVICE CATEGORIES, TRI-CHANNEL & AUTO-REPORTS)
    ===================================================================== */
+const SERVICE_CATEGORIES = [
+  "All Categories",
+  "Sunday Celebration Service",
+  "Midweek Bible Study",
+  "Faith Clinic & Prayer",
+  "Youth Fellowship",
+  "Workers & Leaders Meeting",
+  "Special Program & Vigil",
+];
+
 function AttendanceView({
   members,
   sessions,
@@ -1894,153 +2077,1191 @@ function AttendanceView({
   onSelectSession,
   onToggleAttendance,
   onMarkAllPresent,
+  onClearAllPresent,
+  onAddQrScan,
+  onRemoveQrScan,
+  onAddSessionVisitor,
+  onRemoveSessionVisitor,
   onNewSession,
+  showToast,
 }: any) {
-  const currentSession =
-    sessions.find((s: any) => s.id === currentSessionId) || sessions[0];
-  const presentCount = currentSession ? currentSession.p.length : 0;
-  const totalCount = members.length;
-  const pct = totalCount ? Math.round((presentCount / totalCount) * 100) : 0;
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [activeTab, setActiveTab] = useState<"manual" | "qr" | "visitor" | "reports">("manual");
+  const [memberSearch, setMemberSearch] = useState("");
+  const [deptFilter, setDeptFilter] = useState("All");
+  const [isKioskOpen, setIsKioskOpen] = useState(false);
+  const [selectedScanMemberId, setSelectedScanMemberId] = useState<string>("");
+
+  // Visitor Form State
+  const [visName, setVisName] = useState("");
+  const [visPhone, setVisPhone] = useState("");
+  const [visEmail, setVisEmail] = useState("");
+  const [visGender, setVisGender] = useState("Female");
+  const [visInvitedBy, setVisInvitedBy] = useState("");
+  const [visDept, setVisDept] = useState("Choir");
+  const [visNotes, setVisNotes] = useState("");
+  const [visError, setVisError] = useState("");
+
+  // Filtered Sessions according to selected category
+  const filteredSessions = useMemo(() => {
+    if (selectedCategory === "All Categories") return sessions;
+    return sessions.filter((s: any) => (s.category || "Sunday Celebration Service") === selectedCategory);
+  }, [sessions, selectedCategory]);
+
+  // Current session resolution
+  const currentSession = useMemo(() => {
+    const match = sessions.find((s: any) => s.id === currentSessionId);
+    if (match) return match;
+    return filteredSessions[0] || sessions[0];
+  }, [sessions, currentSessionId, filteredSessions]);
+
+  // Handle category chip change: also switch to a valid session in that category if needed
+  const handleCategorySelect = (cat: string) => {
+    setSelectedCategory(cat);
+    if (cat === "All Categories") return;
+    const sessionInCat = sessions.find((s: any) => (s.category || "Sunday Celebration Service") === cat);
+    if (sessionInCat) {
+      onSelectSession(sessionInCat.id);
+    }
+  };
+
+  // Calculations for current session
+  const manualList = useMemo(() => {
+    return currentSession ? (currentSession.p || []) : [];
+  }, [currentSession]);
+
+  const qrList = useMemo(() => {
+    return currentSession ? (currentSession.qrScans || []) : [];
+  }, [currentSession]);
+
+  const visitorList = useMemo(() => {
+    return currentSession ? (currentSession.visitors || []) : [];
+  }, [currentSession]);
+
+  const manualCount = manualList.length;
+  const qrCount = qrList.length;
+  const visitorCount = visitorList.length;
+  const totalAttendance = manualCount + qrCount + visitorCount;
+  const totalMembers = members.length;
+  const manualPct = totalMembers ? Math.round((manualCount / totalMembers) * 100) : 0;
+
+  // Tri-channel share percentages
+  const safeTotal = totalAttendance || 1;
+  const manualShare = Math.round((manualCount / safeTotal) * 100);
+  const qrShare = Math.round((qrCount / safeTotal) * 100);
+  const visitorShare = Math.round((visitorCount / safeTotal) * 100);
+
+  // Departments list
+  const departments = useMemo(() => {
+    const depts = new Set<string>();
+    members.forEach((m: any) => {
+      if (m.d) depts.add(m.d);
+    });
+    return ["All", ...Array.from(depts)];
+  }, [members]);
+
+  // Filtered members for manual attendance roster
+  const filteredMembers = useMemo(() => {
+    return members.filter((m: any) => {
+      const matchSearch =
+        m.n.toLowerCase().includes(memberSearch.toLowerCase()) ||
+        (m.ph && m.ph.includes(memberSearch));
+      const matchDept = deptFilter === "All" || m.d === deptFilter;
+      return matchSearch && matchDept;
+    });
+  }, [members, memberSearch, deptFilter]);
+
+  // Members eligible to scan (who haven't scanned in via QR yet)
+  const unscannedMembers = useMemo(() => {
+    const scannedIds = new Set(qrList.map((q: any) => q.memberId));
+    return members.filter((m: any) => !scannedIds.has(m.id));
+  }, [members, qrList]);
+
+  // Quick Action: Simulate QR Check-in
+  const handleSimulateQrScan = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedScanMemberId) {
+      showToast?.("Please select a member to simulate entrance QR scan.");
+      return;
+    }
+    const mem = members.find((m: any) => m.id === Number(selectedScanMemberId));
+    if (!mem) return;
+
+    const now = new Date();
+    const timeFormatted = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    onAddQrScan({
+      id: `qr-${Date.now()}`,
+      memberId: mem.id,
+      name: mem.n,
+      dept: mem.d,
+      time: timeFormatted,
+      device: "Entrance Kiosk Fast-Scan",
+    });
+
+    setSelectedScanMemberId("");
+  };
+
+  // Quick Action: Register Visitor
+  const handleRegisterVisitor = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!visName.trim()) {
+      setVisError("Please enter the visitor's full name.");
+      return;
+    }
+    if (!visPhone.trim()) {
+      setVisError("Please enter a phone number for pastoral follow-up.");
+      return;
+    }
+
+    const now = new Date();
+    const timeFormatted = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    const newVis = {
+      id: Date.now(),
+      n: visName.trim(),
+      ph: visPhone.trim(),
+      em: visEmail.trim(),
+      g: visGender,
+      w: visInvitedBy.trim() || "Ushering Unit",
+      dept: visDept,
+      nt: visNotes.trim() || `First time worshipper at ${currentSession?.category || "Service"}`,
+      tm: timeFormatted,
+      d: currentSession?.d || "Today",
+      serviceCategory: currentSession?.category || "Sunday Celebration Service",
+      s: "New",
+    };
+
+    onAddSessionVisitor(newVis);
+
+    // Reset form
+    setVisName("");
+    setVisPhone("");
+    setVisEmail("");
+    setVisInvitedBy("");
+    setVisNotes("");
+    setVisError("");
+  };
+
+  // Quick Action: Send WhatsApp Welcome Message to Visitor
+  const handleSendWelcome = (vis: any) => {
+    const greeting = `Praise God ${vis.n}! Thank you for worshipping with us today at ${currentSession?.n || "RCCG Rehoboth Chapel"}. It was an honor having you! We pray God's supernatural blessings and open doors upon your life. We look forward to seeing you again. - RCCG Rehoboth Pastoral Care`;
+    navigator.clipboard?.writeText(greeting);
+    showToast?.(`Personalized welcome message for ${vis.n} copied to clipboard! Ready to paste into WhatsApp.`);
+  };
+
+  // Export Comprehensive CSV Service Attendance Report
+  const handleExportCSV = () => {
+    if (!currentSession) return;
+    const headers = [
+      "Service Category",
+      "Session Title",
+      "Date",
+      "Minister",
+      "Attendance Channel",
+      "Attendee Name",
+      "Department / Source",
+      "Contact / Details",
+      "Time / Status",
+    ];
+
+    const rows: string[][] = [];
+
+    // 1. Manual Attendees
+    members.forEach((m: any) => {
+      if (currentSession.p?.includes(m.id)) {
+        rows.push([
+          currentSession.category || "General",
+          currentSession.n,
+          currentSession.d,
+          currentSession.preacher || "Pastor in charge",
+          "Manual Usher Roster",
+          m.n,
+          m.d,
+          m.ph || "N/A",
+          "Present",
+        ]);
+      }
+    });
+
+    // 2. QR Code Scans
+    (currentSession.qrScans || []).forEach((q: any) => {
+      rows.push([
+        currentSession.category || "General",
+        currentSession.n,
+        currentSession.d,
+        currentSession.preacher || "Pastor in charge",
+        "Entrance QR Scan",
+        q.name,
+        q.dept || "Member",
+        q.device || "Mobile QR",
+        q.time || "Logged",
+      ]);
+    });
+
+    // 3. Visitors
+    (currentSession.visitors || []).forEach((v: any) => {
+      rows.push([
+        currentSession.category || "General",
+        currentSession.n,
+        currentSession.d,
+        currentSession.preacher || "Pastor in charge",
+        "First-Time Visitor",
+        v.n,
+        `Invited by: ${v.w || "Walk-in"}`,
+        v.ph || "N/A",
+        v.tm || "Welcomed",
+      ]);
+    });
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers.join(","), ...rows.map((e) => e.map((val) => `"${(val || "").replace(/"/g, '""')}"`).join(","))].join(
+        "\n"
+      );
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute(
+      "download",
+      `attendance_${(currentSession.n || "service").toLowerCase().replace(/[^a-z0-9]/g, "_")}_${(currentSession.d || "").toLowerCase().replace(/[^a-z0-9]/g, "_")}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast?.("Service attendance report downloaded as CSV.");
+  };
+
+  // Copy Official Executive Summary for Pastor
+  const handleCopyPastorBrief = () => {
+    if (!currentSession) return;
+    const brief = `*RCCG REHOBOTH CHAPEL - OFFICIAL SERVICE ATTENDANCE REPORT*
+--------------------------------------------------
+Service Category: ${currentSession.category || "Sunday Service"}
+Service Name: ${currentSession.n}
+Date: ${currentSession.d} (${currentSession.time || "09:00 AM"})
+Minister: ${currentSession.preacher || "Pastor in charge"}
+Theme: ${currentSession.notes || "Worship Service"}
+
+*ATTENDANCE METRICS SUMMARY:*
+• Total Worshippers: ${totalAttendance} worshippers
+• Manual Usher Roster: ${manualCount} members (${manualShare}% contribution)
+• Entrance QR Self Check-Ins: ${qrCount} members (${qrShare}% contribution)
+• First-Time Visitors: ${visitorCount} souls welcomed (${visitorShare}% contribution)
+
+*FIRST-TIMERS HARVEST:*
+${visitorList.length > 0 ? visitorList.map((v: any, idx: number) => `${idx + 1}. ${v.n} (${v.g}) - Invited by ${v.w}`).join("\n") : "None recorded for this service."}
+
+_Prepared automatically by REDDOX Church Management System._`;
+
+    navigator.clipboard?.writeText(brief);
+    showToast?.("Pastor's executive attendance brief copied to clipboard!");
+  };
 
   return (
     <>
+      {/* Page Header */}
       <div className="portal-hd">
         <div>
-          <h1>Attendance</h1>
-          <p>{sessions.length} sessions recorded</p>
+          <h1>Attendance &amp; Service Headcount</h1>
+          <p>
+            Track attendance organized by service categories across Manual Roster, Entrance QR Check-Ins, and First-Time Visitors.
+          </p>
         </div>
         <div className="portal-acts">
           <button onClick={onNewSession} className="portal-btn p">
             <SvgIcon name="plus" />
-            <span>New session</span>
+            <span>Create attendance for category</span>
           </button>
         </div>
       </div>
 
-      {/* QR Check-in Box */}
-      {plan.qr ? (
-        <div
-          className="portal-cd"
-          style={{
-            display: "flex",
-            gap: 18,
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <svg className="portal-qr" viewBox="0 0 21 21" shapeRendering="crispEdges">
-            <path
-              fill="#2b2015"
-              d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM1 1v5h5V1zM15 1v5h5V1zM1 15v5h5v-5zM2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM8 0h2v2H8zM11 1h2v2h-2zM8 4h3v2H8zM12 5h1v2h-1zM0 8h2v2H0zM3 9h3v2H3zM8 8h2v3H8zM12 8h3v2h-3zM16 9h2v2h-2zM19 8h2v3h-2zM8 12h2v2H8zM11 13h2v2h-2zM14 12h2v2h-2zM18 13h3v2h-3zM8 16h3v2H8zM12 17h2v3h-2zM15 16h2v2h-2zM18 18h3v3h-3zM9 19h2v2H9z"
-            />
-          </svg>
-          <div style={{ flex: 1, minWidth: 200 }}>
-            <h3 style={{ marginBottom: 4 }}>Live QR Check-In</h3>
-            <p style={{ margin: 0, color: "var(--mu)" }}>
-              Members scan the code upon entry. Manual toggle check-in is also enabled
-              below for ushers.
-            </p>
+      {/* 1. Service Category Filter Bar */}
+      <div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "var(--mu)" }}>
+            Service Categories
+          </span>
+          <span style={{ fontSize: 12, color: "var(--mu)" }}>
+            {sessions.length} total recorded service sessions
+          </span>
+        </div>
+        <div className="portal-cat-bar">
+          {SERVICE_CATEGORIES.map((cat) => {
+            const count =
+              cat === "All Categories"
+                ? sessions.length
+                : sessions.filter((s: any) => (s.category || "Sunday Celebration Service") === cat).length;
+            const isActive = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                className={`portal-cat-chip ${isActive ? "active" : ""}`}
+                onClick={() => handleCategorySelect(cat)}
+              >
+                <span>{cat}</span>
+                <span className="chip-count">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 2. Active Session Hero & KPI Cards */}
+      {currentSession ? (
+        <div className="portal-session-hero">
+          <div className="portal-session-hero-top">
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
+                <span className="portal-session-badge">
+                  <SvgIcon name="cal" />
+                  {currentSession.category || "Sunday Celebration Service"}
+                </span>
+                <span style={{ fontSize: 13, color: "var(--mu)", fontWeight: 600 }}>
+                  📅 {currentSession.d} · ⏰ {currentSession.time || "09:00 AM"}
+                </span>
+                {currentSession.preacher && (
+                  <span style={{ fontSize: 13, color: "var(--mu)" }}>
+                    🎙️ {currentSession.preacher}
+                  </span>
+                )}
+              </div>
+              <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "var(--tx)" }}>
+                {currentSession.n}
+              </h2>
+              {currentSession.notes && (
+                <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--mu)", fontStyle: "italic" }}>
+                  &ldquo;{currentSession.notes}&rdquo;
+                </p>
+              )}
+            </div>
+
+            {/* Session Dropdown Switcher */}
+            <div style={{ minWidth: 240 }}>
+              <label style={{ display: "block", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "var(--mu)", marginBottom: 4 }}>
+                Switch Service Session
+              </label>
+              <select
+                value={currentSession.id}
+                onChange={(e) => onSelectSession(Number(e.target.value))}
+                style={{
+                  width: "100%",
+                  padding: "9px 12px",
+                  borderRadius: 10,
+                  border: "1px solid var(--bd)",
+                  background: "#ffffff",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "var(--tx)",
+                }}
+              >
+                {filteredSessions.map((s: any) => {
+                  const sManual = s.p?.length || 0;
+                  const sQr = s.qrScans?.length || 0;
+                  const sVis = s.visitors?.length || 0;
+                  const sTotal = sManual + sQr + sVis;
+                  return (
+                    <option key={s.id} value={s.id}>
+                      {s.n} · {s.d} ({sTotal} total)
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+
+          {/* 4 Attendance KPI Metrics */}
+          <div className="portal-att-kpis">
+            <div className="portal-att-kpi total">
+              <div className="portal-att-kpi-lbl">Total Headcount</div>
+              <div className="portal-att-kpi-val">
+                {totalAttendance}
+                <span style={{ fontSize: 13, fontWeight: 500, color: "var(--mu)" }}>worshippers</span>
+              </div>
+              <div className="portal-att-kpi-sub">
+                Combined Manual + QR + Visitors
+              </div>
+            </div>
+
+            <div className="portal-att-kpi manual">
+              <div className="portal-att-kpi-lbl">1. Manual Roster</div>
+              <div className="portal-att-kpi-val" style={{ color: "#059669" }}>
+                {manualCount}
+                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mu)" }}>
+                  ({manualPct}%)
+                </span>
+              </div>
+              <div className="portal-att-kpi-sub">
+                Checked in via usher roster
+              </div>
+            </div>
+
+            <div className="portal-att-kpi qr">
+              <div className="portal-att-kpi-lbl">2. QR Check-Ins</div>
+              <div className="portal-att-kpi-val" style={{ color: "#2563eb" }}>
+                {qrCount}
+                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mu)" }}>
+                  ({qrShare}%)
+                </span>
+              </div>
+              <div className="portal-att-kpi-sub">
+                Entrance scanner &amp; kiosk scans
+              </div>
+            </div>
+
+            <div className="portal-att-kpi visitor">
+              <div className="portal-att-kpi-lbl">3. First-Time Visitors</div>
+              <div className="portal-att-kpi-val" style={{ color: "var(--rd)" }}>
+                {visitorCount}
+                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mu)" }}>
+                  souls
+                </span>
+              </div>
+              <div className="portal-att-kpi-sub">
+                New guests registered today
+              </div>
+            </div>
           </div>
         </div>
       ) : (
-        <div
-          className="portal-cd portal-lock"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 16,
-            flexWrap: "wrap",
-            border: "1px dashed var(--bd)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div className="portal-ico" style={{ margin: 0 }}>
-              <SvgIcon name="lock" />
-            </div>
-            <div>
-              <b style={{ display: "block", fontSize: 15 }}>QR Attendance is available on Growth &amp; Pro</b>
-              <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 13 }}>
-                The Starter plan includes manual one-tap attendance tracking below. Upgrade to Growth for self-service QR check-in &amp; kiosk mode.
-              </p>
-            </div>
-          </div>
-          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
-            Unlock QR Attendance &rarr;
-          </Link>
+        <div className="portal-cd portal-emp">
+          <h3>No attendance session found for {selectedCategory}</h3>
+          <p>Create a new attendance session for this service category to start tracking.</p>
+          <button onClick={onNewSession} className="portal-btn p">
+            + Create Session
+          </button>
         </div>
       )}
 
-      {/* Session selector & Member Toggles */}
-      <div className="portal-cd">
-        <div className="portal-fl">
-          <select
-            value={currentSessionId}
-            onChange={(e) => onSelectSession(Number(e.target.value))}
-          >
-            {sessions.map((s: any) => (
-              <option key={s.id} value={s.id}>
-                {s.n} · {s.d}
-              </option>
-            ))}
-          </select>
-          <button onClick={onMarkAllPresent} className="portal-btn">
-            Mark all present
-          </button>
-        </div>
+      {/* 3. The 4 Tri-Channel Mode Navigation Tabs */}
+      {currentSession && (
+        <>
+          <div className="portal-att-nav">
+            <button
+              type="button"
+              className={`portal-att-nav-btn ${activeTab === "manual" ? "active" : ""}`}
+              onClick={() => setActiveTab("manual")}
+            >
+              <SvgIcon name="users" />
+              <span>1. Manual Attendance</span>
+              <span className="portal-att-nav-badge">{manualCount}</span>
+            </button>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            marginBottom: 12,
-          }}
-        >
-          <div
-            className="portal-pb"
-            style={{
-              flex: 1,
-              background: "var(--bl2)",
-              height: 10,
-              margin: 0,
-            }}
-          >
-            <i
-              style={{
-                width: `${pct}%`,
-                background: "var(--bl)",
-              }}
-            />
+            <button
+              type="button"
+              className={`portal-att-nav-btn ${activeTab === "qr" ? "active" : ""}`}
+              onClick={() => setActiveTab("qr")}
+            >
+              <SvgIcon name="cam" />
+              <span>2. QR Attendance</span>
+              <span className="portal-att-nav-badge">{qrCount}</span>
+            </button>
+
+            <button
+              type="button"
+              className={`portal-att-nav-btn ${activeTab === "visitor" ? "active" : ""}`}
+              onClick={() => setActiveTab("visitor")}
+            >
+              <SvgIcon name="uplus" />
+              <span>3. Visitor Attendance</span>
+              <span className="portal-att-nav-badge">{visitorCount}</span>
+            </button>
+
+            <button
+              type="button"
+              className={`portal-att-nav-btn ${activeTab === "reports" ? "active" : ""}`}
+              onClick={() => setActiveTab("reports")}
+            >
+              <SvgIcon name="chart" />
+              <span>4. Automatic Reports (The Three)</span>
+            </button>
           </div>
-          <b>
-            {presentCount} of {totalCount} · {pct}%
-          </b>
-        </div>
 
-        {members.map((m: any) => {
-          const isPresent = currentSession?.p.includes(m.id);
-          return (
-            <div key={m.id} className="portal-li">
-              <span className="portal-a">{getInitials(m.n)}</span>
-              <p>
-                <strong>{m.n}</strong>
-                <br />
-                <small>{m.d}</small>
-              </p>
-              <span className={`portal-pill ${isPresent ? "ok" : "no"}`}>
-                {isPresent ? "Present" : "Absent"}
-              </span>
-              <button
-                type="button"
-                className={`portal-sw ${isPresent ? "on" : ""}`}
-                aria-label={`Toggle attendance for ${m.n}`}
-                onClick={() => onToggleAttendance(m.id)}
-              />
+          {/* =========================================================
+              TAB 1: MANUAL ATTENDANCE (USHER ROSTER)
+              ========================================================= */}
+          {activeTab === "manual" && (
+            <div className="portal-cd">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Manual Attendance Roster</h3>
+                  <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 13 }}>
+                    One-tap usher check-in for members attending {currentSession.category}.
+                  </p>
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={onMarkAllPresent} className="portal-btn sm p">
+                    Mark all present
+                  </button>
+                  <button onClick={onClearAllPresent} className="portal-btn sm">
+                    Reset
+                  </button>
+                </div>
+              </div>
+
+              {/* Search & Department Filter */}
+              <div className="portal-fl" style={{ marginBottom: 14 }}>
+                <input
+                  type="text"
+                  placeholder="Search members by name or phone..."
+                  value={memberSearch}
+                  onChange={(e) => setMemberSearch(e.target.value)}
+                />
+                <select
+                  value={deptFilter}
+                  onChange={(e) => setDeptFilter(e.target.value)}
+                  style={{ minWidth: 160 }}
+                >
+                  {departments.map((d) => (
+                    <option key={d} value={d}>
+                      {d === "All" ? "All Departments" : d}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Progress Bar */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  marginBottom: 16,
+                  padding: "10px 14px",
+                  background: "var(--bl2)",
+                  borderRadius: 12,
+                }}
+              >
+                <div className="portal-pb" style={{ flex: 1, height: 10, margin: 0, background: "#ffffff" }}>
+                  <i style={{ width: `${manualPct}%`, background: "#059669" }} />
+                </div>
+                <b style={{ color: "var(--bl)", fontSize: 13 }}>
+                  {manualCount} of {totalMembers} members present ({manualPct}%)
+                </b>
+              </div>
+
+              {/* Member Items */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {filteredMembers.map((m: any) => {
+                  const isPresent = currentSession.p?.includes(m.id);
+                  return (
+                    <div key={m.id} className="portal-li" style={{ background: isPresent ? "rgba(5, 150, 105, 0.04)" : undefined }}>
+                      <span className="portal-a" style={{ background: isPresent ? "#059669" : undefined, color: isPresent ? "#fff" : undefined }}>
+                        {getInitials(m.n)}
+                      </span>
+                      <p>
+                        <strong>{m.n}</strong>
+                        <br />
+                        <small style={{ color: "var(--mu)" }}>
+                          {m.d} · {m.ph || "No phone"}
+                        </small>
+                      </p>
+                      <span className={`portal-pill ${isPresent ? "ok" : "no"}`}>
+                        {isPresent ? "Present" : "Absent"}
+                      </span>
+                      <button
+                        type="button"
+                        className={`portal-sw ${isPresent ? "on" : ""}`}
+                        aria-label={`Toggle attendance for ${m.n}`}
+                        onClick={() => onToggleAttendance(m.id)}
+                      />
+                    </div>
+                  );
+                })}
+
+                {filteredMembers.length === 0 && (
+                  <div className="portal-emp" style={{ padding: "24px 16px" }}>
+                    <p>No members match your search or department filter.</p>
+                    <button
+                      onClick={() => {
+                        setMemberSearch("");
+                        setDeptFilter("All");
+                      }}
+                      className="portal-btn sm"
+                    >
+                      Clear search
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          );
-        })}
-      </div>
+          )}
+
+          {/* =========================================================
+              TAB 2: QR ATTENDANCE (ENTRANCE SCANNER & KIOSK)
+              ========================================================= */}
+          {activeTab === "qr" && (
+            <div className="space-y-4" style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+              {/* QR Code Presentation Box */}
+              <div
+                className="portal-cd"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "auto 1fr",
+                  gap: 24,
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#ffffff",
+                    padding: 16,
+                    borderRadius: 16,
+                    border: "1px solid var(--bd)",
+                    display: "inline-block",
+                    boxShadow: "0 4px 14px rgba(43, 32, 21, 0.06)",
+                    textAlign: "center",
+                  }}
+                >
+                  <svg className="portal-qr" viewBox="0 0 21 21" style={{ width: 140, height: 140 }} shapeRendering="crispEdges">
+                    <path
+                      fill="#2b2015"
+                      d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM1 1v5h5V1zM15 1v5h5V1zM1 15v5h5v-5zM2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM8 0h2v2H8zM11 1h2v2h-2zM8 4h3v2H8zM12 5h1v2h-1zM0 8h2v2H0zM3 9h3v2H3zM8 8h2v3H8zM12 8h3v2h-3zM16 9h2v2h-2zM19 8h2v3h-2zM8 12h2v2H8zM11 13h2v2h-2zM14 12h2v2h-2zM18 13h3v2h-3zM8 16h3v2H8zM12 17h2v3h-2zM15 16h2v2h-2zM18 18h3v3h-3zM9 19h2v2H9z"
+                    />
+                  </svg>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "var(--mu)", marginTop: 6, letterSpacing: 0.5 }}>
+                    SVC-{currentSession.id}
+                  </div>
+                </div>
+
+                <div>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 10px", borderRadius: 99, background: "rgba(37, 99, 235, 0.1)", color: "#2563eb", fontSize: 12, fontWeight: 700, marginBottom: 8 }}>
+                    <span>● Live Entrance QR Code</span>
+                  </div>
+                  <h3 style={{ margin: "0 0 6px" }}>Digital Entrance Check-In for {currentSession.category}</h3>
+                  <p style={{ margin: "0 0 16px", color: "var(--mu)", fontSize: 13, lineHeight: 1.5 }}>
+                    Attendees can scan this QR code with their mobile phone cameras upon entering the auditorium. Scans are logged instantly in real-time.
+                  </p>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      onClick={() => setIsKioskOpen(true)}
+                      className="portal-btn p"
+                    >
+                      <span>📺 Launch Fullscreen Kiosk Mode</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const link = `${typeof window !== "undefined" ? window.location.origin : ""}/portal/checkin?session=${currentSession.id}`;
+                        navigator.clipboard?.writeText(link);
+                        showToast?.("Check-in link copied to clipboard!");
+                      }}
+                      className="portal-btn"
+                    >
+                      <SvgIcon name="copy" />
+                      <span>Copy Member Check-In Link</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Usher Camera / Fast-Scan Simulator Tool */}
+              <div className="portal-cd" style={{ background: "rgba(37, 99, 235, 0.03)", border: "1px solid rgba(37, 99, 235, 0.2)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+                  <div>
+                    <h4 style={{ margin: 0, color: "#1e40af", display: "flex", alignItems: "center", gap: 8 }}>
+                      <SvgIcon name="cam" />
+                      <span>Usher Entrance Scanner &amp; Fast-Logger</span>
+                    </h4>
+                    <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 12.5 }}>
+                      Simulate a live phone camera QR scan or fast-log an arriving member into the digital stream.
+                    </p>
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb", background: "#ffffff", padding: "4px 10px", borderRadius: 99, border: "1px solid var(--bd)" }}>
+                    {unscannedMembers.length} members not yet scanned
+                  </span>
+                </div>
+
+                <form onSubmit={handleSimulateQrScan} style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <select
+                    value={selectedScanMemberId}
+                    onChange={(e) => setSelectedScanMemberId(e.target.value)}
+                    style={{
+                      flex: 1,
+                      minWidth: 220,
+                      padding: "10px 14px",
+                      borderRadius: 10,
+                      border: "1px solid var(--bd)",
+                      background: "#ffffff",
+                      fontSize: 13,
+                    }}
+                  >
+                    <option value="">-- Select arriving member to log QR scan --</option>
+                    {unscannedMembers.map((m: any) => (
+                      <option key={m.id} value={m.id}>
+                        {m.n} ({m.d})
+                      </option>
+                    ))}
+                  </select>
+                  <button type="submit" className="portal-btn p" style={{ background: "#2563eb", borderColor: "#2563eb" }}>
+                    <span>⚡ Log QR Scan</span>
+                  </button>
+                </form>
+              </div>
+
+              {/* Scanned Attendees Table */}
+              <div className="portal-cd">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                  <h3 style={{ margin: 0 }}>Live Scanned Attendees Feed ({qrCount})</h3>
+                  <span style={{ fontSize: 12, color: "var(--mu)" }}>
+                    Real-time digital check-in records
+                  </span>
+                </div>
+
+                {qrList.length > 0 ? (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", textAlign: "left", fontSize: 13, borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--bd)", color: "var(--mu)" }}>
+                          <th style={{ padding: "8px 12px" }}>Member Name</th>
+                          <th style={{ padding: "8px 12px" }}>Check-In Time</th>
+                          <th style={{ padding: "8px 12px" }}>Channel / Device</th>
+                          <th style={{ padding: "8px 12px", textAlign: "right" }}>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {qrList.map((q: any) => (
+                          <tr key={q.id} style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.04)" }}>
+                            <td style={{ padding: "10px 12px", fontWeight: 700, color: "var(--tx)" }}>
+                              {q.name}
+                            </td>
+                            <td style={{ padding: "10px 12px", color: "var(--mu)" }}>
+                              🕒 {q.time || "Recent"}
+                            </td>
+                            <td style={{ padding: "10px 12px" }}>
+                              <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 99, background: "rgba(37, 99, 235, 0.1)", color: "#2563eb", fontWeight: 600 }}>
+                                {q.device || "Mobile QR"}
+                              </span>
+                            </td>
+                            <td style={{ padding: "10px 12px", textAlign: "right" }}>
+                              <button
+                                type="button"
+                                onClick={() => onRemoveQrScan(q.id)}
+                                style={{ background: "transparent", border: 0, color: "var(--er)", cursor: "pointer", fontSize: 12, fontWeight: 600 }}
+                              >
+                                Remove
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="portal-emp" style={{ padding: "28px 16px" }}>
+                    <div style={{ fontSize: 32, marginBottom: 8 }}>📱</div>
+                    <h3>Waiting for QR check-ins</h3>
+                    <p style={{ margin: 0 }}>
+                      Arriving worshippers scanning the entrance code or logged by ushers will appear here automatically.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* =========================================================
+              TAB 3: VISITOR ATTENDANCE (FIRST-TIMERS & GUESTS)
+              ========================================================= */}
+          {activeTab === "visitor" && (
+            <div className="space-y-4" style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+              {/* Registration Form */}
+              <div className="portal-cd">
+                <div style={{ marginBottom: 14 }}>
+                  <h3 style={{ margin: "0 0 2px" }}>Register First-Time Visitor for {currentSession.category}</h3>
+                  <p style={{ margin: 0, color: "var(--mu)", fontSize: 13 }}>
+                    Welcome and register new souls for immediate follow-up and pastoral care.
+                  </p>
+                </div>
+
+                <form onSubmit={handleRegisterVisitor} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {visError && (
+                    <div style={{ padding: "8px 14px", background: "rgba(179, 38, 30, 0.1)", border: "1px solid var(--er)", borderRadius: 10, color: "var(--er)", fontSize: 13 }}>
+                      {visError}
+                    </div>
+                  )}
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+                    <div className="portal-fi" style={{ margin: 0 }}>
+                      <label>Visitor Full Name *</label>
+                      <input
+                        placeholder="e.g. Sister Grace Adeleke"
+                        value={visName}
+                        onChange={(e) => setVisName(e.target.value)}
+                      />
+                    </div>
+                    <div className="portal-fi" style={{ margin: 0 }}>
+                      <label>Phone Number *</label>
+                      <input
+                        placeholder="e.g. 0803 123 4567"
+                        value={visPhone}
+                        onChange={(e) => setVisPhone(e.target.value)}
+                      />
+                    </div>
+                    <div className="portal-fi" style={{ margin: 0 }}>
+                      <label>Email Address (Optional)</label>
+                      <input
+                        placeholder="e.g. grace@gmail.com"
+                        value={visEmail}
+                        onChange={(e) => setVisEmail(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
+                    <div className="portal-fi" style={{ margin: 0 }}>
+                      <label>Gender</label>
+                      <select value={visGender} onChange={(e) => setVisGender(e.target.value)}>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                      </select>
+                    </div>
+                    <div className="portal-fi" style={{ margin: 0 }}>
+                      <label>Invited By / Source</label>
+                      <input
+                        placeholder="e.g. Brother Samuel / Social Media"
+                        value={visInvitedBy}
+                        onChange={(e) => setVisInvitedBy(e.target.value)}
+                      />
+                    </div>
+                    <div className="portal-fi" style={{ margin: 0 }}>
+                      <label>Ministry Area of Interest</label>
+                      <select value={visDept} onChange={(e) => setVisDept(e.target.value)}>
+                        <option value="Choir">Choir / Music</option>
+                        <option value="Ushering">Ushering / Protocol</option>
+                        <option value="Youth">Youth Church</option>
+                        <option value="Media">Media &amp; Tech</option>
+                        <option value="Children">Children Ministry</option>
+                        <option value="General">General Congregation</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="portal-fi" style={{ margin: 0 }}>
+                    <label>Prayer Request / Pastoral Note</label>
+                    <input
+                      placeholder="e.g. Praying for employment breakthrough and family peace"
+                      value={visNotes}
+                      onChange={(e) => setVisNotes(e.target.value)}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <button type="submit" className="portal-btn p">
+                      <span>+ Register Visitor for this Service</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Visitors Recorded in this Service Session */}
+              <div className="portal-cd">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                  <div>
+                    <h3 style={{ margin: 0 }}>Visitors Welcomed in this Service ({visitorCount})</h3>
+                    <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 13 }}>
+                      First-timers registered for {currentSession.category} on {currentSession.d}.
+                    </p>
+                  </div>
+                </div>
+
+                {visitorList.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {visitorList.map((vis: any) => (
+                      <div key={vis.id} className="portal-vis-card">
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <span
+                            style={{
+                              width: 38,
+                              height: 38,
+                              borderRadius: "50%",
+                              background: "var(--rd2)",
+                              color: "var(--rd)",
+                              display: "grid",
+                              placeItems: "center",
+                              fontWeight: 800,
+                              fontSize: 14,
+                            }}
+                          >
+                            {getInitials(vis.n)}
+                          </span>
+                          <div>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                              <strong style={{ fontSize: 14, color: "var(--tx)" }}>{vis.n}</strong>
+                              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 99, background: "rgba(184, 134, 45, 0.15)", color: "var(--rd)", fontWeight: 700 }}>
+                                First-Timer ({vis.g || "Guest"})
+                              </span>
+                            </div>
+                            <div style={{ fontSize: 12.5, color: "var(--mu)", marginTop: 2 }}>
+                              📞 {vis.ph} {vis.em ? `· ✉️ ${vis.em}` : ""} · 🤝 Invited by: <strong>{vis.w || "Walk-in"}</strong>
+                            </div>
+                            {vis.nt && (
+                              <div style={{ fontSize: 12, color: "var(--tx)", fontStyle: "italic", marginTop: 4 }}>
+                                &ldquo;{vis.nt}&rdquo;
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <button
+                            type="button"
+                            onClick={() => handleSendWelcome(vis)}
+                            className="portal-btn sm"
+                            style={{ color: "#059669", borderColor: "rgba(5, 150, 105, 0.3)" }}
+                          >
+                            <span>💬 WhatsApp Welcome</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => onRemoveSessionVisitor(vis.id)}
+                            style={{ background: "transparent", border: 0, color: "var(--er)", cursor: "pointer", fontSize: 12, fontWeight: 600, padding: 6 }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="portal-emp" style={{ padding: "28px 16px" }}>
+                    <div style={{ fontSize: 32, marginBottom: 8 }}>🤝</div>
+                    <h3>No visitors logged yet for this service</h3>
+                    <p style={{ margin: 0 }}>
+                      Use the registration form above to welcome and log all first-time guests.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* =========================================================
+              TAB 4: AUTOMATIC REPORTS (THE THREE COMBINED & ANALYZED)
+              ========================================================= */}
+          {activeTab === "reports" && (
+            <div className="space-y-4" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              {/* Top Consolidated Metrics */}
+              <div className="portal-cd">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
+                  <div>
+                    <span className="portal-session-badge" style={{ marginBottom: 4 }}>
+                      Automatic Service Analytics Report
+                    </span>
+                    <h3 style={{ margin: "4px 0 0", fontSize: 18 }}>
+                      Consolidated Tri-Channel Report: {currentSession.category}
+                    </h3>
+                    <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 13 }}>
+                      Live aggregated intelligence combining Manual Roster, Digital QR Scans, and First-Timer Harvest.
+                    </p>
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={handleExportCSV} className="portal-btn sm">
+                      <SvgIcon name="dl" />
+                      <span>Download CSV</span>
+                    </button>
+                    <button onClick={handleCopyPastorBrief} className="portal-btn sm p">
+                      <SvgIcon name="copy" />
+                      <span>Copy Pastor&apos;s Brief</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Visual Proportion Meter */}
+                <div className="portal-tri-meter-box">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 12.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "var(--mu)" }}>
+                      Tri-Channel Attendance Distribution
+                    </span>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: "var(--tx)" }}>
+                      {totalAttendance} Total Recorded
+                    </span>
+                  </div>
+
+                  <div className="portal-tri-meter-bar">
+                    <div className="portal-tri-seg manual" style={{ width: `${manualShare}%` }} title={`Manual: ${manualCount} (${manualShare}%)`} />
+                    <div className="portal-tri-seg qr" style={{ width: `${qrShare}%` }} title={`QR: ${qrCount} (${qrShare}%)`} />
+                    <div className="portal-tri-seg visitor" style={{ width: `${visitorShare}%` }} title={`Visitors: ${visitorCount} (${visitorShare}%)`} />
+                  </div>
+
+                  <div className="portal-tri-legend">
+                    <div className="portal-tri-legend-item">
+                      <span className="portal-tri-dot manual" />
+                      <span>Manual Ushers Roster: <strong>{manualCount} ({manualShare}%)</strong></span>
+                    </div>
+                    <div className="portal-tri-legend-item">
+                      <span className="portal-tri-dot qr" />
+                      <span>QR Entrance Scans: <strong>{qrCount} ({qrShare}%)</strong></span>
+                    </div>
+                    <div className="portal-tri-legend-item">
+                      <span className="portal-tri-dot visitor" />
+                      <span>First-Time Visitors: <strong>{visitorCount} ({visitorShare}%)</strong></span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Detailed Department Breakdown for this Service */}
+                <div style={{ marginTop: 20 }}>
+                  <h4 style={{ margin: "0 0 12px", fontSize: 14 }}>
+                    Department Attendance Breakdown (Manual Roster)
+                  </h4>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+                    {departments.filter((d) => d !== "All").map((dept) => {
+                      const deptMembers = members.filter((m: any) => m.d === dept);
+                      const deptPresent = deptMembers.filter((m: any) => currentSession.p?.includes(m.id)).length;
+                      const deptPct = deptMembers.length ? Math.round((deptPresent / deptMembers.length) * 100) : 0;
+                      return (
+                        <div key={dept} style={{ background: "rgba(0,0,0,0.02)", border: "1px solid var(--bd)", borderRadius: 12, padding: "12px 14px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, fontWeight: 700, marginBottom: 6 }}>
+                            <span>{dept}</span>
+                            <span style={{ color: deptPct > 50 ? "#059669" : "var(--mu)" }}>
+                              {deptPresent}/{deptMembers.length} ({deptPct}%)
+                            </span>
+                          </div>
+                          <div className="portal-pb" style={{ height: 6, margin: 0, background: "rgba(0,0,0,0.06)" }}>
+                            <i style={{ width: `${deptPct}%`, background: deptPct > 50 ? "#059669" : "var(--bl)" }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Pastor's Executive Bulletin & Official Brief */}
+              <div className="portal-brief-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                  <div>
+                    <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.8, color: "var(--rd)" }}>
+                      Official Executive Service Report
+                    </span>
+                    <h3 style={{ margin: "4px 0 0", fontSize: 18 }}>
+                      Pastor &amp; Leadership Board Briefing
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyPastorBrief}
+                    className="portal-btn sm"
+                    style={{ background: "#ffffff" }}
+                  >
+                    <span>📋 Copy Brief for WhatsApp</span>
+                  </button>
+                </div>
+
+                <div
+                  style={{
+                    background: "rgba(43, 32, 21, 0.03)",
+                    border: "1px solid var(--bd)",
+                    borderRadius: 12,
+                    padding: "16px 20px",
+                    fontFamily: "monospace",
+                    fontSize: 13,
+                    color: "var(--tx)",
+                    lineHeight: 1.6,
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+{`RCCG REHOBOTH CHAPEL - OFFICIAL SERVICE ATTENDANCE REPORT
+==========================================================
+Service Category : ${currentSession.category || "Sunday Service"}
+Service Session  : ${currentSession.n}
+Date & Time      : ${currentSession.d} (${currentSession.time || "09:00 AM"})
+Presiding Pastor : ${currentSession.preacher || "Pastor in charge"}
+Sermon Theme     : ${currentSession.notes || "Worship Service"}
+
+ATTENDANCE CHANNELS BREAKDOWN:
+----------------------------------------------------------
+1. Manual Usher Roster       : ${manualCount} members (${manualShare}%)
+2. Digital QR Code Check-Ins : ${qrCount} members (${qrShare}%)
+3. First-Time Visitors       : ${visitorCount} souls welcomed (${visitorShare}%)
+----------------------------------------------------------
+TOTAL CONGREGATION HEADCOUNT : ${totalAttendance} Worshippers
+
+FIRST-TIMERS HARVEST LIST:
+${visitorList.length > 0 ? visitorList.map((v: any, i: number) => ` [${i + 1}] ${v.n} (${v.g}) | Phone: ${v.ph} | Invited: ${v.w}`).join("\n") : " None recorded for this service."}
+
+AUTOMATED SUMMARY INSIGHT:
+${totalAttendance > 0 ? `Service attendance reached ${totalAttendance} worshippers across the 3 channels. ${manualCount} regular members were checked in by ushers, while ${qrCount} worshippers used digital entrance QR scans. ${visitorCount} first-time visitors were welcomed into church fellowship.` : "No attendance recorded yet for this service session."}`}
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* =========================================================
+          FULLSCREEN ENTRANCE KIOSK MODAL
+          ========================================================= */}
+      {isKioskOpen && currentSession && (
+        <div className="portal-kiosk-modal" onClick={() => setIsKioskOpen(false)}>
+          <div className="portal-kiosk-card" onClick={(e) => e.stopPropagation()}>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 800,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                color: "var(--rd)",
+                background: "var(--rd2)",
+                padding: "4px 14px",
+                borderRadius: 99,
+                display: "inline-block",
+                marginBottom: 12,
+              }}
+            >
+              RCCG Rehoboth Chapel · Entrance Check-In
+            </span>
+
+            <h2 style={{ fontSize: 24, fontWeight: 900, margin: "0 0 6px", color: "var(--tx)" }}>
+              Welcome to {currentSession.category}!
+            </h2>
+            <p style={{ margin: "0 0 20px", color: "var(--mu)", fontSize: 14 }}>
+              Scan the code with your smartphone camera to check in instantly.
+            </p>
+
+            <div
+              style={{
+                display: "inline-block",
+                background: "#ffffff",
+                padding: 24,
+                borderRadius: 24,
+                border: "2px solid var(--bd)",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
+                marginBottom: 20,
+              }}
+            >
+              <svg className="portal-qr" viewBox="0 0 21 21" style={{ width: 220, height: 220 }} shapeRendering="crispEdges">
+                <path
+                  fill="#2b2015"
+                  d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM1 1v5h5V1zM15 1v5h5V1zM1 15v5h5v-5zM2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM8 0h2v2H8zM11 1h2v2h-2zM8 4h3v2H8zM12 5h1v2h-1zM0 8h2v2H0zM3 9h3v2H3zM8 8h2v3H8zM12 8h3v2h-3zM16 9h2v2h-2zM19 8h2v3h-2zM8 12h2v2H8zM11 13h2v2h-2zM14 12h2v2h-2zM18 13h3v2h-3zM8 16h3v2H8zM12 17h2v3h-2zM15 16h2v2h-2zM18 18h3v3h-3zM9 19h2v2H9z"
+                />
+              </svg>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12, marginBottom: 24 }}>
+              <span style={{ fontSize: 13, color: "var(--mu)" }}>
+                ⚡ <strong>{qrCount}</strong> worshippers checked in digitally
+              </span>
+              <span style={{ color: "var(--bd)" }}>|</span>
+              <span style={{ fontSize: 13, color: "var(--mu)" }}>
+                Total Service: <strong>{totalAttendance}</strong>
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsKioskOpen(false)}
+              className="portal-btn p"
+              style={{ width: "100%", padding: "12px 20px" }}
+            >
+              Close Kiosk Screen
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -3143,123 +4364,156 @@ function SettingsView({
   };
 
   return (
-    <div className="portal-settings-wrap">
-      {/* Hero Section */}
-      <section className="portal-settings-hero">
-        <span className="portal-rn" />
-        <span className="portal-rn" />
-        <div className="portal-hid">
-          <div
-            className="portal-av"
-            title="Registered Church Emblem"
-            style={{ cursor: "default" }}
-          >
-            {logoUrl ? (
-              <img src={logoUrl} alt="Church logo" />
-            ) : (
-              getInitials(profileData.churchName)
-            )}
-            <b>
+    <div className="portal-settings-shell">
+      <div className="portal-settings-wrap">
+        {/* Workspace Command Topbar */}
+        <div className="portal-settings-topbar">
+          <div className="portal-settings-crumb">
+            <span className="portal-crumb-node">
               <SvgIcon name="church" />
-            </b>
+              <span>{profileData.churchName}</span>
+            </span>
+            <span className="portal-crumb-sep">/</span>
+            <span style={{ fontWeight: 600 }}>Workspace Settings</span>
+            <span className="portal-crumb-sep">/</span>
+            <span className="portal-crumb-active">
+              {TABS_CONFIG.find((t) => t.id === activeTab)?.label}
+            </span>
           </div>
-          <div>
-            <h1>{profileData.churchName}</h1>
-            <p>{profileData.denomination} &bull; Church Workspace</p>
-            <div className="portal-bdg">
-              <span className="gd">{currentPlanConfig.n} plan</span>
-              <span>Owner: {accountData.name}</span>
+
+          <div className="portal-settings-meta-chips">
+            <div className="portal-meta-chip">
+              <span className="portal-status-dot-green" />
+              <span>Live Node: <strong>af-south-1</strong></span>
             </div>
-          </div>
-          <div className="portal-hs">
-            <div>
-              <b>{memberCount}</b>
-              <small>Members</small>
+            <div className="portal-meta-chip">
+              <SvgIcon name="shield" />
+              <span>Role: <strong>Level 1 Admin</strong></span>
             </div>
-            <div>
-              <b>{branches.length}</b>
-              <small>Branch{branches.length > 1 ? "es" : ""}</small>
-            </div>
-            <div>
-              <b>{sessionsCount}</b>
-              <small>Sessions</small>
+            <div className="portal-meta-chip">
+              <SvgIcon name="lock" />
+              <span>Tenant: <strong>RDX-WS-84920</strong></span>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Tabs Navigation */}
-      <nav className="portal-tabs-nav" aria-label="Settings sections">
-        {TABS_CONFIG.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            className={activeTab === t.id ? "on" : ""}
-            onClick={() => setActiveTab(t.id)}
-          >
-            <SvgIcon name={t.icon} />
-            <span>{t.label}</span>
-          </button>
-        ))}
-      </nav>
-
-      {/* ==============================================================
-          TAB 1: CHURCH PROFILE (READ-ONLY ONBOARDING RECORD)
-          ============================================================== */}
-      {activeTab === "profile" && (
-        <div>
-          {/* Section 1: Church Identity */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
+        {/* Hero Section */}
+        <section className="portal-settings-hero">
+          <span className="portal-rn" />
+          <span className="portal-rn" />
+          <div className="portal-hid">
+            <div
+              className="portal-av"
+              title="Registered Church Emblem"
+              style={{ cursor: "default" }}
+            >
+              {logoUrl ? (
+                <img src={logoUrl} alt="Church logo" />
+              ) : (
+                getInitials(profileData.churchName)
+              )}
+              <b>
                 <SvgIcon name="church" />
-              </div>
-              <h3>Church identity</h3>
-              <p>Primary ministry identification parameters recorded during church onboarding.</p>
+              </b>
             </div>
             <div>
-              <div className="portal-fg">
-                <div className="portal-field">
-                  <label>
-                    <span>Church name</span>
-                    <span className="portal-ro-tag">Locked</span>
-                  </label>
-                  <div className="portal-input-wrap">
-                    <SvgIcon name="church" />
-                    <input
-                      value={profileData.churchName}
-                      readOnly
-                      disabled
-                    />
-                  </div>
-                </div>
-                <div className="portal-field">
-                  <label>
-                    <span>Denomination</span>
-                    <span className="portal-ro-tag">Locked</span>
-                  </label>
-                  <div className="portal-input-wrap">
-                    <SvgIcon name="user" />
-                    <input
-                      value={profileData.denomination}
-                      readOnly
-                      disabled
-                    />
-                  </div>
-                </div>
+              <h1>{profileData.churchName}</h1>
+              <p>{profileData.denomination} &bull; Church Workspace</p>
+              <div className="portal-bdg">
+                <span className="gd">{currentPlanConfig.n} plan</span>
+                <span>Owner: {accountData.name}</span>
               </div>
-
-              <div style={{ display: "flex", gap: 10, marginTop: 16, alignItems: "center" }}>
-                <span className="portal-verified-chip">
-                  <SvgIcon name="check" />
-                  <span>Verified Onboarding Identity</span>
-                </span>
-              </div>
-              <p className="portal-hint">
-                Church name and denomination were registered during account initialization and are locked for multi-tenant database compliance.
-              </p>
             </div>
-          </section>
+            <div className="portal-hs">
+              <div>
+                <b>{memberCount}</b>
+                <small>Members</small>
+              </div>
+              <div>
+                <b>{branches.length}</b>
+                <small>Branch{branches.length > 1 ? "es" : ""}</small>
+              </div>
+              <div>
+                <b>{sessionsCount}</b>
+                <small>Sessions</small>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Tabs Navigation */}
+        <nav className="portal-tabs-nav" aria-label="Settings sections">
+          {TABS_CONFIG.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              className={activeTab === t.id ? "on" : ""}
+              onClick={() => setActiveTab(t.id)}
+            >
+              <SvgIcon name={t.icon} />
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {/* ==============================================================
+            TAB 1: CHURCH PROFILE (READ-ONLY ONBOARDING RECORD)
+            ============================================================== */}
+        {activeTab === "profile" && (
+          <div>
+            {/* Section 1: Church Identity */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="church" />
+                </div>
+                <h3>Church identity</h3>
+                <p>Primary ministry identification parameters recorded during church onboarding.</p>
+              </div>
+              <div>
+                <div className="portal-cred-grid">
+                  <div className="portal-cred-tile">
+                    <div className="portal-cred-tile-head">
+                      <span className="portal-cred-tile-label">
+                        <SvgIcon name="church" />
+                        <span>Registered Church Name</span>
+                      </span>
+                      <span className="portal-ro-tag-locked">
+                        <SvgIcon name="lock" />
+                        <span>Locked</span>
+                      </span>
+                    </div>
+                    <div className="portal-cred-tile-val">{profileData.churchName}</div>
+                    <div className="portal-cred-tile-sub">Primary workspace identity registered during onboarding</div>
+                  </div>
+
+                  <div className="portal-cred-tile">
+                    <div className="portal-cred-tile-head">
+                      <span className="portal-cred-tile-label">
+                        <SvgIcon name="user" />
+                        <span>Denomination</span>
+                      </span>
+                      <span className="portal-ro-tag-locked">
+                        <SvgIcon name="lock" />
+                        <span>Locked</span>
+                      </span>
+                    </div>
+                    <div className="portal-cred-tile-val">{profileData.denomination}</div>
+                    <div className="portal-cred-tile-sub">Liturgical classification and ecclesiastical structure</div>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: 10, marginTop: 16, alignItems: "center" }}>
+                  <span className="portal-verified-chip">
+                    <SvgIcon name="check" />
+                    <span>Verified Onboarding Identity</span>
+                  </span>
+                </div>
+                <p className="portal-hint">
+                  Church name and denomination were registered during account initialization and are locked for multi-tenant database compliance.
+                </p>
+              </div>
+            </section>
 
           {/* Section 2: Contact Details */}
           <section className="portal-sec">
@@ -3300,7 +4554,12 @@ function SettingsView({
 
               {isEditingContact ? (
                 /* Editable Mode for Contact Fields */
-                <div>
+                <div className="portal-edit-section-box">
+                  <div className="portal-edit-badge">
+                    <SvgIcon name="gear" />
+                    <span>Editing Parish Contact Channels</span>
+                  </div>
+
                   <div className="portal-fg">
                     <div className="portal-field w">
                       <label>
@@ -3380,7 +4639,7 @@ function SettingsView({
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", gap: 10, marginTop: 18 }}>
+                  <div className="portal-edit-actions">
                     <button
                       type="button"
                       className="portal-btn sm p"
@@ -3401,82 +4660,65 @@ function SettingsView({
               ) : (
                 /* Read-Only Mode for Contact Fields */
                 <div>
-                  <div className="portal-fg">
-                    <div className="portal-field w">
-                      <label>
-                        <span>Address or parish location</span>
-                        <span className="portal-ro-tag">Address</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="pin" />
-                        <input
-                          value={profileData.address}
-                          readOnly
-                          disabled
-                        />
+                  <div className="portal-cred-grid">
+                    <div className="portal-cred-tile w">
+                      <div className="portal-cred-tile-head">
+                        <span className="portal-cred-tile-label">
+                          <SvgIcon name="pin" />
+                          <span>Parish Address / Physical Location</span>
+                        </span>
+                        <span className="portal-ro-tag-gold">Parish Location</span>
                       </div>
+                      <div className="portal-cred-tile-val">{profileData.address || "Plot 14, Commercial Avenue, Ikeja, Lagos"}</div>
+                      <div className="portal-cred-tile-sub">Physical campus visited by congregation and guests</div>
                     </div>
 
-                    <div className="portal-field">
-                      <label>
-                        <span>Phone number</span>
-                        <span className="portal-ro-tag">Phone</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="call" />
-                        <input
-                          type="tel"
-                          value={profileData.phone}
-                          readOnly
-                          disabled
-                        />
+                    <div className="portal-cred-tile">
+                      <div className="portal-cred-tile-head">
+                        <span className="portal-cred-tile-label">
+                          <SvgIcon name="call" />
+                          <span>Office Phone</span>
+                        </span>
+                        <span className="portal-ro-tag-gold">Official Line</span>
                       </div>
+                      <div className="portal-cred-tile-val">{profileData.phone || "0801 234 5678"}</div>
+                      <div className="portal-cred-tile-sub">Church administrative and member helpline</div>
                     </div>
 
-                    <div className="portal-field">
-                      <label>
-                        <span>Contact email</span>
-                        <span className="portal-ro-tag">Email</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="mail" />
-                        <input
-                          type="email"
-                          value={profileData.contactEmail}
-                          readOnly
-                          disabled
-                        />
+                    <div className="portal-cred-tile">
+                      <div className="portal-cred-tile-head">
+                        <span className="portal-cred-tile-label">
+                          <SvgIcon name="mail" />
+                          <span>Contact Email</span>
+                        </span>
+                        <span className="portal-ro-tag-gold">Official Mail</span>
                       </div>
+                      <div className="portal-cred-tile-val">{profileData.contactEmail || "contact@gracechapel.org"}</div>
+                      <div className="portal-cred-tile-sub">Official communication and general inquiries</div>
                     </div>
 
-                    <div className="portal-field">
-                      <label>
-                        <span>Website</span>
-                        <span className="portal-ro-tag">Website</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="globe" />
-                        <input
-                          value={profileData.website}
-                          readOnly
-                          disabled
-                        />
+                    <div className="portal-cred-tile">
+                      <div className="portal-cred-tile-head">
+                        <span className="portal-cred-tile-label">
+                          <SvgIcon name="globe" />
+                          <span>Public Website</span>
+                        </span>
+                        <span className="portal-ro-tag-gold">Web Portal</span>
                       </div>
+                      <div className="portal-cred-tile-val">{profileData.website || "www.gracechapel.org"}</div>
+                      <div className="portal-cred-tile-sub">Parish portal and online streaming URL</div>
                     </div>
 
-                    <div className="portal-field">
-                      <label>
-                        <span>Timezone</span>
-                        <span className="portal-ro-tag">Timezone</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="clock" />
-                        <input
-                          value={profileData.timezone}
-                          readOnly
-                          disabled
-                        />
+                    <div className="portal-cred-tile">
+                      <div className="portal-cred-tile-head">
+                        <span className="portal-cred-tile-label">
+                          <SvgIcon name="clock" />
+                          <span>Regional Timezone</span>
+                        </span>
+                        <span className="portal-ro-tag-gold">WAT (UTC+1)</span>
                       </div>
+                      <div className="portal-cred-tile-val">{profileData.timezone || "West Africa Time (WAT)"}</div>
+                      <div className="portal-cred-tile-sub">Service schedules, kiosk attendance &amp; event timestamps</div>
                     </div>
                   </div>
 
@@ -3523,57 +4765,65 @@ function SettingsView({
               <p>The registered church administrator who owns this ministry workspace.</p>
             </div>
             <div>
-              <span className="portal-verified-chip" style={{ marginBottom: 14 }}>
-                Owner of {profileData.churchName}
-              </span>
-              <div>
-                <div className="portal-fg">
-                  <div className="portal-field">
-                    <label>
-                      <span>Full name</span>
-                      <span className="portal-ro-tag">Onboarding Admin</span>
-                    </label>
-                    <div className="portal-input-wrap">
+              {/* Administrator Identity Banner */}
+              <div className="portal-admin-id-banner">
+                <div className="portal-admin-id-left">
+                  <div className="portal-admin-id-avatar">
+                    <SvgIcon name="user" />
+                  </div>
+                  <div className="portal-admin-id-text">
+                    <h4>{accountData.name}</h4>
+                    <p>Lead Administrator &bull; Registered Owner of {profileData.churchName}</p>
+                  </div>
+                </div>
+                <span className="portal-ro-tag-green">
+                  <SvgIcon name="check" />
+                  <span>Level 1 Authority</span>
+                </span>
+              </div>
+
+              <div className="portal-cred-grid">
+                <div className="portal-cred-tile">
+                  <div className="portal-cred-tile-head">
+                    <span className="portal-cred-tile-label">
                       <SvgIcon name="user" />
-                      <input
-                        value={accountData.name}
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div className="portal-field">
-                    <label>
-                      <span>Phone</span>
-                      <span className="portal-ro-tag">Verified</span>
-                    </label>
-                    <div className="portal-input-wrap">
-                      <SvgIcon name="call" />
-                      <input
-                        value={accountData.phone}
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div className="portal-field w">
-                    <label>
-                      <span>Sign-in email address</span>
-                      <span className="portal-ro-tag">Primary Auth</span>
-                    </label>
-                    <div className="portal-input-wrap">
+                      <span>Full Name</span>
+                    </span>
+                    <span className="portal-ro-tag-locked">
                       <SvgIcon name="lock" />
-                      <input
-                        value={accountData.email}
-                        disabled
-                        readOnly
-                      />
-                    </div>
-                    <p className="portal-hint">
-                      Your sign-in email is cryptographically locked for security. Contact REDDOX Support to request an administrator ownership transfer.
-                    </p>
+                      <span>Admin</span>
+                    </span>
+                  </div>
+                  <div className="portal-cred-tile-val">{accountData.name}</div>
+                  <div className="portal-cred-tile-sub">Primary contact recorded during church onboarding</div>
+                </div>
+
+                <div className="portal-cred-tile">
+                  <div className="portal-cred-tile-head">
+                    <span className="portal-cred-tile-label">
+                      <SvgIcon name="call" />
+                      <span>Direct Phone</span>
+                    </span>
+                    <span className="portal-ro-tag-gold">Verified</span>
+                  </div>
+                  <div className="portal-cred-tile-val">{accountData.phone}</div>
+                  <div className="portal-cred-tile-sub">Administrative line for priority notices &amp; 2FA</div>
+                </div>
+
+                <div className="portal-cred-tile w">
+                  <div className="portal-cred-tile-head">
+                    <span className="portal-cred-tile-label">
+                      <SvgIcon name="lock" />
+                      <span>Primary Sign-In Email Address</span>
+                    </span>
+                    <span className="portal-ro-tag-locked">
+                      <SvgIcon name="lock" />
+                      <span>Primary Auth</span>
+                    </span>
+                  </div>
+                  <div className="portal-cred-tile-val">{accountData.email}</div>
+                  <div className="portal-cred-tile-sub" style={{ color: "var(--tx)", marginTop: 8 }}>
+                    Your sign-in email is cryptographically locked for tenant security. To initiate an administrative ownership transfer, contact REDDOX Support.
                   </div>
                 </div>
               </div>
@@ -4255,6 +5505,7 @@ function SettingsView({
           </form>
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -4965,17 +6216,37 @@ function CreateEventModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
 }
 
 /* =====================================================================
-   MODAL 6: NEW ATTENDANCE SESSION
+   MODAL 6: NEW ATTENDANCE SESSION WITH SERVICE CATEGORY
    ===================================================================== */
 function NewSessionModal({ onClose, onSave }: any) {
-  const [name, setName] = useState("Sunday Service");
-  const [dateStr, setDateStr] = useState("");
+  const [category, setCategory] = useState("Sunday Celebration Service");
+  const [name, setName] = useState("Sunday Celebration Service");
+  const [dateStr, setDateStr] = useState(new Date().toISOString().split("T")[0]);
+  const [timeStr, setTimeStr] = useState("09:00 AM");
+  const [preacher, setPreacher] = useState("Pastor Tosin Adewale");
+  const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
+
+  const handleCategoryChange = (cat: string) => {
+    setCategory(cat);
+    setName(cat);
+    if (cat.includes("Midweek") || cat.includes("Clinic")) {
+      setTimeStr("05:30 PM");
+    } else if (cat.includes("Youth")) {
+      setTimeStr("04:00 PM");
+    } else if (cat.includes("Vigil") || cat.includes("Night")) {
+      setTimeStr("10:00 PM");
+    } else if (cat.includes("Workers")) {
+      setTimeStr("07:30 AM");
+    } else {
+      setTimeStr("09:00 AM");
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError("Please name the attendance session.");
+      setError("Please provide a name or title for this attendance session.");
       return;
     }
     const d = dateStr
@@ -4984,7 +6255,15 @@ function NewSessionModal({ onClose, onSave }: any) {
           day: "numeric",
         })
       : "Today";
-    onSave({ n: name.trim(), d });
+
+    onSave({
+      category,
+      n: name.trim(),
+      d,
+      time: timeStr,
+      preacher: preacher.trim() || "Pastor in charge",
+      notes: notes.trim(),
+    });
   };
 
   return (
@@ -4994,36 +6273,106 @@ function NewSessionModal({ onClose, onSave }: any) {
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
         noValidate
+        style={{ maxWidth: 520 }}
       >
-        <h2>New attendance session</h2>
+        <h2>Create Service Attendance Session</h2>
+        <p style={{ margin: "-8px 0 16px", color: "var(--mu)", fontSize: 13 }}>
+          Organize attendance by service category with manual roster, QR kiosk, and visitor tracking.
+        </p>
+
+        <div className="portal-fi">
+          <label>Service Category *</label>
+          <select
+            value={category}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+          >
+            <option value="Sunday Celebration Service">Sunday Celebration Service</option>
+            <option value="Midweek Bible Study">Midweek Bible Study (Digging Deep)</option>
+            <option value="Faith Clinic & Prayer">Faith Clinic &amp; Prayer Meeting</option>
+            <option value="Youth Fellowship">Youth &amp; Young Adults Fellowship</option>
+            <option value="Workers & Leaders Meeting">Workers &amp; Leaders Meeting</option>
+            <option value="Special Program & Vigil">Special Program / Night Vigil</option>
+          </select>
+        </div>
 
         <div className={`portal-fi ${error ? "bad" : ""}`}>
-          <label>Session Name</label>
+          <label>Session Title / Service Name *</label>
           <input
             value={name}
             onChange={(e) => {
               setName(e.target.value);
               setError("");
             }}
+            placeholder="e.g. Sunday Celebration Service (1st Service)"
           />
           <div className="er">{error}</div>
         </div>
 
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="portal-fi">
+            <label>Service Date *</label>
+            <input
+              type="date"
+              value={dateStr}
+              onChange={(e) => setDateStr(e.target.value)}
+            />
+          </div>
+          <div className="portal-fi">
+            <label>Service Time</label>
+            <input
+              type="text"
+              value={timeStr}
+              onChange={(e) => setTimeStr(e.target.value)}
+              placeholder="e.g. 09:00 AM"
+            />
+          </div>
+        </div>
+
         <div className="portal-fi">
-          <label>Date</label>
+          <label>Minister / Preacher</label>
           <input
-            type="date"
-            value={dateStr}
-            onChange={(e) => setDateStr(e.target.value)}
+            type="text"
+            value={preacher}
+            onChange={(e) => setPreacher(e.target.value)}
+            placeholder="e.g. Pastor Tosin Adewale"
           />
         </div>
 
-        <div className="portal-mf">
+        <div className="portal-fi">
+          <label>Sermon Theme / Service Notes (Optional)</label>
+          <input
+            type="text"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="e.g. Supernatural Fruitfulness & Open Doors"
+          />
+        </div>
+
+        <div
+          style={{
+            background: "rgba(109, 42, 60, 0.05)",
+            border: "1px dashed var(--bd)",
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontSize: 12,
+            color: "var(--mu)",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <span style={{ fontSize: 16 }}>⚡</span>
+          <span>
+            This session will be ready for <strong>Manual Attendance</strong>, <strong>Entrance QR Check-In</strong>, and <strong>Visitor Registration</strong> with real-time automatic reports.
+          </span>
+        </div>
+
+        <div className="portal-mf" style={{ marginTop: 16 }}>
           <button type="button" onClick={onClose} className="portal-btn">
             Cancel
           </button>
           <button type="submit" className="portal-btn p">
-            Create session
+            Create Attendance Session
           </button>
         </div>
       </form>

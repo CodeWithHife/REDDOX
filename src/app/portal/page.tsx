@@ -6047,13 +6047,193 @@ function EditMemberModal({ member, onClose, onSave }: any) {
 }
 
 /* =====================================================================
-   MODAL 3: RECORD GIVING
+   RECEIPT VIEWER MODAL
+   ===================================================================== */
+function ReceiptViewerModal({ receipt, onClose }: { receipt: any; onClose: () => void }) {
+  if (!receipt) return null;
+
+  return (
+    <div className="portal-mo" onClick={onClose}>
+      <div
+        className="portal-md portal-receipt-modal-card"
+        onClick={(e) => e.stopPropagation()}
+        style={{ maxWidth: 540 }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                background: "var(--rd6)",
+                color: "var(--rd)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <SvgIcon name="file" />
+            </div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>
+                {receipt.title || "Transaction Slip"}
+              </h3>
+              <small style={{ color: "var(--mu)", fontSize: 12 }}>
+                {receipt.date || "Today"} · {receipt.category || "Treasury"}
+              </small>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="portal-srch-clear"
+            style={{ position: "static", transform: "none" }}
+            title="Close modal"
+          >
+            ✕
+          </button>
+        </div>
+
+        {receipt.image ? (
+          <div
+            style={{
+              marginBottom: 16,
+              borderRadius: 12,
+              overflow: "hidden",
+              border: "1px solid var(--bd)",
+              background: "#0c0a09",
+              textAlign: "center",
+              maxHeight: 380,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 6,
+            }}
+          >
+            <img
+              src={receipt.image}
+              alt="Receipt Voucher"
+              style={{
+                maxWidth: "100%",
+                maxHeight: 360,
+                objectFit: "contain",
+                display: "block",
+                borderRadius: 6,
+              }}
+            />
+          </div>
+        ) : (
+          <div className="portal-receipt-voucher">
+            <div className="portal-receipt-voucher-header">
+              <span className="portal-receipt-seal">OFFICIAL TREASURY VOUCHER</span>
+              <span className="portal-receipt-ref">
+                REF: {receipt.ref || `TX-${Math.floor(100000 + Math.random() * 900000)}`}
+              </span>
+            </div>
+            <div className="portal-receipt-voucher-body">
+              <div className="portal-receipt-row">
+                <span>Category / Fund</span>
+                <strong>{receipt.category || "General Fund"}</strong>
+              </div>
+              <div className="portal-receipt-row">
+                <span>Payer / Payee</span>
+                <strong>{receipt.party || "Congregation Member"}</strong>
+              </div>
+              <div className="portal-receipt-row">
+                <span>Date Logged</span>
+                <strong>{receipt.date || "Today"}</strong>
+              </div>
+              <div className="portal-receipt-row total">
+                <span>Amount Remitted</span>
+                <strong style={{ color: "var(--rd)", fontSize: 18, fontWeight: 800 }}>
+                  {formatNaira(receipt.amount || 0)}
+                </strong>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 16,
+            paddingTop: 12,
+            borderTop: "1px solid var(--bd)",
+          }}
+        >
+          <span style={{ fontSize: 12, color: "var(--mu)" }}>
+            {receipt.fileName ? receipt.fileName : "Audited digital treasury record"}
+          </span>
+          <div style={{ display: "flex", gap: 8 }}>
+            {receipt.image && (
+              <a
+                href={receipt.image}
+                download={receipt.fileName || "receipt.png"}
+                className="portal-btn sm"
+                style={{ textDecoration: "none" }}
+              >
+                Download Slip
+              </a>
+            )}
+            <button type="button" onClick={onClose} className="portal-btn sm p">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =====================================================================
+   MODAL 3: RECORD GIVING (WITH SLIP / RECEIPT UPLOAD)
    ===================================================================== */
 function RecordGivingModal({ members, onClose, onSave }: any) {
+  const [tab, setTab] = useState<"manual" | "upload">("manual");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const manualFileInputRef = useRef<HTMLInputElement>(null);
+
   const [memberId, setMemberId] = useState(members[0]?.id || 1);
   const [type, setType] = useState("Tithe");
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
+
+  // Receipt image attachment state
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string>("");
+  const [receiptName, setReceiptName] = useState<string>("");
+
+  const processFile = (file: File) => {
+    setReceiptFile(file);
+    setReceiptName(file.name);
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (loadEv) => {
+        setReceiptPreview(loadEv.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setReceiptPreview("");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -6062,79 +6242,305 @@ function RecordGivingModal({ members, onClose, onSave }: any) {
       setError("Please enter a valid donation amount above zero.");
       return;
     }
-    onSave({ m: Number(memberId), t: type, a });
+    onSave({
+      m: Number(memberId),
+      t: type,
+      a,
+      receiptImage: receiptPreview || undefined,
+      receiptName: receiptName || undefined,
+      ref: `TX-${Math.floor(100000 + Math.random() * 900000)}`,
+    });
   };
 
   return (
     <div className="portal-mo" onClick={onClose}>
-      <form
-        className="portal-md"
-        onClick={(e) => e.stopPropagation()}
-        onSubmit={handleSubmit}
-        noValidate
-      >
+      <div className="portal-md" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 540 }}>
         <h2>Record giving &amp; tithe</h2>
 
-        <div className="portal-fi">
-          <label>Member Donor</label>
-          <select
-            value={memberId}
-            onChange={(e) => setMemberId(Number(e.target.value))}
+        {/* Tab Toggle */}
+        <div className="portal-tabs-toggle" style={{ marginBottom: 16 }}>
+          <button
+            type="button"
+            className={`portal-tab-btn ${tab === "manual" ? "active" : ""}`}
+            onClick={() => setTab("manual")}
           >
-            {members.map((m: any) => (
-              <option key={m.id} value={m.id}>
-                {m.n} ({m.d})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="portal-fi">
-          <label>Category</label>
-          <select value={type} onChange={(e) => setType(e.target.value)}>
-            {GIVING_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className={`portal-fi ${error ? "bad" : ""}`}>
-          <label>Amount (₦)</label>
-          <input
-            type="number"
-            placeholder="15000"
-            value={amount}
-            onChange={(e) => {
-              setAmount(e.target.value);
-              setError("");
-            }}
-          />
-          <div className="er">{error}</div>
-        </div>
-
-        <div className="portal-mf">
-          <button type="button" onClick={onClose} className="portal-btn">
-            Cancel
+            Manual Entry
           </button>
-          <button type="submit" className="portal-btn p">
-            Record giving
+          <button
+            type="button"
+            className={`portal-tab-btn ${tab === "upload" ? "active" : ""}`}
+            onClick={() => setTab("upload")}
+          >
+            Upload Slip / Receipt
           </button>
         </div>
-      </form>
+
+        {/* TAB 1: MANUAL ENTRY */}
+        {tab === "manual" && (
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="portal-fi">
+              <label>Member Donor</label>
+              <select
+                value={memberId}
+                onChange={(e) => setMemberId(Number(e.target.value))}
+              >
+                {members.map((m: any) => (
+                  <option key={m.id} value={m.id}>
+                    {m.n} ({m.d})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="portal-fi">
+              <label>Category</label>
+              <select value={type} onChange={(e) => setType(e.target.value)}>
+                {GIVING_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={`portal-fi ${error ? "bad" : ""}`}>
+              <label>Amount (₦)</label>
+              <input
+                type="number"
+                placeholder="15000"
+                value={amount}
+                onChange={(e) => {
+                  setAmount(e.target.value);
+                  setError("");
+                }}
+              />
+              <div className="er">{error}</div>
+            </div>
+
+            {/* Receipt Attachment Section */}
+            <div className="portal-fi">
+              <label>Attach Payment Proof / Bank Slip (Optional)</label>
+              <input
+                ref={manualFileInputRef}
+                type="file"
+                accept="image/*,.pdf"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+              {receiptName ? (
+                <div className="portal-receipt-thumb">
+                  {receiptPreview ? (
+                    <img src={receiptPreview} alt="Receipt preview" className="portal-receipt-thumb-img" />
+                  ) : (
+                    <div style={{ width: 52, height: 52, borderRadius: 6, background: "var(--rd6)", color: "var(--rd)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <SvgIcon name="file" />
+                    </div>
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {receiptName}
+                    </div>
+                    <small style={{ color: "var(--mu)" }}>
+                      {receiptFile ? formatFileSize(receiptFile.size) : "Attached"}
+                    </small>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReceiptFile(null);
+                      setReceiptPreview("");
+                      setReceiptName("");
+                    }}
+                    className="portal-srch-clear"
+                    style={{ position: "static", transform: "none" }}
+                    title="Remove attachment"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="portal-receipt-btn"
+                  onClick={() => manualFileInputRef.current?.click()}
+                  style={{ width: "100%", justifyContent: "center", padding: "10px" }}
+                >
+                  <SvgIcon name="upload" />
+                  <span>Attach Bank Slip / Transfer Screenshot</span>
+                </button>
+              )}
+            </div>
+
+            <div className="portal-mf">
+              <button type="button" onClick={onClose} className="portal-btn">
+                Cancel
+              </button>
+              <button type="submit" className="portal-btn p">
+                Record giving
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* TAB 2: UPLOAD RECEIPT / SLIP FIRST */}
+        {tab === "upload" && (
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,.pdf"
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+
+            {!receiptName ? (
+              <div
+                className="portal-dropzone"
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+              >
+                <div className="portal-dropzone-icon">
+                  <SvgIcon name="upload" />
+                </div>
+                <h4>Upload Bank Transfer Slip or Cheque</h4>
+                <p>Click or drag a screenshot of bank transfer, POS slip or cheque</p>
+                <div className="portal-file-badge">
+                  <SvgIcon name="image" />
+                  <span>JPG, PNG</span>
+                  <span className="portal-dot-sep">·</span>
+                  <SvgIcon name="file" />
+                  <span>PDF Receipt</span>
+                </div>
+              </div>
+            ) : (
+              <div>
+                {/* Uploaded File Info Card */}
+                <div className="portal-receipt-thumb" style={{ marginBottom: 16 }}>
+                  {receiptPreview ? (
+                    <img src={receiptPreview} alt="Receipt preview" className="portal-receipt-thumb-img" />
+                  ) : (
+                    <div style={{ width: 52, height: 52, borderRadius: 6, background: "var(--rd6)", color: "var(--rd)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <SvgIcon name="file" />
+                    </div>
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {receiptName}
+                    </div>
+                    <small style={{ color: "var(--mu)" }}>
+                      {receiptFile ? formatFileSize(receiptFile.size) : "Ready"} · Verified payment proof
+                    </small>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReceiptFile(null);
+                      setReceiptPreview("");
+                      setReceiptName("");
+                    }}
+                    className="portal-srch-clear"
+                    style={{ position: "static", transform: "none" }}
+                    title="Change file"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmit} noValidate>
+                  <div className="portal-fi">
+                    <label>Member Donor</label>
+                    <select
+                      value={memberId}
+                      onChange={(e) => setMemberId(Number(e.target.value))}
+                    >
+                      {members.map((m: any) => (
+                        <option key={m.id} value={m.id}>
+                          {m.n} ({m.d})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="portal-fi">
+                    <label>Category</label>
+                    <select value={type} onChange={(e) => setType(e.target.value)}>
+                      {GIVING_TYPES.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className={`portal-fi ${error ? "bad" : ""}`}>
+                    <label>Amount on Slip (₦)</label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 50000"
+                      value={amount}
+                      onChange={(e) => {
+                        setAmount(e.target.value);
+                        setError("");
+                      }}
+                      autoFocus
+                    />
+                    <div className="er">{error}</div>
+                  </div>
+
+                  <div className="portal-mf">
+                    <button type="button" onClick={onClose} className="portal-btn">
+                      Cancel
+                    </button>
+                    <button type="submit" className="portal-btn p">
+                      Record giving from slip
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 /* =====================================================================
-   MODAL 4: ADD EXPENSE
+   MODAL 4: ADD EXPENSE (WITH INVOICE / RECEIPT UPLOAD)
    ===================================================================== */
 function AddExpenseModal({ onClose, onSave }: any) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [desc, setDesc] = useState("");
   const [category, setCategory] = useState("Equipment");
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
+
+  // Invoice / receipt file attachment
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string>("");
+  const [receiptName, setReceiptName] = useState<string>("");
+
+  const processFile = (file: File) => {
+    setReceiptFile(file);
+    setReceiptName(file.name);
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (loadEv) => {
+        setReceiptPreview(loadEv.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setReceiptPreview("");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -6147,7 +6553,14 @@ function AddExpenseModal({ onClose, onSave }: any) {
       setError("Please enter a valid amount.");
       return;
     }
-    onSave({ t: desc.trim(), c: category, a });
+    onSave({
+      t: desc.trim(),
+      c: category,
+      a,
+      receiptImage: receiptPreview || undefined,
+      receiptName: receiptName || undefined,
+      ref: `EXP-${Math.floor(100000 + Math.random() * 900000)}`,
+    });
   };
 
   return (
@@ -6157,6 +6570,7 @@ function AddExpenseModal({ onClose, onSave }: any) {
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
         noValidate
+        style={{ maxWidth: 540 }}
       >
         <h2>Record ministry expense</h2>
 
@@ -6195,6 +6609,60 @@ function AddExpenseModal({ onClose, onSave }: any) {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
+        </div>
+
+        {/* Invoice / Bill Attachment */}
+        <div className="portal-fi">
+          <label>Attach Invoice / POS Slip / Bill (Optional)</label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,.pdf"
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+          {receiptName ? (
+            <div className="portal-receipt-thumb">
+              {receiptPreview ? (
+                <img src={receiptPreview} alt="Invoice preview" className="portal-receipt-thumb-img" />
+              ) : (
+                <div style={{ width: 52, height: 52, borderRadius: 6, background: "var(--rd6)", color: "var(--rd)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <SvgIcon name="file" />
+                </div>
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {receiptName}
+                </div>
+                <small style={{ color: "var(--mu)" }}>
+                  {receiptFile ? formatFileSize(receiptFile.size) : "Attached"} · Disbursement record
+                </small>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setReceiptFile(null);
+                  setReceiptPreview("");
+                  setReceiptName("");
+                }}
+                className="portal-srch-clear"
+                style={{ position: "static", transform: "none" }}
+                title="Remove invoice"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="portal-receipt-btn"
+              onClick={() => fileInputRef.current?.click()}
+              style={{ width: "100%", justifyContent: "center", padding: "10px" }}
+            >
+              <SvgIcon name="upload" />
+              <span>Attach Receipt or Invoice Document</span>
+            </button>
+          )}
         </div>
 
         <div className="portal-mf">

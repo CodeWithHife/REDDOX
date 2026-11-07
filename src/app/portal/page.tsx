@@ -279,6 +279,35 @@ function SvgIcon({ name, className = "portal-i" }: { name: string; className?: s
           <path d="m11 12 9-9M16 7l3 3" />
         </svg>
       );
+    case "zap":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      );
+    case "msg":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      );
+    case "qr":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01" />
+        </svg>
+      );
+    case "x":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -364,6 +393,12 @@ function getInitials(name: string) {
     .slice(0, 2)
     .join("")
     .toUpperCase();
+}
+
+function formatFileSize(bytes: number) {
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
 export default function ReddoxPortalDashboard() {
@@ -512,20 +547,20 @@ export default function ReddoxPortalDashboard() {
   ]);
 
   const [giving, setGiving] = useState([
-    { id: 1, m: 1, t: "Tithe", a: 45000, w: "Oct 25" },
-    { id: 2, m: 2, t: "Offering", a: 8000, w: "Oct 25" },
-    { id: 3, m: 4, t: "Building Fund", a: 60000, w: "Oct 25" },
-    { id: 4, m: 5, t: "Tithe", a: 30000, w: "Oct 21" },
-    { id: 5, m: 7, t: "Missions", a: 15000, w: "Oct 25" },
-    { id: 6, m: 1, t: "Offering", a: 12000, w: "Oct 18" },
-    { id: 7, m: 10, t: "Tithe", a: 52000, w: "Oct 18" },
-    { id: 8, m: 8, t: "Building Fund", a: 25000, w: "Oct 21" },
+    { id: 1, m: 1, t: "Tithe", a: 45000, w: "Oct 25", ref: "TX-948102", receiptName: "gtbank_transfer_oct25.png" },
+    { id: 2, m: 2, t: "Offering", a: 8000, w: "Oct 25", ref: "TX-948103" },
+    { id: 3, m: 4, t: "Building Fund", a: 60000, w: "Oct 25", ref: "TX-948104", receiptName: "zenith_cheque_slip.jpg" },
+    { id: 4, m: 5, t: "Tithe", a: 30000, w: "Oct 21", ref: "TX-948105" },
+    { id: 5, m: 7, t: "Missions", a: 15000, w: "Oct 25", ref: "TX-948106", receiptName: "pos_receipt_missions.png" },
+    { id: 6, m: 1, t: "Offering", a: 12000, w: "Oct 18", ref: "TX-948107" },
+    { id: 7, m: 10, t: "Tithe", a: 52000, w: "Oct 18", ref: "TX-948108", receiptName: "access_wire_slip.pdf" },
+    { id: 8, m: 8, t: "Building Fund", a: 25000, w: "Oct 21", ref: "TX-948109" },
   ]);
 
   const [expenses, setExpenses] = useState([
-    { t: "Sound equipment repair", c: "Equipment", a: 35000, w: "Oct 22" },
-    { t: "Electricity", c: "Utilities", a: 48000, w: "Oct 15" },
-    { t: "Children's class supplies", c: "Ministry", a: 12500, w: "Oct 12" },
+    { id: 101, t: "Sound equipment repair", c: "Equipment", a: 35000, w: "Oct 22", ref: "EXP-101", receiptName: "alaba_sound_invoice.pdf" },
+    { id: 102, t: "Electricity bill (Eko Electric)", c: "Utilities", a: 48000, w: "Oct 15", ref: "EXP-102", receiptName: "ekedc_token_receipt.png" },
+    { id: 103, t: "Children's class supplies", c: "Ministry", a: 12500, w: "Oct 12", ref: "EXP-103" },
   ]);
 
   const [visitors, setVisitors] = useState([
@@ -933,6 +968,7 @@ export default function ReddoxPortalDashboard() {
                 <span className="portal-plan-dot" />
                 <div className="portal-plan-details">
                   <span className="portal-plan-name">{currentPlan.n}</span>
+                  <span className="portal-plan-sep">·</span>
                   <span className="portal-plan-count">
                     {members.length}/{currentPlan.mem.toLocaleString("en-NG")}
                   </span>
@@ -2361,7 +2397,7 @@ _Prepared automatically by REDDOX Church Management System._`;
   return (
     <>
       {/* Page Header */}
-      <div className="portal-hd">
+      <div className="portal-hd" style={{ marginBottom: 12 }}>
         <div>
           <h1>Attendance &amp; Service Headcount</h1>
           <p>
@@ -2371,170 +2407,132 @@ _Prepared automatically by REDDOX Church Management System._`;
         <div className="portal-acts">
           <button onClick={onNewSession} className="portal-btn p">
             <SvgIcon name="plus" />
-            <span>Create attendance for category</span>
+            <span>New service session</span>
           </button>
         </div>
       </div>
 
-      {/* 1. Service Category Filter Bar */}
-      <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "var(--mu)" }}>
-            Service Categories
-          </span>
-          <span style={{ fontSize: 12, color: "var(--mu)" }}>
-            {sessions.length} total recorded service sessions
-          </span>
-        </div>
-        <div className="portal-cat-bar">
-          {SERVICE_CATEGORIES.map((cat) => {
-            const count =
-              cat === "All Categories"
-                ? sessions.length
-                : sessions.filter((s: any) => (s.category || "Sunday Celebration Service") === cat).length;
-            const isActive = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                className={`portal-cat-chip ${isActive ? "active" : ""}`}
-                onClick={() => handleCategorySelect(cat)}
-              >
-                <span>{cat}</span>
-                <span className="chip-count">{count}</span>
-              </button>
-            );
-          })}
-        </div>
+      {/* 1. Category Filter Strip */}
+      <div className="portal-cat-bar">
+        {SERVICE_CATEGORIES.map((cat) => {
+          const count =
+            cat === "All Categories"
+              ? sessions.length
+              : sessions.filter((s: any) => (s.category || "Sunday Celebration Service") === cat).length;
+          const isActive = selectedCategory === cat;
+          return (
+            <button
+              key={cat}
+              type="button"
+              className={`portal-cat-chip ${isActive ? "active" : ""}`}
+              onClick={() => handleCategorySelect(cat)}
+            >
+              <span>{cat}</span>
+              <span className="chip-count">{count}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* 2. Active Session Hero & KPI Cards */}
+      {/* 2. Streamlined Active Session Ribbon (Zero Sagging) */}
       {currentSession ? (
-        <div className="portal-session-hero">
-          <div className="portal-session-hero-top">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
-                <span className="portal-session-badge">
-                  <SvgIcon name="cal" />
-                  {currentSession.category || "Sunday Celebration Service"}
-                </span>
-                <span style={{ fontSize: 13, color: "var(--mu)", fontWeight: 600 }}>
-                  📅 {currentSession.d} · ⏰ {currentSession.time || "09:00 AM"}
-                </span>
-                {currentSession.preacher && (
-                  <span style={{ fontSize: 13, color: "var(--mu)" }}>
-                    🎙️ {currentSession.preacher}
-                  </span>
-                )}
-              </div>
-              <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "var(--tx)" }}>
-                {currentSession.n}
-              </h2>
-              {currentSession.notes && (
-                <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--mu)", fontStyle: "italic" }}>
-                  &ldquo;{currentSession.notes}&rdquo;
-                </p>
-              )}
+        <div className="portal-att-ribbon">
+          <div className="portal-att-ribbon-left">
+            <div className="portal-att-ribbon-title-row">
+              <span className="portal-session-badge">
+                <SvgIcon name="cal" />
+                {currentSession.category || "Sunday Celebration Service"}
+              </span>
+              <h2>{currentSession.n}</h2>
             </div>
-
-            {/* Session Dropdown Switcher */}
-            <div style={{ minWidth: 240 }}>
-              <label style={{ display: "block", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "var(--mu)", marginBottom: 4 }}>
-                Switch Service Session
-              </label>
-              <select
-                value={currentSession.id}
-                onChange={(e) => onSelectSession(Number(e.target.value))}
-                style={{
-                  width: "100%",
-                  padding: "9px 12px",
-                  borderRadius: 10,
-                  border: "1px solid var(--bd)",
-                  background: "#ffffff",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "var(--tx)",
-                }}
-              >
-                {filteredSessions.map((s: any) => {
-                  const sManual = s.p?.length || 0;
-                  const sQr = s.qrScans?.length || 0;
-                  const sVis = s.visitors?.length || 0;
-                  const sTotal = sManual + sQr + sVis;
-                  return (
-                    <option key={s.id} value={s.id}>
-                      {s.n} · {s.d} ({sTotal} total)
-                    </option>
-                  );
-                })}
-              </select>
+            <div className="portal-att-ribbon-meta">
+              <span className="portal-att-meta-item">
+                <SvgIcon name="cal" />
+                <span>{currentSession.d}</span>
+              </span>
+              <span className="portal-att-meta-item">
+                <SvgIcon name="clock" />
+                <span>{currentSession.time || "09:00 AM"}</span>
+              </span>
+              {currentSession.preacher && (
+                <span className="portal-att-meta-item">
+                  <SvgIcon name="mic" />
+                  <span>{currentSession.preacher}</span>
+                </span>
+              )}
+              {currentSession.notes && currentSession.notes !== "hh" && (
+                <span style={{ fontStyle: "italic", opacity: 0.85 }}>
+                  &ldquo;{currentSession.notes}&rdquo;
+                </span>
+              )}
             </div>
           </div>
 
-          {/* 4 Attendance KPI Metrics */}
-          <div className="portal-att-kpis">
-            <div className="portal-att-kpi total">
-              <div className="portal-att-kpi-lbl">Total Headcount</div>
-              <div className="portal-att-kpi-val">
-                {totalAttendance}
-                <span style={{ fontSize: 13, fontWeight: 500, color: "var(--mu)" }}>worshippers</span>
+          <div className="portal-att-ribbon-right">
+            {/* Compact Mini Stat Chips */}
+            <div className="portal-att-mini-stats">
+              <div className="portal-att-mini-chip total">
+                <div className="portal-att-mini-chip-lbl">Total</div>
+                <div className="portal-att-mini-chip-val">{totalAttendance}</div>
               </div>
-              <div className="portal-att-kpi-sub">
-                Combined Manual + QR + Visitors
+              <div className="portal-att-mini-chip">
+                <div className="portal-att-mini-chip-lbl">Manual</div>
+                <div className="portal-att-mini-chip-val" style={{ color: "#059669" }}>
+                  {manualCount}
+                </div>
               </div>
-            </div>
-
-            <div className="portal-att-kpi manual">
-              <div className="portal-att-kpi-lbl">1. Manual Roster</div>
-              <div className="portal-att-kpi-val" style={{ color: "#059669" }}>
-                {manualCount}
-                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mu)" }}>
-                  ({manualPct}%)
-                </span>
+              <div className="portal-att-mini-chip">
+                <div className="portal-att-mini-chip-lbl">QR Scans</div>
+                <div className="portal-att-mini-chip-val" style={{ color: "#2563eb" }}>
+                  {qrCount}
+                </div>
               </div>
-              <div className="portal-att-kpi-sub">
-                Checked in via usher roster
-              </div>
-            </div>
-
-            <div className="portal-att-kpi qr">
-              <div className="portal-att-kpi-lbl">2. QR Check-Ins</div>
-              <div className="portal-att-kpi-val" style={{ color: "#2563eb" }}>
-                {qrCount}
-                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mu)" }}>
-                  ({qrShare}%)
-                </span>
-              </div>
-              <div className="portal-att-kpi-sub">
-                Entrance scanner &amp; kiosk scans
+              <div className="portal-att-mini-chip">
+                <div className="portal-att-mini-chip-lbl">Visitors</div>
+                <div className="portal-att-mini-chip-val" style={{ color: "var(--rd)" }}>
+                  {visitorCount}
+                </div>
               </div>
             </div>
 
-            <div className="portal-att-kpi visitor">
-              <div className="portal-att-kpi-lbl">3. First-Time Visitors</div>
-              <div className="portal-att-kpi-val" style={{ color: "var(--rd)" }}>
-                {visitorCount}
-                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mu)" }}>
-                  souls
-                </span>
-              </div>
-              <div className="portal-att-kpi-sub">
-                New guests registered today
-              </div>
-            </div>
+            {/* Compact Switcher */}
+            <select
+              value={currentSession.id}
+              onChange={(e) => onSelectSession(Number(e.target.value))}
+              style={{
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: "1px solid var(--bd)",
+                background: "#ffffff",
+                fontSize: 12.5,
+                fontWeight: 600,
+                color: "var(--tx)",
+                maxWidth: 220,
+              }}
+            >
+              {filteredSessions.map((s: any) => {
+                const sTotal = (s.p?.length || 0) + (s.qrScans?.length || 0) + (s.visitors?.length || 0);
+                return (
+                  <option key={s.id} value={s.id}>
+                    {s.n} · {s.d} ({sTotal})
+                  </option>
+                );
+              })}
+            </select>
           </div>
         </div>
       ) : (
-        <div className="portal-cd portal-emp">
+        <div className="portal-cd portal-emp" style={{ padding: "24px 16px", marginBottom: 16 }}>
           <h3>No attendance session found for {selectedCategory}</h3>
           <p>Create a new attendance session for this service category to start tracking.</p>
-          <button onClick={onNewSession} className="portal-btn p">
-            + Create Session
+          <button onClick={onNewSession} className="portal-btn p sm">
+            <SvgIcon name="plus" />
+            <span>Create Session</span>
           </button>
         </div>
       )}
 
-      {/* 3. The 4 Tri-Channel Mode Navigation Tabs */}
+      {/* 3. The 4 Tri-Channel Navigation Tabs */}
       {currentSession && (
         <>
           <div className="portal-att-nav">
@@ -2544,7 +2542,7 @@ _Prepared automatically by REDDOX Church Management System._`;
               onClick={() => setActiveTab("manual")}
             >
               <SvgIcon name="users" />
-              <span>1. Manual Attendance</span>
+              <span>Manual Roster</span>
               <span className="portal-att-nav-badge">{manualCount}</span>
             </button>
 
@@ -2553,8 +2551,8 @@ _Prepared automatically by REDDOX Church Management System._`;
               className={`portal-att-nav-btn ${activeTab === "qr" ? "active" : ""}`}
               onClick={() => setActiveTab("qr")}
             >
-              <SvgIcon name="cam" />
-              <span>2. QR Attendance</span>
+              <SvgIcon name="qr" />
+              <span>QR Scanner</span>
               <span className="portal-att-nav-badge">{qrCount}</span>
             </button>
 
@@ -2564,7 +2562,7 @@ _Prepared automatically by REDDOX Church Management System._`;
               onClick={() => setActiveTab("visitor")}
             >
               <SvgIcon name="uplus" />
-              <span>3. Visitor Attendance</span>
+              <span>Visitors</span>
               <span className="portal-att-nav-badge">{visitorCount}</span>
             </button>
 
@@ -2574,7 +2572,7 @@ _Prepared automatically by REDDOX Church Management System._`;
               onClick={() => setActiveTab("reports")}
             >
               <SvgIcon name="chart" />
-              <span>4. Automatic Reports (The Three)</span>
+              <span>Automated Reports</span>
             </button>
           </div>
 
@@ -2583,42 +2581,37 @@ _Prepared automatically by REDDOX Church Management System._`;
               ========================================================= */}
           {activeTab === "manual" && (
             <div className="portal-cd">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
-                <div>
-                  <h3 style={{ margin: 0 }}>Manual Attendance Roster</h3>
-                  <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 13 }}>
-                    One-tap usher check-in for members attending {currentSession.category}.
-                  </p>
+              {/* Toolbar */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+                <div style={{ display: "flex", gap: 10, flex: 1, minWidth: 260 }}>
+                  <input
+                    type="text"
+                    placeholder="Search members by name or phone..."
+                    value={memberSearch}
+                    onChange={(e) => setMemberSearch(e.target.value)}
+                    style={{ flex: 1, padding: "8px 12px", fontSize: 13, borderRadius: 8, border: "1px solid var(--bd)" }}
+                  />
+                  <select
+                    value={deptFilter}
+                    onChange={(e) => setDeptFilter(e.target.value)}
+                    style={{ padding: "8px 12px", fontSize: 13, borderRadius: 8, border: "1px solid var(--bd)", minWidth: 150 }}
+                  >
+                    {departments.map((d) => (
+                      <option key={d} value={d}>
+                        {d === "All" ? "All Departments" : d}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button onClick={onMarkAllPresent} className="portal-btn sm p">
-                    Mark all present
+                    <SvgIcon name="check" />
+                    <span>Mark all</span>
                   </button>
                   <button onClick={onClearAllPresent} className="portal-btn sm">
-                    Reset
+                    <span>Reset</span>
                   </button>
                 </div>
-              </div>
-
-              {/* Search & Department Filter */}
-              <div className="portal-fl" style={{ marginBottom: 14 }}>
-                <input
-                  type="text"
-                  placeholder="Search members by name or phone..."
-                  value={memberSearch}
-                  onChange={(e) => setMemberSearch(e.target.value)}
-                />
-                <select
-                  value={deptFilter}
-                  onChange={(e) => setDeptFilter(e.target.value)}
-                  style={{ minWidth: 160 }}
-                >
-                  {departments.map((d) => (
-                    <option key={d} value={d}>
-                      {d === "All" ? "All Departments" : d}
-                    </option>
-                  ))}
-                </select>
               </div>
 
               {/* Progress Bar */}
@@ -2627,26 +2620,26 @@ _Prepared automatically by REDDOX Church Management System._`;
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
-                  marginBottom: 16,
-                  padding: "10px 14px",
+                  marginBottom: 14,
+                  padding: "8px 12px",
                   background: "var(--bl2)",
-                  borderRadius: 12,
+                  borderRadius: 10,
                 }}
               >
-                <div className="portal-pb" style={{ flex: 1, height: 10, margin: 0, background: "#ffffff" }}>
+                <div className="portal-pb" style={{ flex: 1, height: 8, margin: 0, background: "#ffffff" }}>
                   <i style={{ width: `${manualPct}%`, background: "#059669" }} />
                 </div>
-                <b style={{ color: "var(--bl)", fontSize: 13 }}>
+                <span style={{ color: "var(--bl)", fontSize: 12.5, fontWeight: 700 }}>
                   {manualCount} of {totalMembers} members present ({manualPct}%)
-                </b>
+                </span>
               </div>
 
               {/* Member Items */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {filteredMembers.map((m: any) => {
                   const isPresent = currentSession.p?.includes(m.id);
                   return (
-                    <div key={m.id} className="portal-li" style={{ background: isPresent ? "rgba(5, 150, 105, 0.04)" : undefined }}>
+                    <div key={m.id} className="portal-li" style={{ background: isPresent ? "rgba(5, 150, 105, 0.03)" : undefined }}>
                       <span className="portal-a" style={{ background: isPresent ? "#059669" : undefined, color: isPresent ? "#fff" : undefined }}>
                         {getInitials(m.n)}
                       </span>
@@ -2671,17 +2664,8 @@ _Prepared automatically by REDDOX Church Management System._`;
                 })}
 
                 {filteredMembers.length === 0 && (
-                  <div className="portal-emp" style={{ padding: "24px 16px" }}>
-                    <p>No members match your search or department filter.</p>
-                    <button
-                      onClick={() => {
-                        setMemberSearch("");
-                        setDeptFilter("All");
-                      }}
-                      className="portal-btn sm"
-                    >
-                      Clear search
-                    </button>
+                  <div className="portal-emp" style={{ padding: "20px 16px" }}>
+                    <p style={{ margin: 0 }}>No members match your search or department filter.</p>
                   </div>
                 )}
               </div>
@@ -2689,348 +2673,341 @@ _Prepared automatically by REDDOX Church Management System._`;
           )}
 
           {/* =========================================================
-              TAB 2: QR ATTENDANCE (ENTRANCE SCANNER & KIOSK)
+              TAB 2: QR ATTENDANCE (2-COLUMN CLEAN GRID)
               ========================================================= */}
           {activeTab === "qr" && (
-            <div className="space-y-4" style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-              {/* QR Code Presentation Box */}
-              <div
-                className="portal-cd"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "auto 1fr",
-                  gap: 24,
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    background: "#ffffff",
-                    padding: 16,
-                    borderRadius: 16,
-                    border: "1px solid var(--bd)",
-                    display: "inline-block",
-                    boxShadow: "0 4px 14px rgba(43, 32, 21, 0.06)",
-                    textAlign: "center",
-                  }}
-                >
-                  <svg className="portal-qr" viewBox="0 0 21 21" style={{ width: 140, height: 140 }} shapeRendering="crispEdges">
+            <div className="portal-att-2col">
+              {/* Left Column: Clean QR Code Card */}
+              <div className="portal-qr-box">
+                <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "#2563eb" }}>
+                  Entrance QR Code
+                </span>
+                <h3 style={{ margin: "4px 0 2px", fontSize: 15 }}>{currentSession.category}</h3>
+                <p style={{ margin: "0 0 10px", color: "var(--mu)", fontSize: 12 }}>
+                  Attendees scan to self-check-in.
+                </p>
+
+                <div className="portal-qr-code-wrapper">
+                  <svg className="portal-qr" viewBox="0 0 21 21" style={{ width: 130, height: 130 }} shapeRendering="crispEdges">
                     <path
                       fill="#2b2015"
                       d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM1 1v5h5V1zM15 1v5h5V1zM1 15v5h5v-5zM2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM8 0h2v2H8zM11 1h2v2h-2zM8 4h3v2H8zM12 5h1v2h-1zM0 8h2v2H0zM3 9h3v2H3zM8 8h2v3H8zM12 8h3v2h-3zM16 9h2v2h-2zM19 8h2v3h-2zM8 12h2v2H8zM11 13h2v2h-2zM14 12h2v2h-2zM18 13h3v2h-3zM8 16h3v2H8zM12 17h2v3h-2zM15 16h2v2h-2zM18 18h3v3h-3zM9 19h2v2H9z"
                     />
                   </svg>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "var(--mu)", marginTop: 6, letterSpacing: 0.5 }}>
-                    SVC-{currentSession.id}
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "var(--mu)", marginTop: 4 }}>
+                    TOKEN: SVC-{currentSession.id}
                   </div>
                 </div>
 
-                <div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 10px", borderRadius: 99, background: "rgba(37, 99, 235, 0.1)", color: "#2563eb", fontSize: 12, fontWeight: 700, marginBottom: 8 }}>
-                    <span>● Live Entrance QR Code</span>
-                  </div>
-                  <h3 style={{ margin: "0 0 6px" }}>Digital Entrance Check-In for {currentSession.category}</h3>
-                  <p style={{ margin: "0 0 16px", color: "var(--mu)", fontSize: 13, lineHeight: 1.5 }}>
-                    Attendees can scan this QR code with their mobile phone cameras upon entering the auditorium. Scans are logged instantly in real-time.
-                  </p>
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      onClick={() => setIsKioskOpen(true)}
-                      className="portal-btn p"
-                    >
-                      <span>📺 Launch Fullscreen Kiosk Mode</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const link = `${typeof window !== "undefined" ? window.location.origin : ""}/portal/checkin?session=${currentSession.id}`;
-                        navigator.clipboard?.writeText(link);
-                        showToast?.("Check-in link copied to clipboard!");
-                      }}
-                      className="portal-btn"
-                    >
-                      <SvgIcon name="copy" />
-                      <span>Copy Member Check-In Link</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Usher Camera / Fast-Scan Simulator Tool */}
-              <div className="portal-cd" style={{ background: "rgba(37, 99, 235, 0.03)", border: "1px solid rgba(37, 99, 235, 0.2)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
-                  <div>
-                    <h4 style={{ margin: 0, color: "#1e40af", display: "flex", alignItems: "center", gap: 8 }}>
-                      <SvgIcon name="cam" />
-                      <span>Usher Entrance Scanner &amp; Fast-Logger</span>
-                    </h4>
-                    <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 12.5 }}>
-                      Simulate a live phone camera QR scan or fast-log an arriving member into the digital stream.
-                    </p>
-                  </div>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb", background: "#ffffff", padding: "4px 10px", borderRadius: 99, border: "1px solid var(--bd)" }}>
-                    {unscannedMembers.length} members not yet scanned
-                  </span>
-                </div>
-
-                <form onSubmit={handleSimulateQrScan} style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <select
-                    value={selectedScanMemberId}
-                    onChange={(e) => setSelectedScanMemberId(e.target.value)}
-                    style={{
-                      flex: 1,
-                      minWidth: 220,
-                      padding: "10px 14px",
-                      borderRadius: 10,
-                      border: "1px solid var(--bd)",
-                      background: "#ffffff",
-                      fontSize: 13,
-                    }}
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
+                  <button
+                    type="button"
+                    onClick={() => setIsKioskOpen(true)}
+                    className="portal-btn sm p"
+                    style={{ width: "100%", justifyContent: "center" }}
                   >
-                    <option value="">-- Select arriving member to log QR scan --</option>
-                    {unscannedMembers.map((m: any) => (
-                      <option key={m.id} value={m.id}>
-                        {m.n} ({m.d})
-                      </option>
-                    ))}
-                  </select>
-                  <button type="submit" className="portal-btn p" style={{ background: "#2563eb", borderColor: "#2563eb" }}>
-                    <span>⚡ Log QR Scan</span>
+                    <SvgIcon name="pc" />
+                    <span>Launch Kiosk Mode</span>
                   </button>
-                </form>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const link = `${typeof window !== "undefined" ? window.location.origin : ""}/portal/checkin?session=${currentSession.id}`;
+                      navigator.clipboard?.writeText(link);
+                      showToast?.("Check-in link copied to clipboard!");
+                    }}
+                    className="portal-btn sm"
+                    style={{ width: "100%", justifyContent: "center" }}
+                  >
+                    <SvgIcon name="copy" />
+                    <span>Copy Member Link</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Scanned Attendees Table */}
-              <div className="portal-cd">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                  <h3 style={{ margin: 0 }}>Live Scanned Attendees Feed ({qrCount})</h3>
-                  <span style={{ fontSize: 12, color: "var(--mu)" }}>
-                    Real-time digital check-in records
-                  </span>
+              {/* Right Column: Fast Scan & Live Feed */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {/* Fast Scan Bar */}
+                <div className="portal-fast-scan-bar">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <span style={{ fontSize: 12.5, fontWeight: 700, color: "var(--tx)", display: "flex", alignItems: "center", gap: 6 }}>
+                      <SvgIcon name="zap" />
+                      <span>Usher Entrance Fast-Logger</span>
+                    </span>
+                    <span style={{ fontSize: 11.5, color: "var(--mu)" }}>
+                      {unscannedMembers.length} not yet scanned
+                    </span>
+                  </div>
+
+                  <form onSubmit={handleSimulateQrScan} style={{ display: "flex", gap: 8 }}>
+                    <select
+                      value={selectedScanMemberId}
+                      onChange={(e) => setSelectedScanMemberId(e.target.value)}
+                      style={{
+                        flex: 1,
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        border: "1px solid var(--bd)",
+                        background: "#ffffff",
+                        fontSize: 12.5,
+                      }}
+                    >
+                      <option value="">Select arriving member to fast-log...</option>
+                      {unscannedMembers.map((m: any) => (
+                        <option key={m.id} value={m.id}>
+                          {m.n} ({m.d})
+                        </option>
+                      ))}
+                    </select>
+                    <button type="submit" className="portal-btn sm p" style={{ background: "#2563eb", borderColor: "#2563eb" }}>
+                      <SvgIcon name="zap" />
+                      <span>Log Scan</span>
+                    </button>
+                  </form>
                 </div>
 
-                {qrList.length > 0 ? (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", textAlign: "left", fontSize: 13, borderCollapse: "collapse" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--bd)", color: "var(--mu)" }}>
-                          <th style={{ padding: "8px 12px" }}>Member Name</th>
-                          <th style={{ padding: "8px 12px" }}>Check-In Time</th>
-                          <th style={{ padding: "8px 12px" }}>Channel / Device</th>
-                          <th style={{ padding: "8px 12px", textAlign: "right" }}>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {qrList.map((q: any) => (
-                          <tr key={q.id} style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.04)" }}>
-                            <td style={{ padding: "10px 12px", fontWeight: 700, color: "var(--tx)" }}>
-                              {q.name}
-                            </td>
-                            <td style={{ padding: "10px 12px", color: "var(--mu)" }}>
-                              🕒 {q.time || "Recent"}
-                            </td>
-                            <td style={{ padding: "10px 12px" }}>
-                              <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 99, background: "rgba(37, 99, 235, 0.1)", color: "#2563eb", fontWeight: 600 }}>
-                                {q.device || "Mobile QR"}
-                              </span>
-                            </td>
-                            <td style={{ padding: "10px 12px", textAlign: "right" }}>
-                              <button
-                                type="button"
-                                onClick={() => onRemoveQrScan(q.id)}
-                                style={{ background: "transparent", border: 0, color: "var(--er)", cursor: "pointer", fontSize: 12, fontWeight: 600 }}
-                              >
-                                Remove
-                              </button>
-                            </td>
+                {/* Scanned Attendees Feed */}
+                <div className="portal-cd" style={{ padding: "14px 16px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <h4 style={{ margin: 0, fontSize: 14 }}>
+                      Live Scanned Feed ({qrCount})
+                    </h4>
+                    <span style={{ fontSize: 11.5, color: "var(--mu)" }}>
+                      Real-time digital check-in records
+                    </span>
+                  </div>
+
+                  {qrList.length > 0 ? (
+                    <div style={{ overflowX: "auto" }}>
+                      <table style={{ width: "100%", textAlign: "left", fontSize: 12.5, borderCollapse: "collapse" }}>
+                        <thead>
+                          <tr style={{ borderBottom: "1px solid var(--bd)", color: "var(--mu)" }}>
+                            <th style={{ padding: "6px 8px" }}>Member Name</th>
+                            <th style={{ padding: "6px 8px" }}>Check-In Time</th>
+                            <th style={{ padding: "6px 8px" }}>Channel</th>
+                            <th style={{ padding: "6px 8px", textAlign: "right" }}>Action</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="portal-emp" style={{ padding: "28px 16px" }}>
-                    <div style={{ fontSize: 32, marginBottom: 8 }}>📱</div>
-                    <h3>Waiting for QR check-ins</h3>
-                    <p style={{ margin: 0 }}>
-                      Arriving worshippers scanning the entrance code or logged by ushers will appear here automatically.
-                    </p>
-                  </div>
-                )}
+                        </thead>
+                        <tbody>
+                          {qrList.map((q: any) => (
+                            <tr key={q.id} style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.04)" }}>
+                              <td style={{ padding: "8px", fontWeight: 700, color: "var(--tx)" }}>
+                                {q.name}
+                              </td>
+                              <td style={{ padding: "8px", color: "var(--mu)" }}>
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                                  <SvgIcon name="clock" />
+                                  <span>{q.time || "Recent"}</span>
+                                </span>
+                              </td>
+                              <td style={{ padding: "8px" }}>
+                                <span style={{ fontSize: 11, padding: "2px 7px", borderRadius: 99, background: "rgba(37, 99, 235, 0.08)", color: "#2563eb", fontWeight: 600 }}>
+                                  {q.device || "Mobile QR"}
+                                </span>
+                              </td>
+                              <td style={{ padding: "8px", textAlign: "right" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => onRemoveQrScan(q.id)}
+                                  style={{ background: "transparent", border: 0, color: "var(--er)", cursor: "pointer", fontSize: 11.5, fontWeight: 600 }}
+                                >
+                                  Remove
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="portal-emp" style={{ padding: "20px 16px" }}>
+                      <div className="portal-ico" style={{ margin: "0 auto 8px" }}>
+                        <SvgIcon name="qr" />
+                      </div>
+                      <h4 style={{ margin: "0 0 4px", fontSize: 14 }}>Ready for QR check-ins</h4>
+                      <p style={{ margin: 0, fontSize: 12 }}>
+                        Arriving worshippers scanning the entrance code or logged by ushers will appear here.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
           {/* =========================================================
-              TAB 3: VISITOR ATTENDANCE (FIRST-TIMERS & GUESTS)
+              TAB 3: VISITOR ATTENDANCE (2-COLUMN CLEAN GRID)
               ========================================================= */}
           {activeTab === "visitor" && (
-            <div className="space-y-4" style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-              {/* Registration Form */}
-              <div className="portal-cd">
-                <div style={{ marginBottom: 14 }}>
-                  <h3 style={{ margin: "0 0 2px" }}>Register First-Time Visitor for {currentSession.category}</h3>
-                  <p style={{ margin: 0, color: "var(--mu)", fontSize: 13 }}>
-                    Welcome and register new souls for immediate follow-up and pastoral care.
-                  </p>
-                </div>
+            <div className="portal-att-2col">
+              {/* Left Column: Clean Visitor Registration Form */}
+              <div className="portal-cd" style={{ padding: "16px" }}>
+                <h3 style={{ margin: "0 0 2px", fontSize: 15 }}>Register First-Time Visitor</h3>
+                <p style={{ margin: "0 0 12px", color: "var(--mu)", fontSize: 12 }}>
+                  For {currentSession.category}.
+                </p>
 
-                <form onSubmit={handleRegisterVisitor} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <form onSubmit={handleRegisterVisitor} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {visError && (
-                    <div style={{ padding: "8px 14px", background: "rgba(179, 38, 30, 0.1)", border: "1px solid var(--er)", borderRadius: 10, color: "var(--er)", fontSize: 13 }}>
+                    <div style={{ padding: "6px 10px", background: "rgba(179, 38, 30, 0.08)", border: "1px solid var(--er)", borderRadius: 8, color: "var(--er)", fontSize: 12 }}>
                       {visError}
                     </div>
                   )}
 
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
-                    <div className="portal-fi" style={{ margin: 0 }}>
-                      <label>Visitor Full Name *</label>
-                      <input
-                        placeholder="e.g. Sister Grace Adeleke"
-                        value={visName}
-                        onChange={(e) => setVisName(e.target.value)}
-                      />
-                    </div>
-                    <div className="portal-fi" style={{ margin: 0 }}>
-                      <label>Phone Number *</label>
-                      <input
-                        placeholder="e.g. 0803 123 4567"
-                        value={visPhone}
-                        onChange={(e) => setVisPhone(e.target.value)}
-                      />
-                    </div>
-                    <div className="portal-fi" style={{ margin: 0 }}>
-                      <label>Email Address (Optional)</label>
-                      <input
-                        placeholder="e.g. grace@gmail.com"
-                        value={visEmail}
-                        onChange={(e) => setVisEmail(e.target.value)}
-                      />
-                    </div>
+                  <div className="portal-fi" style={{ margin: 0 }}>
+                    <label style={{ fontSize: 11 }}>Full Name *</label>
+                    <input
+                      placeholder="e.g. Sister Grace Adeleke"
+                      value={visName}
+                      onChange={(e) => setVisName(e.target.value)}
+                      style={{ padding: "8px 10px", fontSize: 12.5 }}
+                    />
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
+                  <div className="portal-fi" style={{ margin: 0 }}>
+                    <label style={{ fontSize: 11 }}>Phone Number *</label>
+                    <input
+                      placeholder="e.g. 0803 123 4567"
+                      value={visPhone}
+                      onChange={(e) => setVisPhone(e.target.value)}
+                      style={{ padding: "8px 10px", fontSize: 12.5 }}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     <div className="portal-fi" style={{ margin: 0 }}>
-                      <label>Gender</label>
-                      <select value={visGender} onChange={(e) => setVisGender(e.target.value)}>
+                      <label style={{ fontSize: 11 }}>Gender</label>
+                      <select value={visGender} onChange={(e) => setVisGender(e.target.value)} style={{ padding: "8px 10px", fontSize: 12.5 }}>
                         <option value="Female">Female</option>
                         <option value="Male">Male</option>
                       </select>
                     </div>
                     <div className="portal-fi" style={{ margin: 0 }}>
-                      <label>Invited By / Source</label>
-                      <input
-                        placeholder="e.g. Brother Samuel / Social Media"
-                        value={visInvitedBy}
-                        onChange={(e) => setVisInvitedBy(e.target.value)}
-                      />
-                    </div>
-                    <div className="portal-fi" style={{ margin: 0 }}>
-                      <label>Ministry Area of Interest</label>
-                      <select value={visDept} onChange={(e) => setVisDept(e.target.value)}>
-                        <option value="Choir">Choir / Music</option>
-                        <option value="Ushering">Ushering / Protocol</option>
-                        <option value="Youth">Youth Church</option>
-                        <option value="Media">Media &amp; Tech</option>
-                        <option value="Children">Children Ministry</option>
-                        <option value="General">General Congregation</option>
+                      <label style={{ fontSize: 11 }}>Interest</label>
+                      <select value={visDept} onChange={(e) => setVisDept(e.target.value)} style={{ padding: "8px 10px", fontSize: 12.5 }}>
+                        <option value="Choir">Choir</option>
+                        <option value="Ushering">Ushering</option>
+                        <option value="Youth">Youth</option>
+                        <option value="Media">Media</option>
+                        <option value="General">General</option>
                       </select>
                     </div>
                   </div>
 
                   <div className="portal-fi" style={{ margin: 0 }}>
-                    <label>Prayer Request / Pastoral Note</label>
+                    <label style={{ fontSize: 11 }}>Invited By / Source</label>
                     <input
-                      placeholder="e.g. Praying for employment breakthrough and family peace"
-                      value={visNotes}
-                      onChange={(e) => setVisNotes(e.target.value)}
+                      placeholder="e.g. Brother Samuel / Outreach"
+                      value={visInvitedBy}
+                      onChange={(e) => setVisInvitedBy(e.target.value)}
+                      style={{ padding: "8px 10px", fontSize: 12.5 }}
                     />
                   </div>
 
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <button type="submit" className="portal-btn p">
-                      <span>+ Register Visitor for this Service</span>
-                    </button>
+                  <div className="portal-fi" style={{ margin: 0 }}>
+                    <label style={{ fontSize: 11 }}>Prayer Request / Notes</label>
+                    <input
+                      placeholder="e.g. Praying for employment breakthrough"
+                      value={visNotes}
+                      onChange={(e) => setVisNotes(e.target.value)}
+                      style={{ padding: "8px 10px", fontSize: 12.5 }}
+                    />
                   </div>
+
+                  <button type="submit" className="portal-btn sm p" style={{ marginTop: 4, justifyContent: "center" }}>
+                    <SvgIcon name="uplus" />
+                    <span>Register Visitor</span>
+                  </button>
                 </form>
               </div>
 
-              {/* Visitors Recorded in this Service Session */}
-              <div className="portal-cd">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              {/* Right Column: Registered Visitors List */}
+              <div className="portal-cd" style={{ padding: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                   <div>
-                    <h3 style={{ margin: 0 }}>Visitors Welcomed in this Service ({visitorCount})</h3>
-                    <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 13 }}>
-                      First-timers registered for {currentSession.category} on {currentSession.d}.
+                    <h4 style={{ margin: 0, fontSize: 14 }}>
+                      Visitors Welcomed ({visitorCount})
+                    </h4>
+                    <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 12 }}>
+                      Recorded for {currentSession.d}.
                     </p>
                   </div>
                 </div>
 
                 {visitorList.length > 0 ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {visitorList.map((vis: any) => (
                       <div key={vis.id} className="portal-vis-card">
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                           <span
                             style={{
-                              width: 38,
-                              height: 38,
+                              width: 32,
+                              height: 32,
                               borderRadius: "50%",
                               background: "var(--rd2)",
                               color: "var(--rd)",
                               display: "grid",
                               placeItems: "center",
                               fontWeight: 800,
-                              fontSize: 14,
+                              fontSize: 12,
+                              flexShrink: 0,
                             }}
                           >
                             {getInitials(vis.n)}
                           </span>
                           <div>
-                            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                              <strong style={{ fontSize: 14, color: "var(--tx)" }}>{vis.n}</strong>
-                              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 99, background: "rgba(184, 134, 45, 0.15)", color: "var(--rd)", fontWeight: 700 }}>
-                                First-Timer ({vis.g || "Guest"})
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                              <strong style={{ fontSize: 13, color: "var(--tx)" }}>{vis.n}</strong>
+                              <span style={{ fontSize: 10.5, padding: "1px 6px", borderRadius: 99, background: "rgba(184, 134, 45, 0.12)", color: "var(--rd)", fontWeight: 700 }}>
+                                {vis.g || "Guest"}
                               </span>
                             </div>
-                            <div style={{ fontSize: 12.5, color: "var(--mu)", marginTop: 2 }}>
-                              📞 {vis.ph} {vis.em ? `· ✉️ ${vis.em}` : ""} · 🤝 Invited by: <strong>{vis.w || "Walk-in"}</strong>
+                            <div style={{ fontSize: 11.5, color: "var(--mu)", marginTop: 1, display: "flex", alignItems: "center", gap: 8 }}>
+                              <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
+                                <SvgIcon name="ph" />
+                                <span>{vis.ph}</span>
+                              </span>
+                              <span>·</span>
+                              <span>Invited by: <strong>{vis.w || "Walk-in"}</strong></span>
                             </div>
                             {vis.nt && (
-                              <div style={{ fontSize: 12, color: "var(--tx)", fontStyle: "italic", marginTop: 4 }}>
+                              <div style={{ fontSize: 11.5, color: "var(--tx)", fontStyle: "italic", marginTop: 2 }}>
                                 &ldquo;{vis.nt}&rdquo;
                               </div>
                             )}
                           </div>
                         </div>
 
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                           <button
                             type="button"
                             onClick={() => handleSendWelcome(vis)}
                             className="portal-btn sm"
-                            style={{ color: "#059669", borderColor: "rgba(5, 150, 105, 0.3)" }}
+                            style={{ color: "#059669", borderColor: "rgba(5, 150, 105, 0.3)", padding: "4px 8px", fontSize: 11.5 }}
                           >
-                            <span>💬 WhatsApp Welcome</span>
+                            <SvgIcon name="msg" />
+                            <span>WhatsApp Welcome</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => onRemoveSessionVisitor(vis.id)}
-                            style={{ background: "transparent", border: 0, color: "var(--er)", cursor: "pointer", fontSize: 12, fontWeight: 600, padding: 6 }}
+                            style={{ background: "transparent", border: 0, color: "var(--er)", cursor: "pointer", fontSize: 14, padding: "4px 6px" }}
+                            title="Remove visitor"
                           >
-                            ✕
+                            <SvgIcon name="x" />
                           </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="portal-emp" style={{ padding: "28px 16px" }}>
-                    <div style={{ fontSize: 32, marginBottom: 8 }}>🤝</div>
-                    <h3>No visitors logged yet for this service</h3>
-                    <p style={{ margin: 0 }}>
-                      Use the registration form above to welcome and log all first-time guests.
+                  <div className="portal-emp" style={{ padding: "20px 16px" }}>
+                    <div className="portal-ico" style={{ margin: "0 auto 8px" }}>
+                      <SvgIcon name="users" />
+                    </div>
+                    <h4 style={{ margin: "0 0 4px", fontSize: 14 }}>No visitors logged yet</h4>
+                    <p style={{ margin: 0, fontSize: 12 }}>
+                      Use the registration form on the left to welcome and log first-time guests.
                     </p>
                   </div>
                 )}
@@ -3042,18 +3019,15 @@ _Prepared automatically by REDDOX Church Management System._`;
               TAB 4: AUTOMATIC REPORTS (THE THREE COMBINED & ANALYZED)
               ========================================================= */}
           {activeTab === "reports" && (
-            <div className="space-y-4" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {/* Top Consolidated Metrics */}
-              <div className="portal-cd">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
+              <div className="portal-cd" style={{ padding: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
                   <div>
-                    <span className="portal-session-badge" style={{ marginBottom: 4 }}>
-                      Automatic Service Analytics Report
-                    </span>
-                    <h3 style={{ margin: "4px 0 0", fontSize: 18 }}>
-                      Consolidated Tri-Channel Report: {currentSession.category}
+                    <h3 style={{ margin: 0, fontSize: 16 }}>
+                      Consolidated Service Report: {currentSession.category}
                     </h3>
-                    <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 13 }}>
+                    <p style={{ margin: "2px 0 0", color: "var(--mu)", fontSize: 12 }}>
                       Live aggregated intelligence combining Manual Roster, Digital QR Scans, and First-Timer Harvest.
                     </p>
                   </div>
@@ -3064,7 +3038,7 @@ _Prepared automatically by REDDOX Church Management System._`;
                     </button>
                     <button onClick={handleCopyPastorBrief} className="portal-btn sm p">
                       <SvgIcon name="copy" />
-                      <span>Copy Pastor&apos;s Brief</span>
+                      <span>Copy Brief</span>
                     </button>
                   </div>
                 </div>
@@ -3072,10 +3046,10 @@ _Prepared automatically by REDDOX Church Management System._`;
                 {/* Visual Proportion Meter */}
                 <div className="portal-tri-meter-box">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 12.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "var(--mu)" }}>
-                      Tri-Channel Attendance Distribution
+                    <span style={{ fontSize: 11.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "var(--mu)" }}>
+                      Tri-Channel Distribution
                     </span>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: "var(--tx)" }}>
+                    <span style={{ fontSize: 12.5, fontWeight: 800, color: "var(--tx)" }}>
                       {totalAttendance} Total Recorded
                     </span>
                   </div>
@@ -3089,11 +3063,11 @@ _Prepared automatically by REDDOX Church Management System._`;
                   <div className="portal-tri-legend">
                     <div className="portal-tri-legend-item">
                       <span className="portal-tri-dot manual" />
-                      <span>Manual Ushers Roster: <strong>{manualCount} ({manualShare}%)</strong></span>
+                      <span>Manual Roster: <strong>{manualCount} ({manualShare}%)</strong></span>
                     </div>
                     <div className="portal-tri-legend-item">
                       <span className="portal-tri-dot qr" />
-                      <span>QR Entrance Scans: <strong>{qrCount} ({qrShare}%)</strong></span>
+                      <span>QR Scans: <strong>{qrCount} ({qrShare}%)</strong></span>
                     </div>
                     <div className="portal-tri-legend-item">
                       <span className="portal-tri-dot visitor" />
@@ -3102,19 +3076,19 @@ _Prepared automatically by REDDOX Church Management System._`;
                   </div>
                 </div>
 
-                {/* Detailed Department Breakdown for this Service */}
-                <div style={{ marginTop: 20 }}>
-                  <h4 style={{ margin: "0 0 12px", fontSize: 14 }}>
-                    Department Attendance Breakdown (Manual Roster)
+                {/* Department Turnout Breakdown */}
+                <div style={{ marginTop: 14 }}>
+                  <h4 style={{ margin: "0 0 10px", fontSize: 13 }}>
+                    Department Turnout Breakdown (Manual Roster)
                   </h4>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
                     {departments.filter((d) => d !== "All").map((dept) => {
                       const deptMembers = members.filter((m: any) => m.d === dept);
                       const deptPresent = deptMembers.filter((m: any) => currentSession.p?.includes(m.id)).length;
                       const deptPct = deptMembers.length ? Math.round((deptPresent / deptMembers.length) * 100) : 0;
                       return (
-                        <div key={dept} style={{ background: "rgba(0,0,0,0.02)", border: "1px solid var(--bd)", borderRadius: 12, padding: "12px 14px" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, fontWeight: 700, marginBottom: 6 }}>
+                        <div key={dept} style={{ background: "rgba(0,0,0,0.02)", border: "1px solid var(--bd)", borderRadius: 10, padding: "10px 12px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 700, marginBottom: 4 }}>
                             <span>{dept}</span>
                             <span style={{ color: deptPct > 50 ? "#059669" : "var(--mu)" }}>
                               {deptPresent}/{deptMembers.length} ({deptPct}%)
@@ -3130,14 +3104,14 @@ _Prepared automatically by REDDOX Church Management System._`;
                 </div>
               </div>
 
-              {/* Pastor's Executive Bulletin & Official Brief */}
+              {/* Pastor's Executive Bulletin */}
               <div className="portal-brief-card">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                   <div>
-                    <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.8, color: "var(--rd)" }}>
-                      Official Executive Service Report
+                    <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.6, color: "var(--rd)" }}>
+                      Executive Summary
                     </span>
-                    <h3 style={{ margin: "4px 0 0", fontSize: 18 }}>
+                    <h3 style={{ margin: "2px 0 0", fontSize: 15 }}>
                       Pastor &amp; Leadership Board Briefing
                     </h3>
                   </div>
@@ -3145,9 +3119,10 @@ _Prepared automatically by REDDOX Church Management System._`;
                     type="button"
                     onClick={handleCopyPastorBrief}
                     className="portal-btn sm"
-                    style={{ background: "#ffffff" }}
+                    style={{ background: "#ffffff", padding: "6px 10px", fontSize: 12 }}
                   >
-                    <span>📋 Copy Brief for WhatsApp</span>
+                    <SvgIcon name="copy" />
+                    <span>Copy Brief</span>
                   </button>
                 </div>
 
@@ -3155,12 +3130,12 @@ _Prepared automatically by REDDOX Church Management System._`;
                   style={{
                     background: "rgba(43, 32, 21, 0.03)",
                     border: "1px solid var(--bd)",
-                    borderRadius: 12,
-                    padding: "16px 20px",
+                    borderRadius: 10,
+                    padding: "12px 16px",
                     fontFamily: "monospace",
-                    fontSize: 13,
+                    fontSize: 12,
                     color: "var(--tx)",
-                    lineHeight: 1.6,
+                    lineHeight: 1.5,
                     whiteSpace: "pre-wrap",
                   }}
                 >
@@ -3170,7 +3145,6 @@ Service Category : ${currentSession.category || "Sunday Service"}
 Service Session  : ${currentSession.n}
 Date & Time      : ${currentSession.d} (${currentSession.time || "09:00 AM"})
 Presiding Pastor : ${currentSession.preacher || "Pastor in charge"}
-Sermon Theme     : ${currentSession.notes || "Worship Service"}
 
 ATTENDANCE CHANNELS BREAKDOWN:
 ----------------------------------------------------------
@@ -3193,32 +3167,32 @@ ${totalAttendance > 0 ? `Service attendance reached ${totalAttendance} worshippe
       )}
 
       {/* =========================================================
-          FULLSCREEN ENTRANCE KIOSK MODAL
+          FULLSCREEN ENTRANCE KIOSK MODAL (CLEAN & EMOJI-FREE)
           ========================================================= */}
       {isKioskOpen && currentSession && (
         <div className="portal-kiosk-modal" onClick={() => setIsKioskOpen(false)}>
           <div className="portal-kiosk-card" onClick={(e) => e.stopPropagation()}>
             <span
               style={{
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: 800,
                 textTransform: "uppercase",
-                letterSpacing: 1,
+                letterSpacing: 0.8,
                 color: "var(--rd)",
                 background: "var(--rd2)",
-                padding: "4px 14px",
+                padding: "4px 12px",
                 borderRadius: 99,
                 display: "inline-block",
-                marginBottom: 12,
+                marginBottom: 10,
               }}
             >
               RCCG Rehoboth Chapel · Entrance Check-In
             </span>
 
-            <h2 style={{ fontSize: 24, fontWeight: 900, margin: "0 0 6px", color: "var(--tx)" }}>
+            <h2 style={{ fontSize: 22, fontWeight: 900, margin: "0 0 6px", color: "var(--tx)" }}>
               Welcome to {currentSession.category}!
             </h2>
-            <p style={{ margin: "0 0 20px", color: "var(--mu)", fontSize: 14 }}>
+            <p style={{ margin: "0 0 16px", color: "var(--mu)", fontSize: 13 }}>
               Scan the code with your smartphone camera to check in instantly.
             </p>
 
@@ -3226,14 +3200,14 @@ ${totalAttendance > 0 ? `Service attendance reached ${totalAttendance} worshippe
               style={{
                 display: "inline-block",
                 background: "#ffffff",
-                padding: 24,
-                borderRadius: 24,
+                padding: 18,
+                borderRadius: 18,
                 border: "2px solid var(--bd)",
-                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
-                marginBottom: 20,
+                boxShadow: "0 10px 25px rgba(0, 0, 0, 0.08)",
+                marginBottom: 16,
               }}
             >
-              <svg className="portal-qr" viewBox="0 0 21 21" style={{ width: 220, height: 220 }} shapeRendering="crispEdges">
+              <svg className="portal-qr" viewBox="0 0 21 21" style={{ width: 180, height: 180 }} shapeRendering="crispEdges">
                 <path
                   fill="#2b2015"
                   d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM1 1v5h5V1zM15 1v5h5V1zM1 15v5h5v-5zM2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM8 0h2v2H8zM11 1h2v2h-2zM8 4h3v2H8zM12 5h1v2h-1zM0 8h2v2H0zM3 9h3v2H3zM8 8h2v3H8zM12 8h3v2h-3zM16 9h2v2h-2zM19 8h2v3h-2zM8 12h2v2H8zM11 13h2v2h-2zM14 12h2v2h-2zM18 13h3v2h-3zM8 16h3v2H8zM12 17h2v3h-2zM15 16h2v2h-2zM18 18h3v3h-3zM9 19h2v2H9z"
@@ -3241,13 +3215,15 @@ ${totalAttendance > 0 ? `Service attendance reached ${totalAttendance} worshippe
               </svg>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12, marginBottom: 24 }}>
-              <span style={{ fontSize: 13, color: "var(--mu)" }}>
-                ⚡ <strong>{qrCount}</strong> worshippers checked in digitally
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12, marginBottom: 20 }}>
+              <span style={{ fontSize: 12.5, color: "var(--mu)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <SvgIcon name="zap" />
+                <span><strong>{qrCount}</strong> digital check-ins</span>
               </span>
               <span style={{ color: "var(--bd)" }}>|</span>
-              <span style={{ fontSize: 13, color: "var(--mu)" }}>
-                Total Service: <strong>{totalAttendance}</strong>
+              <span style={{ fontSize: 12.5, color: "var(--mu)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <SvgIcon name="users" />
+                <span>Total: <strong>{totalAttendance}</strong></span>
               </span>
             </div>
 
@@ -3255,9 +3231,10 @@ ${totalAttendance > 0 ? `Service attendance reached ${totalAttendance} worshippe
               type="button"
               onClick={() => setIsKioskOpen(false)}
               className="portal-btn p"
-              style={{ width: "100%", padding: "12px 20px" }}
+              style={{ width: "100%", padding: "10px 16px", justifyContent: "center" }}
             >
-              Close Kiosk Screen
+              <SvgIcon name="x" />
+              <span>Close Kiosk</span>
             </button>
           </div>
         </div>
@@ -3411,6 +3388,7 @@ function FinancesView({
     );
   }
 
+  const [viewingReceipt, setViewingReceipt] = useState<any | null>(null);
   const totalGiving = giving.reduce((acc: number, g: any) => acc + g.a, 0);
   const totalExp = expenses.reduce((acc: number, x: any) => acc + x.a, 0);
   const net = totalGiving - totalExp;
@@ -3480,6 +3458,7 @@ function FinancesView({
                   <th>Member</th>
                   <th>Type</th>
                   <th>Date</th>
+                  <th>Receipt / Slip</th>
                   <th style={{ textAlign: "right" }}>Amount</th>
                 </tr>
               </thead>
@@ -3491,6 +3470,57 @@ function FinancesView({
                       <span className="portal-pill">{g.t}</span>
                     </td>
                     <td>{g.w}</td>
+                    <td>
+                      {g.receiptImage || g.receiptName ? (
+                        <button
+                          type="button"
+                          className="portal-receipt-btn"
+                          onClick={() =>
+                            setViewingReceipt({
+                              title: `${g.t} Payment Slip`,
+                              image: g.receiptImage,
+                              fileName: g.receiptName,
+                              category: g.t,
+                              party: getMemberName(g.m),
+                              amount: g.a,
+                              date: g.w,
+                              ref: g.ref || `GIV-${g.id}`,
+                            })
+                          }
+                          title="View receipt voucher"
+                        >
+                          <SvgIcon name="file" />
+                          <span>
+                            {g.receiptName
+                              ? g.receiptName.length > 18
+                                ? g.receiptName.slice(0, 16) + "…"
+                                : g.receiptName
+                              : "View Slip"}
+                          </span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="portal-receipt-btn empty"
+                          onClick={() =>
+                            setViewingReceipt({
+                              title: `${g.t} Digital Voucher`,
+                              image: undefined,
+                              fileName: undefined,
+                              category: g.t,
+                              party: getMemberName(g.m),
+                              amount: g.a,
+                              date: g.w,
+                              ref: g.ref || `GIV-${g.id}`,
+                            })
+                          }
+                          title="View digital treasury voucher"
+                        >
+                          <SvgIcon name="file" />
+                          <span>Voucher</span>
+                        </button>
+                      )}
+                    </td>
                     <td style={{ textAlign: "right", fontWeight: 700 }}>
                       {formatNaira(g.a)}
                     </td>
@@ -3505,6 +3535,7 @@ function FinancesView({
                   <th>Description</th>
                   <th>Category</th>
                   <th>Date</th>
+                  <th>Receipt / Bill</th>
                   <th style={{ textAlign: "right" }}>Amount</th>
                 </tr>
               </thead>
@@ -3516,6 +3547,57 @@ function FinancesView({
                       <span className="portal-pill go">{x.c}</span>
                     </td>
                     <td>{x.w}</td>
+                    <td>
+                      {x.receiptImage || x.receiptName ? (
+                        <button
+                          type="button"
+                          className="portal-receipt-btn"
+                          onClick={() =>
+                            setViewingReceipt({
+                              title: `${x.t} Receipt`,
+                              image: x.receiptImage,
+                              fileName: x.receiptName,
+                              category: x.c,
+                              party: "Ministry Vendor / Supplier",
+                              amount: x.a,
+                              date: x.w,
+                              ref: x.ref || `EXP-${idx + 1}`,
+                            })
+                          }
+                          title="View expense receipt"
+                        >
+                          <SvgIcon name="file" />
+                          <span>
+                            {x.receiptName
+                              ? x.receiptName.length > 18
+                                ? x.receiptName.slice(0, 16) + "…"
+                                : x.receiptName
+                              : "Receipt"}
+                          </span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="portal-receipt-btn empty"
+                          onClick={() =>
+                            setViewingReceipt({
+                              title: `${x.t} Disbursement Voucher`,
+                              image: undefined,
+                              fileName: undefined,
+                              category: x.c,
+                              party: "Ministry Vendor / Supplier",
+                              amount: x.a,
+                              date: x.w,
+                              ref: x.ref || `EXP-${idx + 1}`,
+                            })
+                          }
+                          title="View disbursement voucher"
+                        >
+                          <SvgIcon name="file" />
+                          <span>Voucher</span>
+                        </button>
+                      )}
+                    </td>
                     <td style={{ textAlign: "right", fontWeight: 700 }}>
                       {formatNaira(x.a)}
                     </td>
@@ -3562,6 +3644,14 @@ function FinancesView({
           );
         })}
       </div>
+
+      {/* Receipt Preview Modal */}
+      {viewingReceipt && (
+        <ReceiptViewerModal
+          receipt={viewingReceipt}
+          onClose={() => setViewingReceipt(null)}
+        />
+      )}
     </>
   );
 }
@@ -6361,7 +6451,9 @@ function NewSessionModal({ onClose, onSave }: any) {
             gap: 10,
           }}
         >
-          <span style={{ fontSize: 16 }}>⚡</span>
+          <div style={{ color: "var(--bl)", display: "grid", placeItems: "center" }}>
+            <SvgIcon name="zap" />
+          </div>
           <span>
             This session will be ready for <strong>Manual Attendance</strong>, <strong>Entrance QR Check-In</strong>, and <strong>Visitor Registration</strong> with real-time automatic reports.
           </span>

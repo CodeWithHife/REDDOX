@@ -547,20 +547,34 @@ export default function ReddoxPortalDashboard() {
   ]);
 
   const [giving, setGiving] = useState([
-    { id: 1, m: 1, t: "Tithe", a: 45000, w: "Oct 25", ref: "TX-948102", receiptName: "gtbank_transfer_oct25.png" },
-    { id: 2, m: 2, t: "Offering", a: 8000, w: "Oct 25", ref: "TX-948103" },
-    { id: 3, m: 4, t: "Building Fund", a: 60000, w: "Oct 25", ref: "TX-948104", receiptName: "zenith_cheque_slip.jpg" },
-    { id: 4, m: 5, t: "Tithe", a: 30000, w: "Oct 21", ref: "TX-948105" },
-    { id: 5, m: 7, t: "Missions", a: 15000, w: "Oct 25", ref: "TX-948106", receiptName: "pos_receipt_missions.png" },
-    { id: 6, m: 1, t: "Offering", a: 12000, w: "Oct 18", ref: "TX-948107" },
-    { id: 7, m: 10, t: "Tithe", a: 52000, w: "Oct 18", ref: "TX-948108", receiptName: "access_wire_slip.pdf" },
-    { id: 8, m: 8, t: "Building Fund", a: 25000, w: "Oct 21", ref: "TX-948109" },
+    // November 2026 (Current Month)
+    { id: 11, m: 1, t: "Tithe", a: 75000, w: "Nov 03", month: "Nov 2026", ref: "TX-948111", receiptName: "gtbank_transfer_nov03.png" },
+    { id: 12, m: 4, t: "Offering", a: 34000, w: "Nov 05", month: "Nov 2026", ref: "TX-948112" },
+    { id: 13, m: 7, t: "Building Fund", a: 50000, w: "Nov 06", month: "Nov 2026", ref: "TX-948113", receiptName: "zenith_cheque_nov.jpg" },
+    // October 2026
+    { id: 1, m: 1, t: "Tithe", a: 45000, w: "Oct 25", month: "Oct 2026", ref: "TX-948102", receiptName: "gtbank_transfer_oct25.png" },
+    { id: 2, m: 2, t: "Offering", a: 8000, w: "Oct 25", month: "Oct 2026", ref: "TX-948103" },
+    { id: 3, m: 4, t: "Building Fund", a: 60000, w: "Oct 25", month: "Oct 2026", ref: "TX-948104", receiptName: "zenith_cheque_slip.jpg" },
+    { id: 4, m: 5, t: "Tithe", a: 30000, w: "Oct 21", month: "Oct 2026", ref: "TX-948105" },
+    { id: 5, m: 7, t: "Missions", a: 15000, w: "Oct 25", month: "Oct 2026", ref: "TX-948106", receiptName: "pos_receipt_missions.png" },
+    { id: 6, m: 1, t: "Offering", a: 12000, w: "Oct 18", month: "Oct 2026", ref: "TX-948107" },
+    { id: 7, m: 10, t: "Tithe", a: 52000, w: "Oct 18", month: "Oct 2026", ref: "TX-948108", receiptName: "access_wire_slip.pdf" },
+    { id: 8, m: 8, t: "Building Fund", a: 25000, w: "Oct 21", month: "Oct 2026", ref: "TX-948109" },
+    // September 2026
+    { id: 9, m: 2, t: "Tithe", a: 38000, w: "Sep 28", month: "Sep 2026", ref: "TX-948091" },
+    { id: 10, m: 5, t: "Offering", a: 14000, w: "Sep 21", month: "Sep 2026", ref: "TX-948092" },
   ]);
 
   const [expenses, setExpenses] = useState([
-    { id: 101, t: "Sound equipment repair", c: "Equipment", a: 35000, w: "Oct 22", ref: "EXP-101", receiptName: "alaba_sound_invoice.pdf" },
-    { id: 102, t: "Electricity bill (Eko Electric)", c: "Utilities", a: 48000, w: "Oct 15", ref: "EXP-102", receiptName: "ekedc_token_receipt.png" },
-    { id: 103, t: "Children's class supplies", c: "Ministry", a: 12500, w: "Oct 12", ref: "EXP-103" },
+    // November 2026 (Current Month)
+    { id: 201, t: "Generator diesel fuel", c: "Utilities", a: 32000, w: "Nov 02", month: "Nov 2026", ref: "EXP-201", receiptName: "total_diesel_receipt.pdf" },
+    { id: 202, t: "Guest minister honorarium", c: "Honorarium", a: 40000, w: "Nov 05", month: "Nov 2026", ref: "EXP-202" },
+    // October 2026
+    { id: 101, t: "Sound equipment repair", c: "Equipment", a: 35000, w: "Oct 22", month: "Oct 2026", ref: "EXP-101", receiptName: "alaba_sound_invoice.pdf" },
+    { id: 102, t: "Electricity bill (Eko Electric)", c: "Utilities", a: 48000, w: "Oct 15", month: "Oct 2026", ref: "EXP-102", receiptName: "ekedc_token_receipt.png" },
+    { id: 103, t: "Children's class supplies", c: "Ministry", a: 12500, w: "Oct 12", month: "Oct 2026", ref: "EXP-103" },
+    // September 2026
+    { id: 301, t: "Altar floral decorations", c: "Maintenance", a: 18000, w: "Sep 15", month: "Sep 2026", ref: "EXP-301" },
   ]);
 
   const [visitors, setVisitors] = useState([
@@ -1509,7 +1523,7 @@ export default function ReddoxPortalDashboard() {
           onClose={() => setActiveModal(null)}
           onSave={(gift: any) => {
             setGiving([
-              { id: Date.now(), ...gift, w: "Today" },
+              { id: Date.now(), ...gift, w: gift.w || "Nov 07", month: gift.month || "Nov 2026" },
               ...giving,
             ]);
             const mName = getMemberName(gift.m);
@@ -1531,7 +1545,7 @@ export default function ReddoxPortalDashboard() {
         <AddExpenseModal
           onClose={() => setActiveModal(null)}
           onSave={(exp: any) => {
-            setExpenses([{ ...exp, w: "Today" }, ...expenses]);
+            setExpenses([{ id: Date.now(), ...exp, w: exp.w || "Nov 07", month: exp.month || "Nov 2026" }, ...expenses]);
             showToast("Expense recorded successfully.");
             setActiveModal(null);
           }}

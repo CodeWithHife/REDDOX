@@ -4532,6 +4532,110 @@
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
+/* ========================================================
+   FINANCE MONTHLY FILTER BAR & STATEMENT BREAKDOWN
+   ======================================================== */
+.portal-month-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 14px;
+  margin-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.portal-month-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.portal-month-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  user-select: none;
+}
+
+.portal-month-pill:hover {
+  background: #ffffff;
+  border-color: var(--bl);
+  color: var(--bl);
+}
+
+.portal-month-pill.active {
+  background: var(--rd);
+  border-color: var(--rd);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(109, 42, 60, 0.25);
+}
+
+.portal-month-pill .portal-month-count {
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.portal-month-pill.active .portal-month-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.portal-month-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(109, 42, 60, 0.05);
+  border: 1px solid rgba(109, 42, 60, 0.15);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.portal-month-banner strong {
+  color: var(--rd);
+}
+
+.portal-statement-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.portal-statement-badge.surplus {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.portal-statement-badge.deficit {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.portal-statement-badge.neutral {
+  background: #f3f4f6;
+  color: #374151;
+}
+
 
 
 

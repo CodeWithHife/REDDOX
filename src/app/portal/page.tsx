@@ -366,7 +366,21 @@ const DEPARTMENTS = ["Choir", "Ushering", "Children", "Media", "Prayer"];
 const GIVING_TYPES = ["Tithe", "Offering", "Building Fund", "Missions"];
 const EXPENSE_CATEGORIES = ["Equipment", "Utilities", "Ministry", "Maintenance"];
 const VISITOR_STATUSES = ["New", "Contacted", "Follow-up due", "Became member"];
-const STAFF_ROLES = ["Admin", "Leader", "Treasurer", "Usher"];
+const STAFF_ROLES = [
+  "Administrator",
+  "Resident Pastor",
+  "Associate Pastor",
+  "Youth Pastor",
+  "Leader",
+  "Treasurer",
+  "Usher",
+  "Head Usher",
+  "Choir Director",
+  "Media & Sound Director",
+  "Sunday School Teacher",
+  "Welfare Coordinator",
+  "Custom Role",
+];
 
 const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: "grid" },
@@ -959,9 +973,8 @@ export default function ReddoxPortalDashboard() {
             MAIN VIEW AREA
             ========================================= */}
         <main className="portal-main">
-          {/* Top Bar Navigation (Hidden in Settings view) */}
-          {activeView !== "settings" && (
-            <header className="portal-tb">
+          {/* Top Bar Navigation */}
+          <header className="portal-tb">
             {/* Mobile Hamburger Toggle */}
             <button
               className="portal-ic burger"
@@ -1230,7 +1243,6 @@ export default function ReddoxPortalDashboard() {
               </div>
             </div>
           </header>
-        )}
 
           {/* =========================================
               VIEW CONTENT ROUTER
@@ -1406,17 +1418,17 @@ export default function ReddoxPortalDashboard() {
                     prev.map((ev) =>
                       ev.id === eventId || ev.t === eventId
                         ? {
-                            ...ev,
-                            r: (ev.r || 0) + 1,
-                            attendees: [
-                              ...(ev.attendees || []),
-                              attendee || {
-                                name: "Congregation Member",
-                                role: "Worshipper",
-                                time: "Just now",
-                              },
-                            ],
-                          }
+                          ...ev,
+                          r: (ev.r || 0) + 1,
+                          attendees: [
+                            ...(ev.attendees || []),
+                            attendee || {
+                              name: "Congregation Member",
+                              role: "Worshipper",
+                              time: "Just now",
+                            },
+                          ],
+                        }
                         : ev
                     )
                   );
@@ -1525,6 +1537,20 @@ export default function ReddoxPortalDashboard() {
                     ...prev,
                     [key]: !prev[key],
                   }));
+                  showToast("Notification preference updated.");
+                }}
+                onToggleRead={(id: number) => {
+                  setNotifications((prev) =>
+                    prev.map((n) => (n.id === id ? { ...n, u: !n.u } : n))
+                  );
+                }}
+                onDismiss={(id: number) => {
+                  setNotifications((prev) => prev.filter((n) => n.id !== id));
+                  showToast("Notification dismissed.");
+                }}
+                onClearAll={() => {
+                  setNotifications([]);
+                  showToast("All notifications cleared.");
                 }}
               />
             )}
@@ -1554,7 +1580,7 @@ export default function ReddoxPortalDashboard() {
                         "reddox_church_profile",
                         JSON.stringify({ ...prevData, ...updatedProfile })
                       );
-                    } catch (e) {}
+                    } catch (e) { }
                   }
                   showToast("Church profile saved.");
                 }}
@@ -1979,15 +2005,14 @@ function DashboardView({
                   <small>{v.nt || "First-time visitor"} · {v.d}</small>
                 </p>
                 <span
-                  className={`portal-pill ${
-                    v.s === "New"
+                  className={`portal-pill ${v.s === "New"
                       ? "go"
                       : v.s === "Became member"
-                      ? "ok"
-                      : v.s === "Contacted"
-                      ? ""
-                      : "no"
-                  }`}
+                        ? "ok"
+                        : v.s === "Contacted"
+                          ? ""
+                          : "no"
+                    }`}
                 >
                   {v.s}
                 </span>
@@ -3283,7 +3308,7 @@ _Prepared automatically by REDDOX Church Management System._`;
                     whiteSpace: "pre-wrap",
                   }}
                 >
-{`RCCG REHOBOTH CHAPEL - OFFICIAL SERVICE ATTENDANCE REPORT
+                  {`RCCG REHOBOTH CHAPEL - OFFICIAL SERVICE ATTENDANCE REPORT
 ==========================================================
 Service Category : ${currentSession.category || "Sunday Service"}
 Service Session  : ${currentSession.n}
@@ -4494,9 +4519,8 @@ function SermonsView({ sermons, plan, onAddSermon, onRemoveSermon }: any) {
                 </small>
               </p>
               <span
-                className={`portal-pill ${
-                  s.v === "Public" ? "ok" : s.v === "Hidden" ? "no" : ""
-                }`}
+                className={`portal-pill ${s.v === "Public" ? "ok" : s.v === "Hidden" ? "no" : ""
+                  }`}
               >
                 {s.v}
               </span>
@@ -4530,11 +4554,11 @@ function ReportsView({ members, sessions, events, giving, plan, onExport }: any)
   const totalGiving = giving.reduce((acc: number, g: any) => acc + g.a, 0);
   const avgAttendance = sessions.length
     ? Math.round(
-        sessions.reduce(
-          (acc: number, s: any) => acc + (s.p.length / memberCount) * 100,
-          0
-        ) / sessions.length
-      )
+      sessions.reduce(
+        (acc: number, s: any) => acc + (s.p.length / memberCount) * 100,
+        0
+      ) / sessions.length
+    )
     : 0;
 
   const sixMonthGrowth = [
@@ -4776,8 +4800,21 @@ function StaffView({ staff, plan, churchRole, onInviteStaff, onRoleChange, onRev
                     <select
                       value={s.r}
                       disabled={idx === 0}
-                      onChange={(e) => onRoleChange(idx, e.target.value)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === "Custom Role") {
+                          const custom = prompt("Enter custom ministry role title:", s.r);
+                          if (custom && custom.trim()) {
+                            onRoleChange(idx, custom.trim());
+                          }
+                        } else {
+                          onRoleChange(idx, val);
+                        }
+                      }}
                     >
+                      {!STAFF_ROLES.includes(s.r) && (
+                        <option value={s.r}>{s.r} (Custom)</option>
+                      )}
                       {STAFF_ROLES.map((r) => (
                         <option key={r} value={r}>
                           {r}
@@ -4787,9 +4824,8 @@ function StaffView({ staff, plan, churchRole, onInviteStaff, onRoleChange, onRev
                   </td>
                   <td>
                     <span
-                      className={`portal-pill ${
-                        s.s === "Active" ? "ok" : "go"
-                      }`}
+                      className={`portal-pill ${s.s === "Active" ? "ok" : "go"
+                        }`}
                     >
                       {s.s}
                     </span>
@@ -4817,72 +4853,249 @@ function StaffView({ staff, plan, churchRole, onInviteStaff, onRoleChange, onRev
 }
 
 /* =====================================================================
-   VIEW 10: NOTIFICATIONS & ALERTS
+   VIEW 10: NOTIFICATIONS & ALERTS (TOP-NOTCH PASTORAL HUB)
    ===================================================================== */
 function NotificationsView({
   notifications,
   notifPrefs,
   onMarkAllRead,
   onTogglePref,
+  onToggleRead,
+  onDismiss,
+  onClearAll,
 }: any) {
-  const PREF_LABELS: Record<string, string> = {
-    fu: "Follow-up reminders for first-timers",
-    ev: "Event & prayer schedule reminders",
-    vi: "New visitor registration alerts",
+  const [filter, setFilter] = useState<"all" | "unread" | "visitors" | "giving" | "events">("all");
+
+  const unreadCount = notifications.filter((n: any) => n.u).length;
+
+  const filteredNotifications = notifications.filter((n: any) => {
+    if (filter === "unread") return n.u;
+    const t = (n.t || "").toLowerCase();
+    if (filter === "visitors") return t.includes("visitor") || t.includes("follow-up");
+    if (filter === "giving") return t.includes("gave") || t.includes("tithe") || t.includes("offering");
+    if (filter === "events") return t.includes("fellowship") || t.includes("service") || t.includes("event") || t.includes("study");
+    return true;
+  });
+
+  const PREF_LABELS: Record<string, { title: string; desc: string }> = {
+    fu: {
+      title: "First-timer guest follow-up reminders",
+      desc: "Receive alerts when a newly registered guest hasn't been contacted within 48 hours",
+    },
+    ev: {
+      title: "Service headcount & calendar event alerts",
+      desc: "Daily alerts for upcoming worship services, prayer vigils, and RSVP threshold updates",
+    },
+    vi: {
+      title: "New member & visitor registrations",
+      desc: "Instant notifications whenever a newcomer is checked in via usher roster or entrance QR",
+    },
+  };
+
+  const getNotifCategory = (text: string) => {
+    const t = text.toLowerCase();
+    if (t.includes("visitor") || t.includes("follow-up")) return "visitor";
+    if (t.includes("gave") || t.includes("tithe") || t.includes("offering") || t.includes("recorded")) return "giving";
+    if (t.includes("service") || t.includes("fellowship") || t.includes("event") || t.includes("study")) return "event";
+    return "general";
+  };
+
+  const getCategoryIcon = (cat: string) => {
+    switch (cat) {
+      case "visitor":
+        return <SvgIcon name="uplus" />;
+      case "giving":
+        return <SvgIcon name="coin" />;
+      case "event":
+        return <SvgIcon name="cal" />;
+      default:
+        return <SvgIcon name="bell" />;
+    }
   };
 
   return (
     <>
       <div className="portal-hd">
         <div>
-          <h1>Notifications</h1>
-          <p>Real-time alerts, follow-up reminders, and pastoral duty updates</p>
+          <h1>Pastoral Alerts &amp; Notifications</h1>
+          <p>
+            Real-time ministry notifications, pastoral follow-up tasks, and congregation activity
+          </p>
         </div>
         <div className="portal-acts">
-          <button onClick={onMarkAllRead} className="portal-btn">
-            Mark all read
-          </button>
+          {notifications.length > 0 && (
+            <>
+              <button
+                type="button"
+                onClick={onMarkAllRead}
+                className="portal-btn"
+                title="Mark all notifications as read"
+              >
+                <SvgIcon name="check" />
+                <span>Mark all read</span>
+              </button>
+              <button
+                type="button"
+                onClick={onClearAll}
+                className="portal-btn"
+                title="Clear all alerts"
+              >
+                <span>Clear all</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
 
-      <div className="portal-cd">
-        {notifications.length ? (
-          notifications.map((n: any) => (
-            <div key={n.id} className="portal-li">
-              <span
-                className="portal-a"
-                style={{ opacity: n.u ? 1 : 0.45 }}
-              >
-                <SvgIcon name="bell" />
-              </span>
-              <p>
-                {n.u ? <strong>{n.t}</strong> : n.t}
-                <br />
-                <small>{n.w}</small>
-              </p>
-            </div>
-          ))
+      {/* Overview Stat KPIs */}
+      <div className="portal-gs">
+        <div className="portal-cd portal-st">
+          <small>Total Alerts</small>
+          <b>{notifications.length}</b>
+        </div>
+        <div className="portal-cd portal-st">
+          <small>Unread Notifications</small>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <b style={{ color: unreadCount > 0 ? "var(--rd)" : "var(--tx)" }}>{unreadCount}</b>
+            {unreadCount > 0 && <span className="portal-statement-badge deficit">Requires Attention</span>}
+          </div>
+        </div>
+        <div className="portal-cd portal-st">
+          <small>Delivery Channels</small>
+          <b>In-App &bull; SMS Alerts</b>
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="portal-cat-bar" style={{ marginBottom: 16 }}>
+        <button
+          type="button"
+          className={`portal-cat-btn ${filter === "all" ? "active" : ""}`}
+          onClick={() => setFilter("all")}
+        >
+          <span>All Notifications</span>
+          <span className="portal-cat-count">{notifications.length}</span>
+        </button>
+        <button
+          type="button"
+          className={`portal-cat-btn ${filter === "unread" ? "active" : ""}`}
+          onClick={() => setFilter("unread")}
+        >
+          <span>Unread</span>
+          <span className="portal-cat-count">{unreadCount}</span>
+        </button>
+        <button
+          type="button"
+          className={`portal-cat-btn ${filter === "visitors" ? "active" : ""}`}
+          onClick={() => setFilter("visitors")}
+        >
+          <span>Follow-ups &amp; Visitors</span>
+        </button>
+        <button
+          type="button"
+          className={`portal-cat-btn ${filter === "giving" ? "active" : ""}`}
+          onClick={() => setFilter("giving")}
+        >
+          <span>Finances &amp; Tithes</span>
+        </button>
+        <button
+          type="button"
+          className={`portal-cat-btn ${filter === "events" ? "active" : ""}`}
+          onClick={() => setFilter("events")}
+        >
+          <span>Events &amp; Services</span>
+        </button>
+      </div>
+
+      {/* Notifications List */}
+      <div className="portal-cd" style={{ padding: "16px" }}>
+        {filteredNotifications.length ? (
+          <div className="portal-notif-list">
+            {filteredNotifications.map((n: any) => {
+              const cat = getNotifCategory(n.t);
+              return (
+                <div key={n.id} className={`portal-notif-card ${n.u ? "unread" : ""}`}>
+                  <div className={`portal-notif-icon-wrap ${cat}`}>
+                    {getCategoryIcon(cat)}
+                  </div>
+                  <div className="portal-notif-content">
+                    <div className="portal-notif-head">
+                      <h4 className="portal-notif-title">{n.t}</h4>
+                      <span className="portal-notif-time">{n.w}</span>
+                    </div>
+                    <p className="portal-notif-body">
+                      {cat === "visitor"
+                        ? "Congregation newcomer requires personal follow-up call from pastoral care ministry."
+                        : cat === "giving"
+                          ? "Official remittance voucher generated and recorded in parish financial ledger."
+                          : cat === "event"
+                            ? "Upcoming service preparation and ministerial department coordination update."
+                            : "System operational advisory for Grace Chapel administrators."}
+                    </p>
+                    <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                      {n.u && (
+                        <button
+                          type="button"
+                          onClick={() => onToggleRead(n.id)}
+                          className="portal-receipt-btn"
+                          style={{ fontSize: 11, padding: "2px 8px" }}
+                        >
+                          Mark as Read
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => onDismiss(n.id)}
+                        className="portal-receipt-btn empty"
+                        style={{ fontSize: 11, padding: "2px 8px" }}
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                  {n.u && <span className="portal-notif-dot" title="Unread notification" />}
+                </div>
+              );
+            })}
+          </div>
         ) : (
-          <div className="portal-emp">
+          <div className="portal-emp" style={{ padding: "40px 16px" }}>
             <div className="portal-ico">
               <SvgIcon name="bell" />
             </div>
-            <h3>You’re all caught up</h3>
-            <p>No new notifications at this time.</p>
+            <h3>No notifications here</h3>
+            <p>You're all caught up with your pastoral alerts and follow-ups.</p>
           </div>
         )}
       </div>
 
-      <div className="portal-cd">
-        <h3>Notification preferences</h3>
+      {/* Preferences Section */}
+      <div className="portal-cd" style={{ marginTop: 18 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 8, background: "var(--rd6)", color: "var(--rd)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <SvgIcon name="gear" />
+          </div>
+          <div>
+            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>Notification Delivery Channels &amp; Rules</h3>
+            <small style={{ color: "var(--mu)" }}>Configure which alerts are routed to your pastoral team</small>
+          </div>
+        </div>
+
         {Object.keys(PREF_LABELS).map((k) => (
-          <div key={k} className="portal-li">
-            <p>{PREF_LABELS[k]}</p>
+          <div key={k} className="portal-li" style={{ padding: "12px 14px" }}>
+            <div style={{ flex: 1, minWidth: 0, paddingRight: 14 }}>
+              <strong style={{ fontSize: 13.5, display: "block", color: "var(--tx)" }}>
+                {PREF_LABELS[k].title}
+              </strong>
+              <small style={{ color: "var(--mu)", fontSize: 12, lineHeight: 1.4, display: "block", marginTop: 2 }}>
+                {PREF_LABELS[k].desc}
+              </small>
+            </div>
             <button
               type="button"
               className={`portal-sw ${(notifPrefs as any)[k] ? "on" : ""}`}
               onClick={() => onTogglePref(k)}
-              aria-label={PREF_LABELS[k]}
+              aria-label={PREF_LABELS[k].title}
             />
           </div>
         ))}
@@ -4989,7 +5202,7 @@ function SettingsView({
             website: loadedProfile.website,
             timezone: loadedProfile.timezone,
           });
-        } catch (e) {}
+        } catch (e) { }
       }
       const savedLogo = localStorage.getItem("reddox_church_logo");
       if (savedLogo) {
@@ -5009,7 +5222,7 @@ function SettingsView({
         const existing = localStorage.getItem("reddox_church_profile");
         const prevData = existing ? JSON.parse(existing) : {};
         localStorage.setItem("reddox_church_profile", JSON.stringify({ ...prevData, ...updated }));
-      } catch (e) {}
+      } catch (e) { }
     }
     onSaveProfile?.(updated);
     setIsEditingContact(false);
@@ -5293,996 +5506,995 @@ function SettingsView({
               </div>
             </section>
 
-          {/* Section 2: Contact Details */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="pin" />
+            {/* Section 2: Contact Details */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="pin" />
+                </div>
+                <h3>Contact details</h3>
+                <p>Registered address, primary contact lines, and regional timezone.</p>
               </div>
-              <h3>Contact details</h3>
-              <p>Registered address, primary contact lines, and regional timezone.</p>
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                  <div>
+                    <h4 style={{ margin: "0 0 2px", fontSize: 15, fontWeight: 700, color: "var(--tx)" }}>
+                      Parish Contact Channels
+                    </h4>
+                    <small style={{ color: "var(--mu)" }}>
+                      {isEditingContact
+                        ? "Edit your church's address, phone, email, and public website below."
+                        : "Public channels used by parish members and visitors."}
+                    </small>
+                  </div>
+                  <button
+                    type="button"
+                    className={`portal-btn sm ${isEditingContact ? "" : "p"}`}
+                    onClick={() => {
+                      if (isEditingContact) {
+                        handleCancelContactEdit();
+                      } else {
+                        setIsEditingContact(true);
+                      }
+                    }}
+                  >
+                    <SvgIcon name={isEditingContact ? "out" : "gear"} />
+                    <span>{isEditingContact ? "Cancel Editing" : "Edit this section"}</span>
+                  </button>
+                </div>
+
+                {isEditingContact ? (
+                  /* Editable Mode for Contact Fields */
+                  <div className="portal-edit-section-box">
+                    <div className="portal-edit-badge">
+                      <SvgIcon name="gear" />
+                      <span>Editing Parish Contact Channels</span>
+                    </div>
+
+                    <div className="portal-fg">
+                      <div className="portal-field w">
+                        <label>
+                          <span>Address or parish location</span>
+                          <span className="opt">Editable</span>
+                        </label>
+                        <div className="portal-input-wrap">
+                          <SvgIcon name="pin" />
+                          <input
+                            value={contactForm.address}
+                            onChange={(e) => setContactForm({ ...contactForm, address: e.target.value })}
+                            placeholder="Street, area or landmark"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="portal-field">
+                        <label>
+                          <span>Phone number</span>
+                          <span className="opt">Editable</span>
+                        </label>
+                        <div className="portal-input-wrap">
+                          <SvgIcon name="call" />
+                          <input
+                            type="tel"
+                            value={contactForm.phone}
+                            onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                            placeholder="0801 234 5678"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="portal-field">
+                        <label>
+                          <span>Contact email</span>
+                          <span className="opt">Editable</span>
+                        </label>
+                        <div className="portal-input-wrap">
+                          <SvgIcon name="mail" />
+                          <input
+                            type="email"
+                            value={contactForm.contactEmail}
+                            onChange={(e) => setContactForm({ ...contactForm, contactEmail: e.target.value })}
+                            placeholder="contact@yourchurch.org"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="portal-field">
+                        <label>
+                          <span>Website</span>
+                          <span className="opt">Editable</span>
+                        </label>
+                        <div className="portal-input-wrap">
+                          <SvgIcon name="globe" />
+                          <input
+                            value={contactForm.website}
+                            onChange={(e) => setContactForm({ ...contactForm, website: e.target.value })}
+                            placeholder="www.yourchurch.org"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="portal-field">
+                        <label>Timezone</label>
+                        <div className="portal-input-wrap">
+                          <SvgIcon name="clock" />
+                          <select
+                            value={contactForm.timezone}
+                            onChange={(e) => setContactForm({ ...contactForm, timezone: e.target.value })}
+                          >
+                            <option value="West Africa Time (WAT)">West Africa Time (WAT - UTC+1)</option>
+                            <option value="Greenwich Mean Time (GMT)">Greenwich Mean Time (GMT)</option>
+                            <option value="East Africa Time (EAT)">East Africa Time (EAT - UTC+3)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="portal-edit-actions">
+                      <button
+                        type="button"
+                        className="portal-btn sm p"
+                        onClick={handleSaveContactSection}
+                      >
+                        <SvgIcon name="check" />
+                        <span>Save Section Updates</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="portal-btn sm"
+                        onClick={handleCancelContactEdit}
+                      >
+                        <span>Cancel</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Read-Only Mode for Contact Fields */
+                  <div>
+                    <div className="portal-cred-grid">
+                      <div className="portal-cred-tile w">
+                        <div className="portal-cred-tile-head">
+                          <span className="portal-cred-tile-label">
+                            <SvgIcon name="pin" />
+                            <span>Parish Address / Physical Location</span>
+                          </span>
+                          <span className="portal-ro-tag-gold">Parish Location</span>
+                        </div>
+                        <div className="portal-cred-tile-val">{profileData.address || "Plot 14, Commercial Avenue, Ikeja, Lagos"}</div>
+                        <div className="portal-cred-tile-sub">Physical campus visited by congregation and guests</div>
+                      </div>
+
+                      <div className="portal-cred-tile">
+                        <div className="portal-cred-tile-head">
+                          <span className="portal-cred-tile-label">
+                            <SvgIcon name="call" />
+                            <span>Office Phone</span>
+                          </span>
+                          <span className="portal-ro-tag-gold">Official Line</span>
+                        </div>
+                        <div className="portal-cred-tile-val">{profileData.phone || "0801 234 5678"}</div>
+                        <div className="portal-cred-tile-sub">Church administrative and member helpline</div>
+                      </div>
+
+                      <div className="portal-cred-tile">
+                        <div className="portal-cred-tile-head">
+                          <span className="portal-cred-tile-label">
+                            <SvgIcon name="mail" />
+                            <span>Contact Email</span>
+                          </span>
+                          <span className="portal-ro-tag-gold">Official Mail</span>
+                        </div>
+                        <div className="portal-cred-tile-val">{profileData.contactEmail || "contact@gracechapel.org"}</div>
+                        <div className="portal-cred-tile-sub">Official communication and general inquiries</div>
+                      </div>
+
+                      <div className="portal-cred-tile">
+                        <div className="portal-cred-tile-head">
+                          <span className="portal-cred-tile-label">
+                            <SvgIcon name="globe" />
+                            <span>Public Website</span>
+                          </span>
+                          <span className="portal-ro-tag-gold">Web Portal</span>
+                        </div>
+                        <div className="portal-cred-tile-val">{profileData.website || "www.gracechapel.org"}</div>
+                        <div className="portal-cred-tile-sub">Parish portal and online streaming URL</div>
+                      </div>
+
+                      <div className="portal-cred-tile">
+                        <div className="portal-cred-tile-head">
+                          <span className="portal-cred-tile-label">
+                            <SvgIcon name="clock" />
+                            <span>Regional Timezone</span>
+                          </span>
+                          <span className="portal-ro-tag-gold">WAT (UTC+1)</span>
+                        </div>
+                        <div className="portal-cred-tile-val">{profileData.timezone || "West Africa Time (WAT)"}</div>
+                        <div className="portal-cred-tile-sub">Service schedules, kiosk attendance &amp; event timestamps</div>
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: 18,
+                        padding: "12px 16px",
+                        borderRadius: 14,
+                        background: "rgba(109, 42, 60, 0.05)",
+                        border: "1px solid rgba(109, 42, 60, 0.15)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        fontSize: 13,
+                        color: "var(--tx)",
+                      }}
+                    >
+                      <div style={{ color: "var(--bl)", display: "flex", flexShrink: 0 }}>
+                        <SvgIcon name="lock" />
+                      </div>
+                      <span>
+                        <strong>Onboarding Protection:</strong> Core church identity (Name &amp; Denomination) is locked. You can click <strong>&ldquo;Edit this section&rdquo;</strong> above to update your contact channels.
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+        )}
+
+        {/* ==============================================================
+          TAB 2: ACCOUNT & SECURITY
+          ============================================================== */}
+        {activeTab === "account" && (
+          <div>
+            {/* Section 1: Your Details */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="user" />
+                </div>
+                <h3>Your details</h3>
+                <p>The registered church administrator who owns this ministry workspace.</p>
+              </div>
+              <div>
+                {/* Administrator Identity Banner */}
+                <div className="portal-admin-id-banner">
+                  <div className="portal-admin-id-left">
+                    <div className="portal-admin-id-avatar">
+                      <SvgIcon name="user" />
+                    </div>
+                    <div className="portal-admin-id-text">
+                      <h4>{accountData.name}</h4>
+                      <p>Lead Administrator &bull; Registered Owner of {profileData.churchName}</p>
+                    </div>
+                  </div>
+                  <span className="portal-ro-tag-green">
+                    <SvgIcon name="check" />
+                    <span>Level 1 Authority</span>
+                  </span>
+                </div>
+
+                <div className="portal-cred-grid">
+                  <div className="portal-cred-tile">
+                    <div className="portal-cred-tile-head">
+                      <span className="portal-cred-tile-label">
+                        <SvgIcon name="user" />
+                        <span>Full Name</span>
+                      </span>
+                      <span className="portal-ro-tag-locked">
+                        <SvgIcon name="lock" />
+                        <span>Admin</span>
+                      </span>
+                    </div>
+                    <div className="portal-cred-tile-val">{accountData.name}</div>
+                    <div className="portal-cred-tile-sub">Primary contact recorded during church onboarding</div>
+                  </div>
+
+                  <div className="portal-cred-tile">
+                    <div className="portal-cred-tile-head">
+                      <span className="portal-cred-tile-label">
+                        <SvgIcon name="call" />
+                        <span>Direct Phone</span>
+                      </span>
+                      <span className="portal-ro-tag-gold">Verified</span>
+                    </div>
+                    <div className="portal-cred-tile-val">{accountData.phone}</div>
+                    <div className="portal-cred-tile-sub">Administrative line for priority notices &amp; 2FA</div>
+                  </div>
+
+                  <div className="portal-cred-tile w">
+                    <div className="portal-cred-tile-head">
+                      <span className="portal-cred-tile-label">
+                        <SvgIcon name="lock" />
+                        <span>Primary Sign-In Email Address</span>
+                      </span>
+                      <span className="portal-ro-tag-locked">
+                        <SvgIcon name="lock" />
+                        <span>Primary Auth</span>
+                      </span>
+                    </div>
+                    <div className="portal-cred-tile-val">{accountData.email}</div>
+                    <div className="portal-cred-tile-sub" style={{ color: "var(--tx)", marginTop: 8 }}>
+                      Your sign-in email is cryptographically locked for tenant security. To initiate an administrative ownership transfer, contact REDDOX Support.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 2: Password */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="key" />
+                </div>
+                <h3>Password</h3>
+                <p>Use at least 8 characters, combining uppercase, lowercase, numbers, and symbols.</p>
+              </div>
+              <div>
+                <form onSubmit={handleUpdatePassword}>
+                  <div className="portal-fg">
+                    <div className="portal-field w">
+                      <label>Current password</label>
+                      <div className="portal-input-wrap pw">
+                        <SvgIcon name="lock" />
+                        <input
+                          type={showCur ? "text" : "password"}
+                          value={pwData.cur}
+                          onChange={(e) => setPwData({ ...pwData, cur: e.target.value })}
+                          placeholder="Enter current password"
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="portal-eye-btn"
+                          onClick={() => setShowCur(!showCur)}
+                          aria-label="Toggle password visibility"
+                        >
+                          <SvgIcon name={showCur ? "eyeoff" : "eye"} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>New password</label>
+                      <div className="portal-input-wrap pw">
+                        <SvgIcon name="lock" />
+                        <input
+                          type={showNw ? "text" : "password"}
+                          value={pwData.nw}
+                          onChange={(e) => setPwData({ ...pwData, nw: e.target.value })}
+                          placeholder="At least 8 characters"
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="portal-eye-btn"
+                          onClick={() => setShowNw(!showNw)}
+                          aria-label="Toggle password visibility"
+                        >
+                          <SvgIcon name={showNw ? "eyeoff" : "eye"} />
+                        </button>
+                      </div>
+                      {/* Password Strength Meter */}
+                      <div className="portal-mt">
+                        {[0, 1, 2, 3].map((idx) => (
+                          <i
+                            key={idx}
+                            style={{
+                              background:
+                                pwData.nw && idx < Math.max(pwStrength, 1)
+                                  ? STRENGTH_COLORS[pwStrength]
+                                  : "var(--bd)",
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="portal-field">
+                      <label>Confirm new password</label>
+                      <div className="portal-input-wrap pw">
+                        <SvgIcon name="lock" />
+                        <input
+                          type={showCf ? "text" : "password"}
+                          value={pwData.cf}
+                          onChange={(e) => setPwData({ ...pwData, cf: e.target.value })}
+                          placeholder="Repeat new password"
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="portal-eye-btn"
+                          onClick={() => setShowCf(!showCf)}
+                          aria-label="Toggle password visibility"
+                        >
+                          <SvgIcon name={showCf ? "eyeoff" : "eye"} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: 16 }}>
+                    <button type="submit" className="portal-btn p">
+                      Update password
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </section>
+
+            {/* Section 3: Where you're signed in */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="shield" />
+                </div>
+                <h3>Where you&rsquo;re signed in</h3>
+                <p>Active security sessions across your authorized browsers and church administration devices.</p>
+              </div>
+              <div>
+                <div className="portal-ssn">
+                  <span className="ic">
+                    <SvgIcon name="pc" />
+                  </span>
+                  <p>
+                    <b>This workstation &bull; Windows Chrome</b>
+                    <br />
+                    <small>Active now &bull; IP: 102.89.44.12 &bull; Lagos, NG</small>
+                  </p>
+                  <span className="portal-verified-chip">Current</span>
+                </div>
+
+                <div className="portal-ssn">
+                  <span className="ic">
+                    <SvgIcon name="ph" />
+                  </span>
+                  <p>
+                    <b>iPhone 15 &bull; REDDOX Mobile Check-in</b>
+                    <br />
+                    <small>2 days ago &bull; Ikeja Branch</small>
+                  </p>
+                </div>
+
+                <div style={{ marginTop: 14 }}>
+                  <button
+                    type="button"
+                    className="portal-btn sm"
+                    onClick={() => showToast?.("All other remote devices signed out.")}
+                  >
+                    Sign out other devices
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {/* ==============================================================
+          TAB 3: PLAN & BILLING
+          ============================================================== */}
+        {activeTab === "plan" && (
+          <div>
+            {/* Section 1: Current Plan & Usage Gauge */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="coin" />
+                </div>
+                <h3>Current plan</h3>
+                <p>Your subscription sets your member capacity and advanced ministry tooling permissions.</p>
+              </div>
+              <div>
+                <div className="portal-us">
+                  <div className="portal-rgw">
+                    <svg viewBox="0 0 120 120">
+                      <circle className="b" cx="60" cy="60" r="54" />
+                      <circle
+                        className="f"
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        style={{ strokeDashoffset }}
+                      />
+                    </svg>
+                    <div>
+                      <span>
+                        {memberCount}
+                        <small>of {currentPlanConfig.mem.toLocaleString("en-NG")}</small>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div style={{ font: "600 26px 'Playfair Display', Georgia, serif", color: "var(--tx)" }}>
+                      {currentPlanConfig.n} Tier
+                    </div>
+                    <div style={{ color: "var(--mu)", margin: "4px 0 10px", fontSize: 15, fontWeight: 600 }}>
+                      {currentPlanConfig.pr} {plan !== "starter" ? "" : "(Free Forever)"}
+                    </div>
+                    <p className="portal-hint" style={{ maxWidth: 420 }}>
+                      Essential member directory security, offline records backup, and access to all existing profiles are included on every tier.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 2: 3-Tier Cards */}
+            <div className="portal-pcs">
+              {(["starter", "growth", "pro"] as const).map((k) => {
+                const isCurrent = plan === k;
+                const pItem = PLANS[k];
+                const cardClass = `portal-pcd ${k === "growth" ? "g" : k === "pro" ? "k" : ""} ${isCurrent ? "on" : ""
+                  }`;
+
+                return (
+                  <div key={k} className={cardClass}>
+                    {isCurrent && <span className="tg">CURRENT</span>}
+                    <h4>{pItem.n}</h4>
+                    <div className="pr">
+                      {pItem.pr}
+                      <small>{k === "starter" ? " forever" : ""}</small>
+                    </div>
+                    <ul>
+                      {PLAN_FEATURES[k].map((feat, fIdx) => (
+                        <li key={fIdx}>{feat}</li>
+                      ))}
+                    </ul>
+
+                    {isCurrent ? (
+                      <button type="button" className="portal-btn" disabled style={{ opacity: 0.7 }}>
+                        Active Plan
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="portal-btn p"
+                        onClick={() => onSelectPlan(k)}
+                      >
+                        Switch to {pItem.n} (Demo)
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+
+            {/* Section 3: Invoices & Billing History */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="db" />
+                </div>
+                <h3>Billing history</h3>
+                <p>Receipts, Paystack transaction IDs, and value-added tax invoices.</p>
+              </div>
+              <div>
+                <div className="portal-emp">
+                  <div className="portal-ch" style={{ background: "var(--bl2)", color: "var(--bl)" }}>
+                    <SvgIcon name="dl" />
+                  </div>
+                  <b style={{ color: "var(--tx)", fontSize: 16 }}>No paid invoices yet</b>
+                  <span style={{ fontSize: 13, marginTop: 4 }}>
+                    Invoices and official VAT tax receipts will appear here once automated gateway billing is connected.
+                  </span>
+                </div>
+                <p className="portal-hint">
+                  If a subscription ever lapses, your church records always remain available to read, review, and export.
+                </p>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {/* ==============================================================
+          TAB 4: BRANCHES & MULTI-CAMPUS
+          ============================================================== */}
+        {activeTab === "branches" && (
+          <div>
+            {plan !== "pro" && (
+              <div className="portal-lkc">
+                <div className="portal-ch">
+                  <SvgIcon name="lock" />
+                </div>
                 <div>
-                  <h4 style={{ margin: "0 0 2px", fontSize: 15, fontWeight: 700, color: "var(--tx)" }}>
-                    Parish Contact Channels
-                  </h4>
-                  <small style={{ color: "var(--mu)" }}>
-                    {isEditingContact
-                      ? "Edit your church's address, phone, email, and public website below."
-                      : "Public channels used by parish members and visitors."}
-                  </small>
+                  <b>Multiple branches are included on Pro</b>
+                  <p>
+                    Your current {currentPlanConfig.n} plan includes 1 centralized church workspace. Pro supports up to 3 separate branch campuses.
+                  </p>
                 </div>
                 <button
                   type="button"
-                  className={`portal-btn sm ${isEditingContact ? "" : "p"}`}
-                  onClick={() => {
-                    if (isEditingContact) {
-                      handleCancelContactEdit();
-                    } else {
-                      setIsEditingContact(true);
-                    }
-                  }}
+                  className="portal-btn sm p"
+                  onClick={() => setActiveTab("plan")}
                 >
-                  <SvgIcon name={isEditingContact ? "out" : "gear"} />
-                  <span>{isEditingContact ? "Cancel Editing" : "Edit this section"}</span>
+                  View Pro plan
                 </button>
               </div>
+            )}
 
-              {isEditingContact ? (
-                /* Editable Mode for Contact Fields */
-                <div className="portal-edit-section-box">
-                  <div className="portal-edit-badge">
-                    <SvgIcon name="gear" />
-                    <span>Editing Parish Contact Channels</span>
-                  </div>
-
-                  <div className="portal-fg">
-                    <div className="portal-field w">
-                      <label>
-                        <span>Address or parish location</span>
-                        <span className="opt">Editable</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="pin" />
-                        <input
-                          value={contactForm.address}
-                          onChange={(e) => setContactForm({ ...contactForm, address: e.target.value })}
-                          placeholder="Street, area or landmark"
-                        />
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="pin" />
+                </div>
+                <h3>Branches</h3>
+                <p>
+                  {plan === "pro"
+                    ? `${branches.length} of 3 branch campuses utilized.`
+                    : "Your primary church campus."}
+                </p>
+              </div>
+              <div>
+                <div className="portal-bg3">
+                  {branches.map((b, i) => (
+                    <div key={i} className="portal-brc">
+                      <div className="ic">
+                        <SvgIcon name="church" />
                       </div>
-                    </div>
-
-                    <div className="portal-field">
-                      <label>
-                        <span>Phone number</span>
-                        <span className="opt">Editable</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="call" />
-                        <input
-                          type="tel"
-                          value={contactForm.phone}
-                          onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                          placeholder="0801 234 5678"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="portal-field">
-                      <label>
-                        <span>Contact email</span>
-                        <span className="opt">Editable</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="mail" />
-                        <input
-                          type="email"
-                          value={contactForm.contactEmail}
-                          onChange={(e) => setContactForm({ ...contactForm, contactEmail: e.target.value })}
-                          placeholder="contact@yourchurch.org"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="portal-field">
-                      <label>
-                        <span>Website</span>
-                        <span className="opt">Editable</span>
-                      </label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="globe" />
-                        <input
-                          value={contactForm.website}
-                          onChange={(e) => setContactForm({ ...contactForm, website: e.target.value })}
-                          placeholder="www.yourchurch.org"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="portal-field">
-                      <label>Timezone</label>
-                      <div className="portal-input-wrap">
-                        <SvgIcon name="clock" />
-                        <select
-                          value={contactForm.timezone}
-                          onChange={(e) => setContactForm({ ...contactForm, timezone: e.target.value })}
+                      <b>{b.n}</b>
+                      {i === 0 && (
+                        <span className="portal-verified-chip" style={{ marginLeft: 6 }}>
+                          Main
+                        </span>
+                      )}
+                      <p className="portal-hint">{b.a || "No address specified yet"}</p>
+                      {i > 0 && (
+                        <button
+                          type="button"
+                          className="portal-btn sm"
+                          style={{ marginTop: 12 }}
+                          onClick={() => handleRemoveBranch(i)}
                         >
-                          <option value="West Africa Time (WAT)">West Africa Time (WAT - UTC+1)</option>
-                          <option value="Greenwich Mean Time (GMT)">Greenwich Mean Time (GMT)</option>
-                          <option value="East Africa Time (EAT)">East Africa Time (EAT - UTC+3)</option>
-                        </select>
-                      </div>
+                          Remove branch
+                        </button>
+                      )}
                     </div>
-                  </div>
+                  ))}
 
-                  <div className="portal-edit-actions">
+                  {plan === "pro" && branches.length < 3 && (
                     <button
                       type="button"
-                      className="portal-btn sm p"
-                      onClick={handleSaveContactSection}
+                      className="portal-brc add"
+                      onClick={() => setIsAddBranchOpen(true)}
                     >
-                      <SvgIcon name="check" />
-                      <span>Save Section Updates</span>
+                      <span>
+                        <SvgIcon name="plus" />
+                        <br />
+                        Add campus branch
+                      </span>
                     </button>
-                    <button
-                      type="button"
-                      className="portal-btn sm"
-                      onClick={handleCancelContactEdit}
-                    >
-                      <span>Cancel</span>
-                    </button>
-                  </div>
+                  )}
                 </div>
-              ) : (
-                /* Read-Only Mode for Contact Fields */
-                <div>
-                  <div className="portal-cred-grid">
-                    <div className="portal-cred-tile w">
-                      <div className="portal-cred-tile-head">
-                        <span className="portal-cred-tile-label">
-                          <SvgIcon name="pin" />
-                          <span>Parish Address / Physical Location</span>
-                        </span>
-                        <span className="portal-ro-tag-gold">Parish Location</span>
-                      </div>
-                      <div className="portal-cred-tile-val">{profileData.address || "Plot 14, Commercial Avenue, Ikeja, Lagos"}</div>
-                      <div className="portal-cred-tile-sub">Physical campus visited by congregation and guests</div>
-                    </div>
+              </div>
+            </section>
+          </div>
+        )}
 
-                    <div className="portal-cred-tile">
-                      <div className="portal-cred-tile-head">
-                        <span className="portal-cred-tile-label">
-                          <SvgIcon name="call" />
-                          <span>Office Phone</span>
-                        </span>
-                        <span className="portal-ro-tag-gold">Official Line</span>
-                      </div>
-                      <div className="portal-cred-tile-val">{profileData.phone || "0801 234 5678"}</div>
-                      <div className="portal-cred-tile-sub">Church administrative and member helpline</div>
-                    </div>
-
-                    <div className="portal-cred-tile">
-                      <div className="portal-cred-tile-head">
-                        <span className="portal-cred-tile-label">
-                          <SvgIcon name="mail" />
-                          <span>Contact Email</span>
-                        </span>
-                        <span className="portal-ro-tag-gold">Official Mail</span>
-                      </div>
-                      <div className="portal-cred-tile-val">{profileData.contactEmail || "contact@gracechapel.org"}</div>
-                      <div className="portal-cred-tile-sub">Official communication and general inquiries</div>
-                    </div>
-
-                    <div className="portal-cred-tile">
-                      <div className="portal-cred-tile-head">
-                        <span className="portal-cred-tile-label">
-                          <SvgIcon name="globe" />
-                          <span>Public Website</span>
-                        </span>
-                        <span className="portal-ro-tag-gold">Web Portal</span>
-                      </div>
-                      <div className="portal-cred-tile-val">{profileData.website || "www.gracechapel.org"}</div>
-                      <div className="portal-cred-tile-sub">Parish portal and online streaming URL</div>
-                    </div>
-
-                    <div className="portal-cred-tile">
-                      <div className="portal-cred-tile-head">
-                        <span className="portal-cred-tile-label">
-                          <SvgIcon name="clock" />
-                          <span>Regional Timezone</span>
-                        </span>
-                        <span className="portal-ro-tag-gold">WAT (UTC+1)</span>
-                      </div>
-                      <div className="portal-cred-tile-val">{profileData.timezone || "West Africa Time (WAT)"}</div>
-                      <div className="portal-cred-tile-sub">Service schedules, kiosk attendance &amp; event timestamps</div>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: 18,
-                      padding: "12px 16px",
-                      borderRadius: 14,
-                      background: "rgba(109, 42, 60, 0.05)",
-                      border: "1px solid rgba(109, 42, 60, 0.15)",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      fontSize: 13,
-                      color: "var(--tx)",
-                    }}
-                  >
-                    <div style={{ color: "var(--bl)", display: "flex", flexShrink: 0 }}>
-                      <SvgIcon name="lock" />
-                    </div>
-                    <span>
-                      <strong>Onboarding Protection:</strong> Core church identity (Name &amp; Denomination) is locked. You can click <strong>&ldquo;Edit this section&rdquo;</strong> above to update your contact channels.
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
-      )}
-
-      {/* ==============================================================
-          TAB 2: ACCOUNT & SECURITY
+        {/* ==============================================================
+          TAB 5: AUDIT, DATA & READ-ONLY SYSTEM ARCHITECTURE
           ============================================================== */}
-      {activeTab === "account" && (
-        <div>
-          {/* Section 1: Your Details */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="user" />
-              </div>
-              <h3>Your details</h3>
-              <p>The registered church administrator who owns this ministry workspace.</p>
-            </div>
-            <div>
-              {/* Administrator Identity Banner */}
-              <div className="portal-admin-id-banner">
-                <div className="portal-admin-id-left">
-                  <div className="portal-admin-id-avatar">
-                    <SvgIcon name="user" />
-                  </div>
-                  <div className="portal-admin-id-text">
-                    <h4>{accountData.name}</h4>
-                    <p>Lead Administrator &bull; Registered Owner of {profileData.churchName}</p>
-                  </div>
+        {activeTab === "data" && (
+          <div>
+            {/* Section 1: Your Data Snapshot */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="db" />
                 </div>
-                <span className="portal-ro-tag-green">
-                  <SvgIcon name="check" />
-                  <span>Level 1 Authority</span>
-                </span>
+                <h3>Your data</h3>
+                <p>A live snapshot of active ministry entities stored within this church workspace.</p>
               </div>
-
-              <div className="portal-cred-grid">
-                <div className="portal-cred-tile">
-                  <div className="portal-cred-tile-head">
-                    <span className="portal-cred-tile-label">
-                      <SvgIcon name="user" />
-                      <span>Full Name</span>
-                    </span>
-                    <span className="portal-ro-tag-locked">
-                      <SvgIcon name="lock" />
-                      <span>Admin</span>
-                    </span>
+              <div>
+                <div className="portal-st3">
+                  <div>
+                    <b>{memberCount}</b>
+                    <small>Members</small>
                   </div>
-                  <div className="portal-cred-tile-val">{accountData.name}</div>
-                  <div className="portal-cred-tile-sub">Primary contact recorded during church onboarding</div>
-                </div>
-
-                <div className="portal-cred-tile">
-                  <div className="portal-cred-tile-head">
-                    <span className="portal-cred-tile-label">
-                      <SvgIcon name="call" />
-                      <span>Direct Phone</span>
-                    </span>
-                    <span className="portal-ro-tag-gold">Verified</span>
+                  <div>
+                    <b>{sessionsCount}</b>
+                    <small>Sessions</small>
                   </div>
-                  <div className="portal-cred-tile-val">{accountData.phone}</div>
-                  <div className="portal-cred-tile-sub">Administrative line for priority notices &amp; 2FA</div>
-                </div>
-
-                <div className="portal-cred-tile w">
-                  <div className="portal-cred-tile-head">
-                    <span className="portal-cred-tile-label">
-                      <SvgIcon name="lock" />
-                      <span>Primary Sign-In Email Address</span>
-                    </span>
-                    <span className="portal-ro-tag-locked">
-                      <SvgIcon name="lock" />
-                      <span>Primary Auth</span>
-                    </span>
-                  </div>
-                  <div className="portal-cred-tile-val">{accountData.email}</div>
-                  <div className="portal-cred-tile-sub" style={{ color: "var(--tx)", marginTop: 8 }}>
-                    Your sign-in email is cryptographically locked for tenant security. To initiate an administrative ownership transfer, contact REDDOX Support.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 2: Password */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="key" />
-              </div>
-              <h3>Password</h3>
-              <p>Use at least 8 characters, combining uppercase, lowercase, numbers, and symbols.</p>
-            </div>
-            <div>
-              <form onSubmit={handleUpdatePassword}>
-                <div className="portal-fg">
-                  <div className="portal-field w">
-                    <label>Current password</label>
-                    <div className="portal-input-wrap pw">
-                      <SvgIcon name="lock" />
-                      <input
-                        type={showCur ? "text" : "password"}
-                        value={pwData.cur}
-                        onChange={(e) => setPwData({ ...pwData, cur: e.target.value })}
-                        placeholder="Enter current password"
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="portal-eye-btn"
-                        onClick={() => setShowCur(!showCur)}
-                        aria-label="Toggle password visibility"
-                      >
-                        <SvgIcon name={showCur ? "eyeoff" : "eye"} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="portal-field">
-                    <label>New password</label>
-                    <div className="portal-input-wrap pw">
-                      <SvgIcon name="lock" />
-                      <input
-                        type={showNw ? "text" : "password"}
-                        value={pwData.nw}
-                        onChange={(e) => setPwData({ ...pwData, nw: e.target.value })}
-                        placeholder="At least 8 characters"
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="portal-eye-btn"
-                        onClick={() => setShowNw(!showNw)}
-                        aria-label="Toggle password visibility"
-                      >
-                        <SvgIcon name={showNw ? "eyeoff" : "eye"} />
-                      </button>
-                    </div>
-                    {/* Password Strength Meter */}
-                    <div className="portal-mt">
-                      {[0, 1, 2, 3].map((idx) => (
-                        <i
-                          key={idx}
-                          style={{
-                            background:
-                              pwData.nw && idx < Math.max(pwStrength, 1)
-                                ? STRENGTH_COLORS[pwStrength]
-                                : "var(--bd)",
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="portal-field">
-                    <label>Confirm new password</label>
-                    <div className="portal-input-wrap pw">
-                      <SvgIcon name="lock" />
-                      <input
-                        type={showCf ? "text" : "password"}
-                        value={pwData.cf}
-                        onChange={(e) => setPwData({ ...pwData, cf: e.target.value })}
-                        placeholder="Repeat new password"
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="portal-eye-btn"
-                        onClick={() => setShowCf(!showCf)}
-                        aria-label="Toggle password visibility"
-                      >
-                        <SvgIcon name={showCf ? "eyeoff" : "eye"} />
-                      </button>
-                    </div>
+                  <div>
+                    <b>{eventsCount}</b>
+                    <small>Events</small>
                   </div>
                 </div>
 
                 <div style={{ marginTop: 16 }}>
-                  <button type="submit" className="portal-btn p">
-                    Update password
-                  </button>
-                </div>
-              </form>
-            </div>
-          </section>
-
-          {/* Section 3: Where you're signed in */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="shield" />
-              </div>
-              <h3>Where you&rsquo;re signed in</h3>
-              <p>Active security sessions across your authorized browsers and church administration devices.</p>
-            </div>
-            <div>
-              <div className="portal-ssn">
-                <span className="ic">
-                  <SvgIcon name="pc" />
-                </span>
-                <p>
-                  <b>This workstation &bull; Windows Chrome</b>
-                  <br />
-                  <small>Active now &bull; IP: 102.89.44.12 &bull; Lagos, NG</small>
-                </p>
-                <span className="portal-verified-chip">Current</span>
-              </div>
-
-              <div className="portal-ssn">
-                <span className="ic">
-                  <SvgIcon name="ph" />
-                </span>
-                <p>
-                  <b>iPhone 15 &bull; REDDOX Mobile Check-in</b>
-                  <br />
-                  <small>2 days ago &bull; Ikeja Branch</small>
-                </p>
-              </div>
-
-              <div style={{ marginTop: 14 }}>
-                <button
-                  type="button"
-                  className="portal-btn sm"
-                  onClick={() => showToast?.("All other remote devices signed out.")}
-                >
-                  Sign out other devices
-                </button>
-              </div>
-            </div>
-          </section>
-        </div>
-      )}
-
-      {/* ==============================================================
-          TAB 3: PLAN & BILLING
-          ============================================================== */}
-      {activeTab === "plan" && (
-        <div>
-          {/* Section 1: Current Plan & Usage Gauge */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="coin" />
-              </div>
-              <h3>Current plan</h3>
-              <p>Your subscription sets your member capacity and advanced ministry tooling permissions.</p>
-            </div>
-            <div>
-              <div className="portal-us">
-                <div className="portal-rgw">
-                  <svg viewBox="0 0 120 120">
-                    <circle className="b" cx="60" cy="60" r="54" />
-                    <circle
-                      className="f"
-                      cx="60"
-                      cy="60"
-                      r="54"
-                      style={{ strokeDashoffset }}
-                    />
-                  </svg>
-                  <div>
-                    <span>
-                      {memberCount}
-                      <small>of {currentPlanConfig.mem.toLocaleString("en-NG")}</small>
-                    </span>
-                  </div>
-                </div>
-
-                <div>
-                  <div style={{ font: "600 26px 'Playfair Display', Georgia, serif", color: "var(--tx)" }}>
-                    {currentPlanConfig.n} Tier
-                  </div>
-                  <div style={{ color: "var(--mu)", margin: "4px 0 10px", fontSize: 15, fontWeight: 600 }}>
-                    {currentPlanConfig.pr} {plan !== "starter" ? "" : "(Free Forever)"}
-                  </div>
-                  <p className="portal-hint" style={{ maxWidth: 420 }}>
-                    Essential member directory security, offline records backup, and access to all existing profiles are included on every tier.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 2: 3-Tier Cards */}
-          <div className="portal-pcs">
-            {(["starter", "growth", "pro"] as const).map((k) => {
-              const isCurrent = plan === k;
-              const pItem = PLANS[k];
-              const cardClass = `portal-pcd ${k === "growth" ? "g" : k === "pro" ? "k" : ""} ${
-                isCurrent ? "on" : ""
-              }`;
-
-              return (
-                <div key={k} className={cardClass}>
-                  {isCurrent && <span className="tg">CURRENT</span>}
-                  <h4>{pItem.n}</h4>
-                  <div className="pr">
-                    {pItem.pr}
-                    <small>{k === "starter" ? " forever" : ""}</small>
-                  </div>
-                  <ul>
-                    {PLAN_FEATURES[k].map((feat, fIdx) => (
-                      <li key={fIdx}>{feat}</li>
-                    ))}
-                  </ul>
-
-                  {isCurrent ? (
-                    <button type="button" className="portal-btn" disabled style={{ opacity: 0.7 }}>
-                      Active Plan
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="portal-btn p"
-                      onClick={() => onSelectPlan(k)}
-                    >
-                      Switch to {pItem.n} (Demo)
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Section 3: Invoices & Billing History */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="db" />
-              </div>
-              <h3>Billing history</h3>
-              <p>Receipts, Paystack transaction IDs, and value-added tax invoices.</p>
-            </div>
-            <div>
-              <div className="portal-emp">
-                <div className="portal-ch" style={{ background: "var(--bl2)", color: "var(--bl)" }}>
-                  <SvgIcon name="dl" />
-                </div>
-                <b style={{ color: "var(--tx)", fontSize: 16 }}>No paid invoices yet</b>
-                <span style={{ fontSize: 13, marginTop: 4 }}>
-                  Invoices and official VAT tax receipts will appear here once automated gateway billing is connected.
-                </span>
-              </div>
-              <p className="portal-hint">
-                If a subscription ever lapses, your church records always remain available to read, review, and export.
-              </p>
-            </div>
-          </section>
-        </div>
-      )}
-
-      {/* ==============================================================
-          TAB 4: BRANCHES & MULTI-CAMPUS
-          ============================================================== */}
-      {activeTab === "branches" && (
-        <div>
-          {plan !== "pro" && (
-            <div className="portal-lkc">
-              <div className="portal-ch">
-                <SvgIcon name="lock" />
-              </div>
-              <div>
-                <b>Multiple branches are included on Pro</b>
-                <p>
-                  Your current {currentPlanConfig.n} plan includes 1 centralized church workspace. Pro supports up to 3 separate branch campuses.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="portal-btn sm p"
-                onClick={() => setActiveTab("plan")}
-              >
-                View Pro plan
-              </button>
-            </div>
-          )}
-
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="pin" />
-              </div>
-              <h3>Branches</h3>
-              <p>
-                {plan === "pro"
-                  ? `${branches.length} of 3 branch campuses utilized.`
-                  : "Your primary church campus."}
-              </p>
-            </div>
-            <div>
-              <div className="portal-bg3">
-                {branches.map((b, i) => (
-                  <div key={i} className="portal-brc">
-                    <div className="ic">
-                      <SvgIcon name="church" />
-                    </div>
-                    <b>{b.n}</b>
-                    {i === 0 && (
-                      <span className="portal-verified-chip" style={{ marginLeft: 6 }}>
-                        Main
-                      </span>
-                    )}
-                    <p className="portal-hint">{b.a || "No address specified yet"}</p>
-                    {i > 0 && (
-                      <button
-                        type="button"
-                        className="portal-btn sm"
-                        style={{ marginTop: 12 }}
-                        onClick={() => handleRemoveBranch(i)}
-                      >
-                        Remove branch
-                      </button>
-                    )}
-                  </div>
-                ))}
-
-                {plan === "pro" && branches.length < 3 && (
                   <button
                     type="button"
-                    className="portal-brc add"
-                    onClick={() => setIsAddBranchOpen(true)}
+                    className="portal-btn p"
+                    onClick={onExportData}
                   >
-                    <span>
-                      <SvgIcon name="plus" />
-                      <br />
-                      Add campus branch
-                    </span>
+                    <SvgIcon name="dl" />
+                    <span>Export complete database (JSON / CSV)</span>
                   </button>
-                )}
+                </div>
+                <p className="portal-hint">
+                  You can download an encrypted snapshot of all church members, tithe records, and registers at any time on every plan.
+                </p>
               </div>
-            </div>
-          </section>
-        </div>
-      )}
+            </section>
 
-      {/* ==============================================================
-          TAB 5: AUDIT, DATA & READ-ONLY SYSTEM ARCHITECTURE
-          ============================================================== */}
-      {activeTab === "data" && (
-        <div>
-          {/* Section 1: Your Data Snapshot */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="db" />
+            {/* Section 2: Protected System Architecture (READ-ONLY CREDENTIALS) */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="shield" />
+                </div>
+                <h3>System credentials</h3>
+                <p>Cryptographically protected tenant parameters configured on the REDDOX Cloud infrastructure.</p>
               </div>
-              <h3>Your data</h3>
-              <p>A live snapshot of active ministry entities stored within this church workspace.</p>
-            </div>
-            <div>
-              <div className="portal-st3">
-                <div>
-                  <b>{memberCount}</b>
-                  <small>Members</small>
-                </div>
-                <div>
-                  <b>{sessionsCount}</b>
-                  <small>Sessions</small>
-                </div>
-                <div>
-                  <b>{eventsCount}</b>
-                  <small>Events</small>
-                </div>
-              </div>
+              <div>
+                <div className="portal-settings-grid">
+                  {/* Card 1: Workspace Identifier */}
+                  <div className="portal-ro-card">
+                    <div className="portal-ro-head">
+                      <span className="portal-ro-label">
+                        <SvgIcon name="lock" />
+                        <span>Workspace Identifier</span>
+                      </span>
+                      <span className="portal-ro-tag">Read-Only</span>
+                    </div>
+                    <div className="portal-ro-body">
+                      <span className="portal-ro-val mono">RDX-WS-84920</span>
+                      <button
+                        type="button"
+                        className="portal-copy-btn"
+                        onClick={() => handleCopy("RDX-WS-84920", "ws")}
+                        title="Copy Workspace ID"
+                      >
+                        <SvgIcon name="copy" />
+                        <span>{copiedKey === "ws" ? "Copied!" : "Copy"}</span>
+                      </button>
+                    </div>
+                  </div>
 
-              <div style={{ marginTop: 16 }}>
+                  {/* Card 2: Dedicated Tenant URL */}
+                  <div className="portal-ro-card">
+                    <div className="portal-ro-head">
+                      <span className="portal-ro-label">
+                        <SvgIcon name="lock" />
+                        <span>Dedicated Tenant URL</span>
+                      </span>
+                      <span className="portal-ro-tag">Configured</span>
+                    </div>
+                    <div className="portal-ro-body">
+                      <span className="portal-ro-val mono">gracechapel.reddox.app</span>
+                      <button
+                        type="button"
+                        className="portal-copy-btn"
+                        onClick={() => handleCopy("https://gracechapel.reddox.app", "url")}
+                        title="Copy Subdomain"
+                      >
+                        <SvgIcon name="copy" />
+                        <span>{copiedKey === "url" ? "Copied!" : "Copy"}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Card 3: Account Authority */}
+                  <div className="portal-ro-card">
+                    <div className="portal-ro-head">
+                      <span className="portal-ro-label">
+                        <SvgIcon name="shield" />
+                        <span>Administrative Role</span>
+                      </span>
+                      <span className="portal-ro-tag">Level 1 Authority</span>
+                    </div>
+                    <div className="portal-ro-body">
+                      <span className="portal-ro-val">Lead Administrator (Owner)</span>
+                      <span className="portal-verified-chip">Verified</span>
+                    </div>
+                  </div>
+
+                  {/* Card 4: Datacenter Region */}
+                  <div className="portal-ro-card">
+                    <div className="portal-ro-head">
+                      <span className="portal-ro-label">
+                        <SvgIcon name="globe" />
+                        <span>Hosting Node &amp; Cluster</span>
+                      </span>
+                      <span className="portal-status-online">
+                        <span className="portal-status-dot" />
+                        <span>Online (99.99%)</span>
+                      </span>
+                    </div>
+                    <div className="portal-ro-body">
+                      <span className="portal-ro-val">af-south-1 (Lagos Primary Node)</span>
+                      <small style={{ color: "var(--mu)", fontSize: 11 }}>18ms latency</small>
+                    </div>
+                  </div>
+
+                  {/* Card 5: Security Protocol */}
+                  <div className="portal-ro-card">
+                    <div className="portal-ro-head">
+                      <span className="portal-ro-label">
+                        <SvgIcon name="lock" />
+                        <span>Data Encryption Protocol</span>
+                      </span>
+                      <span className="portal-ro-tag">AES-256</span>
+                    </div>
+                    <div className="portal-ro-body">
+                      <span className="portal-ro-val">TLS 1.3 &bull; End-to-End Encrypted</span>
+                      <span className="portal-verified-chip">Strict HTTPS</span>
+                    </div>
+                  </div>
+
+                  {/* Card 6: Database Registration */}
+                  <div className="portal-ro-card">
+                    <div className="portal-ro-head">
+                      <span className="portal-ro-label">
+                        <SvgIcon name="clock" />
+                        <span>Registration &amp; Backup Node</span>
+                      </span>
+                      <span className="portal-ro-tag">Active</span>
+                    </div>
+                    <div className="portal-ro-body">
+                      <span className="portal-ro-val">Registered Nov 12, 2024</span>
+                      <small style={{ color: "var(--mu)", fontSize: 11 }}>Auto-Sync: 02:00 WAT</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 3: Audit History Timeline */}
+            <section className="portal-sec">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="clock" />
+                </div>
+                <h3>Audit history</h3>
+                <p>Recent administrative changes logged across your parish workspace.</p>
+              </div>
+              <div>
+                <div className="portal-tln">
+                  {activity.slice(0, 6).map((x: any, i: number) => (
+                    <div key={i} style={{ animationDelay: `${i * 70}ms` }}>
+                      <b>{x.t || x[0]}</b>
+                      <small>
+                        {accountData.name} &bull; {x.w || x[1] || "Recently"}
+                      </small>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Section 4: Danger Zone */}
+            <section className="portal-sec portal-dz">
+              <div className="portal-sh">
+                <div className="portal-ch">
+                  <SvgIcon name="trash" />
+                </div>
+                <h3>Danger zone</h3>
+                <p>This action is irreversible and permanently removes church data.</p>
+              </div>
+              <div>
+                <p style={{ margin: "0 0 14px", color: "var(--tx)", fontSize: 13.5 }}>
+                  Deleting the church workspace permanently removes all member lists, tithe histories, attendance records, and media entries.
+                </p>
                 <button
                   type="button"
-                  className="portal-btn p"
-                  onClick={onExportData}
+                  className="portal-btn-dg"
+                  onClick={() => setIsDeleteModalOpen(true)}
                 >
-                  <SvgIcon name="dl" />
-                  <span>Export complete database (JSON / CSV)</span>
+                  <SvgIcon name="trash" />
+                  <span>Delete church workspace</span>
                 </button>
               </div>
-              <p className="portal-hint">
-                You can download an encrypted snapshot of all church members, tithe records, and registers at any time on every plan.
-              </p>
-            </div>
-          </section>
+            </section>
+          </div>
+        )}
 
-          {/* Section 2: Protected System Architecture (READ-ONLY CREDENTIALS) */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="shield" />
-              </div>
-              <h3>System credentials</h3>
-              <p>Cryptographically protected tenant parameters configured on the REDDOX Cloud infrastructure.</p>
-            </div>
-            <div>
-              <div className="portal-settings-grid">
-                {/* Card 1: Workspace Identifier */}
-                <div className="portal-ro-card">
-                  <div className="portal-ro-head">
-                    <span className="portal-ro-label">
-                      <SvgIcon name="lock" />
-                      <span>Workspace Identifier</span>
-                    </span>
-                    <span className="portal-ro-tag">Read-Only</span>
-                  </div>
-                  <div className="portal-ro-body">
-                    <span className="portal-ro-val mono">RDX-WS-84920</span>
-                    <button
-                      type="button"
-                      className="portal-copy-btn"
-                      onClick={() => handleCopy("RDX-WS-84920", "ws")}
-                      title="Copy Workspace ID"
-                    >
-                      <SvgIcon name="copy" />
-                      <span>{copiedKey === "ws" ? "Copied!" : "Copy"}</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Card 2: Dedicated Tenant URL */}
-                <div className="portal-ro-card">
-                  <div className="portal-ro-head">
-                    <span className="portal-ro-label">
-                      <SvgIcon name="lock" />
-                      <span>Dedicated Tenant URL</span>
-                    </span>
-                    <span className="portal-ro-tag">Configured</span>
-                  </div>
-                  <div className="portal-ro-body">
-                    <span className="portal-ro-val mono">gracechapel.reddox.app</span>
-                    <button
-                      type="button"
-                      className="portal-copy-btn"
-                      onClick={() => handleCopy("https://gracechapel.reddox.app", "url")}
-                      title="Copy Subdomain"
-                    >
-                      <SvgIcon name="copy" />
-                      <span>{copiedKey === "url" ? "Copied!" : "Copy"}</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Card 3: Account Authority */}
-                <div className="portal-ro-card">
-                  <div className="portal-ro-head">
-                    <span className="portal-ro-label">
-                      <SvgIcon name="shield" />
-                      <span>Administrative Role</span>
-                    </span>
-                    <span className="portal-ro-tag">Level 1 Authority</span>
-                  </div>
-                  <div className="portal-ro-body">
-                    <span className="portal-ro-val">Lead Administrator (Owner)</span>
-                    <span className="portal-verified-chip">Verified</span>
-                  </div>
-                </div>
-
-                {/* Card 4: Datacenter Region */}
-                <div className="portal-ro-card">
-                  <div className="portal-ro-head">
-                    <span className="portal-ro-label">
-                      <SvgIcon name="globe" />
-                      <span>Hosting Node &amp; Cluster</span>
-                    </span>
-                    <span className="portal-status-online">
-                      <span className="portal-status-dot" />
-                      <span>Online (99.99%)</span>
-                    </span>
-                  </div>
-                  <div className="portal-ro-body">
-                    <span className="portal-ro-val">af-south-1 (Lagos Primary Node)</span>
-                    <small style={{ color: "var(--mu)", fontSize: 11 }}>18ms latency</small>
-                  </div>
-                </div>
-
-                {/* Card 5: Security Protocol */}
-                <div className="portal-ro-card">
-                  <div className="portal-ro-head">
-                    <span className="portal-ro-label">
-                      <SvgIcon name="lock" />
-                      <span>Data Encryption Protocol</span>
-                    </span>
-                    <span className="portal-ro-tag">AES-256</span>
-                  </div>
-                  <div className="portal-ro-body">
-                    <span className="portal-ro-val">TLS 1.3 &bull; End-to-End Encrypted</span>
-                    <span className="portal-verified-chip">Strict HTTPS</span>
-                  </div>
-                </div>
-
-                {/* Card 6: Database Registration */}
-                <div className="portal-ro-card">
-                  <div className="portal-ro-head">
-                    <span className="portal-ro-label">
-                      <SvgIcon name="clock" />
-                      <span>Registration &amp; Backup Node</span>
-                    </span>
-                    <span className="portal-ro-tag">Active</span>
-                  </div>
-                  <div className="portal-ro-body">
-                    <span className="portal-ro-val">Registered Nov 12, 2024</span>
-                    <small style={{ color: "var(--mu)", fontSize: 11 }}>Auto-Sync: 02:00 WAT</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 3: Audit History Timeline */}
-          <section className="portal-sec">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="clock" />
-              </div>
-              <h3>Audit history</h3>
-              <p>Recent administrative changes logged across your parish workspace.</p>
-            </div>
-            <div>
-              <div className="portal-tln">
-                {activity.slice(0, 6).map((x: any, i: number) => (
-                  <div key={i} style={{ animationDelay: `${i * 70}ms` }}>
-                    <b>{x.t || x[0]}</b>
-                    <small>
-                      {accountData.name} &bull; {x.w || x[1] || "Recently"}
-                    </small>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Section 4: Danger Zone */}
-          <section className="portal-sec portal-dz">
-            <div className="portal-sh">
-              <div className="portal-ch">
-                <SvgIcon name="trash" />
-              </div>
-              <h3>Danger zone</h3>
-              <p>This action is irreversible and permanently removes church data.</p>
-            </div>
-            <div>
-              <p style={{ margin: "0 0 14px", color: "var(--tx)", fontSize: 13.5 }}>
-                Deleting the church workspace permanently removes all member lists, tithe histories, attendance records, and media entries.
-              </p>
-              <button
-                type="button"
-                className="portal-btn-dg"
-                onClick={() => setIsDeleteModalOpen(true)}
-              >
-                <SvgIcon name="trash" />
-                <span>Delete church workspace</span>
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
-
-      {/* ==============================================================
+        {/* ==============================================================
           MODAL: ADD CAMPUS BRANCH
           ============================================================== */}
-      {isAddBranchOpen && (
-        <div
-          className="portal-mo"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setIsAddBranchOpen(false);
-          }}
-        >
-          <form className="portal-md" onSubmit={handleAddBranchSubmit}>
-            <h2>Add Campus Branch</h2>
-            <div className="portal-field" style={{ marginBottom: 14 }}>
-              <label>Branch name *</label>
-              <div className="portal-input-wrap">
-                <SvgIcon name="church" />
-                <input
-                  value={branchForm.n}
-                  onChange={(e) => setBranchForm({ ...branchForm, n: e.target.value })}
-                  placeholder="e.g. Lekki Campus"
-                  required
-                  autoFocus
-                />
+        {isAddBranchOpen && (
+          <div
+            className="portal-mo"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setIsAddBranchOpen(false);
+            }}
+          >
+            <form className="portal-md" onSubmit={handleAddBranchSubmit}>
+              <h2>Add Campus Branch</h2>
+              <div className="portal-field" style={{ marginBottom: 14 }}>
+                <label>Branch name *</label>
+                <div className="portal-input-wrap">
+                  <SvgIcon name="church" />
+                  <input
+                    value={branchForm.n}
+                    onChange={(e) => setBranchForm({ ...branchForm, n: e.target.value })}
+                    placeholder="e.g. Lekki Campus"
+                    required
+                    autoFocus
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="portal-field" style={{ marginBottom: 14 }}>
-              <label>Address / location</label>
-              <div className="portal-input-wrap">
-                <SvgIcon name="pin" />
-                <input
-                  value={branchForm.a}
-                  onChange={(e) => setBranchForm({ ...branchForm, a: e.target.value })}
-                  placeholder="Street, area or landmark"
-                />
+              <div className="portal-field" style={{ marginBottom: 14 }}>
+                <label>Address / location</label>
+                <div className="portal-input-wrap">
+                  <SvgIcon name="pin" />
+                  <input
+                    value={branchForm.a}
+                    onChange={(e) => setBranchForm({ ...branchForm, a: e.target.value })}
+                    placeholder="Street, area or landmark"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="portal-mf">
-              <button
-                type="button"
-                className="portal-btn"
-                onClick={() => setIsAddBranchOpen(false)}
-              >
-                Cancel
-              </button>
-              <button type="submit" className="portal-btn p">
-                Add branch
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+              <div className="portal-mf">
+                <button
+                  type="button"
+                  className="portal-btn"
+                  onClick={() => setIsAddBranchOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="portal-btn p">
+                  Add branch
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
-      {/* ==============================================================
+        {/* ==============================================================
           MODAL: CONFIRM WORKSPACE DELETION
           ============================================================== */}
-      {isDeleteModalOpen && (
-        <div
-          className="portal-mo"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setIsDeleteModalOpen(false);
-          }}
-        >
-          <form className="portal-md" onSubmit={handleDeleteWorkspaceSubmit}>
-            <h2 style={{ color: "var(--er)" }}>Delete Church Workspace</h2>
-            <p style={{ margin: "0 0 14px", fontSize: 13.5, color: "var(--tx)" }}>
-              This will permanently purge all database records for <b>{profileData.churchName}</b>.
-              To confirm, please type <strong>{profileData.churchName}</strong> below:
-            </p>
+        {isDeleteModalOpen && (
+          <div
+            className="portal-mo"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setIsDeleteModalOpen(false);
+            }}
+          >
+            <form className="portal-md" onSubmit={handleDeleteWorkspaceSubmit}>
+              <h2 style={{ color: "var(--er)" }}>Delete Church Workspace</h2>
+              <p style={{ margin: "0 0 14px", fontSize: 13.5, color: "var(--tx)" }}>
+                This will permanently purge all database records for <b>{profileData.churchName}</b>.
+                To confirm, please type <strong>{profileData.churchName}</strong> below:
+              </p>
 
-            <div className="portal-field" style={{ marginBottom: 16 }}>
-              <div className="portal-input-wrap">
-                <SvgIcon name="church" />
-                <input
-                  value={deleteConfirmInput}
-                  onChange={(e) => setDeleteConfirmInput(e.target.value)}
-                  placeholder={`Type "${profileData.churchName}"`}
-                  required
-                  autoFocus
-                />
+              <div className="portal-field" style={{ marginBottom: 16 }}>
+                <div className="portal-input-wrap">
+                  <SvgIcon name="church" />
+                  <input
+                    value={deleteConfirmInput}
+                    onChange={(e) => setDeleteConfirmInput(e.target.value)}
+                    placeholder={`Type "${profileData.churchName}"`}
+                    required
+                    autoFocus
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="portal-mf">
-              <button
-                type="button"
-                className="portal-btn"
-                onClick={() => {
-                  setIsDeleteModalOpen(false);
-                  setDeleteConfirmInput("");
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="portal-btn-dg"
-                disabled={deleteConfirmInput.trim() !== profileData.churchName.trim()}
-              >
-                Permanently Delete
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+              <div className="portal-mf">
+                <button
+                  type="button"
+                  className="portal-btn"
+                  onClick={() => {
+                    setIsDeleteModalOpen(false);
+                    setDeleteConfirmInput("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="portal-btn-dg"
+                  disabled={deleteConfirmInput.trim() !== profileData.churchName.trim()}
+                >
+                  Permanently Delete
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -6356,9 +6568,9 @@ function AddMemberModal({ plan, currentCount, onClose, onSave, onUpgrade }: any)
             parsed.length
               ? parsed
               : [
-                  { n: "Pastor David Adeleke", e: "david@mail.com", ph: "0802 345 6789", d: "Sanctuary / General" },
-                  { n: "Sister Kelechi Okon", e: "kelechi@mail.com", ph: "0803 456 7890", d: "Choir" },
-                ]
+                { n: "Pastor David Adeleke", e: "david@mail.com", ph: "0802 345 6789", d: "Sanctuary / General" },
+                { n: "Sister Kelechi Okon", e: "kelechi@mail.com", ph: "0803 456 7890", d: "Choir" },
+              ]
           );
         } catch (err) {
           setUploadError("Could not parse file. Using standard roster sample.");
@@ -7566,9 +7778,9 @@ function NewSessionModal({ onClose, onSave }: any) {
     }
     const d = dateStr
       ? new Date(dateStr + "T12:00:00").toLocaleString("en", {
-          month: "short",
-          day: "numeric",
-        })
+        month: "short",
+        day: "numeric",
+      })
       : "Today";
 
     onSave({
@@ -7715,9 +7927,9 @@ function RecordVisitorModal({ staff, onClose, onSave }: any) {
     }
     const d = dateStr
       ? new Date(dateStr + "T12:00:00").toLocaleString("en", {
-          month: "short",
-          day: "numeric",
-        })
+        month: "short",
+        day: "numeric",
+      })
       : "Today";
     onSave({ n: name.trim(), d, w: worker, s: "New", nt: notes.trim() });
   };
@@ -7879,11 +8091,13 @@ function AddSermonModal({ onClose, onSave }: any) {
 }
 
 /* =====================================================================
-   MODAL 9: INVITE STAFF
+   MODAL 9: INVITE STAFF (WITH CUSTOM ROLE SUPPORT)
    ===================================================================== */
 function InviteStaffModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }: any) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("Leader");
+  const [role, setRole] = useState("Department Leader");
+  const [customRole, setCustomRole] = useState("");
   const [error, setError] = useState("");
 
   const isStarterAtLimit = plan?.admins === 1 && currentCount >= 1;
@@ -7894,8 +8108,13 @@ function InviteStaffModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
       setError("Please enter a valid staff email address.");
       return;
     }
-    const name = email.split("@")[0];
-    onSave({ n: name, e: email.trim(), r: role });
+    const finalRole = role === "Custom Role" ? customRole.trim() : role;
+    if (role === "Custom Role" && !finalRole) {
+      setError("Please specify the custom ministry role title.");
+      return;
+    }
+    const finalName = name.trim() || email.split("@")[0];
+    onSave({ n: finalName, e: email.trim(), r: finalRole });
   };
 
   return (
@@ -7905,8 +8124,12 @@ function InviteStaffModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
         noValidate
+        style={{ maxWidth: 480 }}
       >
-        <h2>Invite pastoral staff</h2>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <h2 style={{ margin: 0, fontSize: 18 }}>Invite Pastoral Staff or Leader</h2>
+          <button type="button" onClick={onClose} className="portal-srch-clear" style={{ position: "static", transform: "none" }}>✕</button>
+        </div>
 
         {isStarterAtLimit && (
           <div className="portal-nt" style={{ background: "rgba(184, 134, 45, 0.12)", border: "1px solid var(--bd)" }}>
@@ -7921,6 +8144,15 @@ function InviteStaffModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
             )}
           </div>
         )}
+
+        <div className="portal-fi">
+          <label>Full Name / Title</label>
+          <input
+            placeholder="e.g. Pastor Tunde Bakare"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
 
         <div className={`portal-fi ${error ? "bad" : ""}`}>
           <label>Email Address</label>
@@ -7937,18 +8169,33 @@ function InviteStaffModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
         </div>
 
         <div className="portal-fi">
-          <label>Role</label>
+          <label>Ministry Role</label>
           <select value={role} onChange={(e) => setRole(e.target.value)}>
             {STAFF_ROLES.map((r) => (
               <option key={r} value={r}>
-                {r}
+                {r === "Custom Role" ? "✦ Other / Custom Role (Type your own)..." : r}
               </option>
             ))}
           </select>
         </div>
 
+        {role === "Custom Role" && (
+          <div className="portal-fi">
+            <label>Specify Custom Role Title</label>
+            <input
+              placeholder="e.g. Evangelism Coordinator, Youth Deacon, Sanctuary Keeper"
+              value={customRole}
+              onChange={(e) => setCustomRole(e.target.value)}
+              autoFocus
+            />
+            <small style={{ color: "var(--mu)", fontSize: 11.5, marginTop: 4, display: "block" }}>
+              Type any departmental assignment or ministerial title.
+            </small>
+          </div>
+        )}
+
         <small style={{ color: "var(--mu)", display: "block", marginBottom: 14 }}>
-          Invited workers will receive access credentials for their respective role.
+          Invited workers will receive access credentials for their assigned permissions.
         </small>
 
         <div className="portal-mf">

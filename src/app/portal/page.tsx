@@ -3388,16 +3388,261 @@ ${totalAttendance > 0 ? `Service attendance reached ${totalAttendance} worshippe
 }
 
 /* =====================================================================
-   VIEW 4: EVENTS & RSVPS
+   MODAL: RSVP MEMBER TO EVENT
    ===================================================================== */
-function EventsView({ events, plan, onCreateEvent, onRegister, onRemoveEvent }: any) {
+function RsvpMemberModal({ event, members, onClose, onRsvp }: any) {
+  const [isGuest, setIsGuest] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState(members[0]?.id || 1);
+  const [guestName, setGuestName] = useState("");
+  const [guestPhone, setGuestPhone] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isGuest) {
+      if (!guestName.trim()) {
+        setError("Please enter the guest's name.");
+        return;
+      }
+      onRsvp({
+        name: guestName.trim(),
+        role: "Guest / Visitor",
+        phone: guestPhone.trim() || "—",
+        time: "Just now",
+      });
+    } else {
+      const found = members.find((m: any) => m.id === Number(selectedMemberId));
+      onRsvp({
+        name: found ? found.n : "Church Member",
+        role: found ? found.d : "Member",
+        phone: found ? found.ph : "—",
+        time: "Just now",
+      });
+    }
+  };
+
+  return (
+    <div className="portal-mo" onClick={onClose}>
+      <form
+        className="portal-md"
+        onClick={(e) => e.stopPropagation()}
+        onSubmit={handleSubmit}
+        style={{ maxWidth: 480 }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <h2 style={{ margin: 0, fontSize: 18 }}>Register RSVP for Event</h2>
+          <button type="button" onClick={onClose} className="portal-srch-clear" style={{ position: "static", transform: "none" }}>✕</button>
+        </div>
+        <p style={{ color: "var(--mu)", fontSize: 13, margin: "0 0 16px" }}>
+          Confirm attendance for <strong>{event.t}</strong> ({event.mo} {event.d})
+        </p>
+
+        <div className="portal-tabs-toggle" style={{ marginBottom: 16 }}>
+          <button
+            type="button"
+            className={`portal-tab-btn ${!isGuest ? "active" : ""}`}
+            onClick={() => setIsGuest(false)}
+          >
+            Registered Member
+          </button>
+          <button
+            type="button"
+            className={`portal-tab-btn ${isGuest ? "active" : ""}`}
+            onClick={() => setIsGuest(true)}
+          >
+            First-Timer / Guest
+          </button>
+        </div>
+
+        {!isGuest ? (
+          <div className="portal-fi">
+            <label>Select Congregation Member</label>
+            <select
+              value={selectedMemberId}
+              onChange={(e) => setSelectedMemberId(Number(e.target.value))}
+            >
+              {members.map((m: any) => (
+                <option key={m.id} value={m.id}>
+                  {m.n} ({m.d})
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <>
+            <div className={`portal-fi ${error ? "bad" : ""}`}>
+              <label>Guest Full Name</label>
+              <input
+                placeholder="e.g. Bro Emmanuel Oladipo"
+                value={guestName}
+                onChange={(e) => {
+                  setGuestName(e.target.value);
+                  setError("");
+                }}
+                autoFocus
+              />
+              <div className="er">{error}</div>
+            </div>
+            <div className="portal-fi">
+              <label>Phone Number (Optional)</label>
+              <input
+                placeholder="0803 123 4567"
+                value={guestPhone}
+                onChange={(e) => setGuestPhone(e.target.value)}
+              />
+            </div>
+          </>
+        )}
+
+        <div className="portal-mf">
+          <button type="button" onClick={onClose} className="portal-btn">
+            Cancel
+          </button>
+          <button type="submit" className="portal-btn p">
+            Confirm RSVP
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+/* =====================================================================
+   MODAL: VIEW REGISTERED ATTENDEES FOR EVENT
+   ===================================================================== */
+function EventAttendeesModal({ event, onClose }: any) {
+  const [search, setSearch] = useState("");
+  const attendees = event?.attendees || [];
+  const filtered = attendees.filter((a: any) =>
+    a.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="portal-mo" onClick={onClose}>
+      <div
+        className="portal-md"
+        onClick={(e) => e.stopPropagation()}
+        style={{ maxWidth: 520 }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <div>
+            <h2 style={{ margin: 0, fontSize: 18 }}>Registered Attendees ({event.r || 0})</h2>
+            <small style={{ color: "var(--mu)" }}>{event.t} · {event.fullDate || `${event.mo} ${event.d}`}</small>
+          </div>
+          <button type="button" onClick={onClose} className="portal-srch-clear" style={{ position: "static", transform: "none" }}>✕</button>
+        </div>
+
+        <div className="portal-srch" style={{ margin: "12px 0 16px" }}>
+          <input
+            type="text"
+            placeholder="Search registered names…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        <div style={{ maxHeight: 320, overflowY: "auto", display: "flex", flexDirection: "column", gap: 8 }}>
+          {filtered.length > 0 ? (
+            filtered.map((att: any, idx: number) => (
+              <div
+                key={idx}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "8px 12px",
+                  background: "rgba(43, 32, 21, 0.03)",
+                  borderRadius: 10,
+                  border: "1px solid var(--bd)",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      background: "var(--rd6)",
+                      color: "var(--rd)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      fontSize: 12,
+                    }}
+                  >
+                    {getInitials(att.name)}
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: 13, display: "block" }}>{att.name}</strong>
+                    <small style={{ color: "var(--mu)", fontSize: 11 }}>{att.role || "Worshipper"}</small>
+                  </div>
+                </div>
+                <span style={{ fontSize: 11, color: "var(--mu)" }}>{att.time || "Confirmed"}</span>
+              </div>
+            ))
+          ) : (
+            <div style={{ textAlign: "center", padding: "24px 0", color: "var(--mu)", fontSize: 13 }}>
+              {attendees.length === 0 ? "No individual attendee names logged yet. Use '+ RSVP' to record participants." : "No attendees match your search."}
+            </div>
+          )}
+        </div>
+
+        <div className="portal-mf" style={{ marginTop: 16 }}>
+          <button type="button" onClick={onClose} className="portal-btn p" style={{ width: "100%", justifyContent: "center" }}>
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =====================================================================
+   VIEW 4: EVENTS & RSVPS (MODERN & SENSIBLE)
+   ===================================================================== */
+function EventsView({
+  events,
+  members,
+  plan,
+  onCreateEvent,
+  onRegister,
+  onRemoveEvent,
+  showToast,
+}: any) {
+  const [catFilter, setCatFilter] = useState("All");
+  const [selectedRsvpEvent, setSelectedRsvpEvent] = useState<any | null>(null);
+  const [selectedAttendeesEvent, setSelectedAttendeesEvent] = useState<any | null>(null);
+
+  const categories = [
+    "All",
+    "Worship Service",
+    "Bible Study",
+    "Youth & Singles",
+    "Prayer & Vigil",
+    "Outreach & Community",
+  ];
+
+  const filteredEvents = catFilter === "All"
+    ? events
+    : events.filter((ev: any) => ev.category === catFilter);
+
+  const totalRsvps = events.reduce((acc: number, ev: any) => acc + (ev.r || 0), 0);
+  const nextEvent = events[0];
+
+  const handleCopyInvite = (ev: any) => {
+    const text = `⛪ ${ev.t}\n📅 ${ev.fullDate || `${ev.mo} ${ev.d}`}\n⏰ ${ev.tm}\n📍 ${ev.venue || "Main Sanctuary"}\n🎙️ Preacher: ${ev.preacher || "Pastor Tosin Adewale"}\n${ev.theme ? `✨ Theme: "${ev.theme}"` : ""}\nJoin us for fellowship!`;
+    navigator.clipboard?.writeText(text);
+    if (showToast) showToast("Event details copied to clipboard!");
+  };
+
   return (
     <>
       <div className="portal-hd">
         <div>
-          <h1>Events</h1>
+          <h1>Church Events &amp; Services</h1>
           <p>
-            {events.length} events scheduled · {plan?.eventsPerMonth === 1 ? "Starter tier (1 event/month limit)" : "Unlimited events"}
+            Schedule worship services, bible studies, vigils, and track congregation RSVPs
           </p>
         </div>
         <div className="portal-acts">
@@ -3425,11 +3670,11 @@ function EventsView({ events, plan, onCreateEvent, onRegister, onRemoveEvent }: 
         >
           <div>
             <strong style={{ color: "var(--bl)", display: "block" }}>
-              Starter Plan Limit: 1 Event Per Month
+              Starter Plan Quota: 1 Event Per Month
             </strong>
             <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
               {events.length >= 1
-                ? "You have reached your 1-event monthly allowance on Starter. Upgrade to Growth for unlimited scheduled events & registrations."
+                ? "You have reached your 1-event monthly allowance on Starter. Upgrade to Growth for unlimited scheduled events & ticket registrations."
                 : "Free Starter churches can publish 1 event per month. Upgrade to Growth for unlimited scheduled events."}
             </p>
           </div>
@@ -3439,47 +3684,173 @@ function EventsView({ events, plan, onCreateEvent, onRegister, onRemoveEvent }: 
         </div>
       )}
 
-      <div className="portal-cd">
-        {events.length ? (
-          events.map((ev: any, idx: number) => (
-            <div key={idx} className="portal-li">
-              <span className="portal-dt">
-                <b>{ev.d}</b>
-                {ev.mo}
-              </span>
-              <p>
-                <strong>{ev.t}</strong>
-                <br />
-                <small>{ev.tm}</small>
-              </p>
-              <span className="portal-pill">{ev.r} registered</span>
-              <button onClick={() => onRegister(idx)} className="portal-btn sm">
-                + Register
-              </button>
-              <button onClick={() => onRemoveEvent(idx)} className="portal-btn sm">
-                Remove
-              </button>
-            </div>
-          ))
-        ) : (
-          <div className="portal-emp">
-            <div className="portal-ico">
-              <SvgIcon name="cal" />
-            </div>
-            <h3>No events scheduled</h3>
-            <p>Schedule your services, revivals, and ministry fellowships.</p>
-            <button onClick={onCreateEvent} className="portal-btn p">
-              Create event
-            </button>
-          </div>
-        )}
+      {/* Events Metrics Row */}
+      <div className="portal-gs">
+        <div className="portal-cd portal-st">
+          <small>Scheduled Events</small>
+          <b>{events.length}</b>
+        </div>
+        <div className="portal-cd portal-st">
+          <small>Total Congregation RSVPs</small>
+          <b>{totalRsvps}</b>
+        </div>
+        <div className="portal-cd portal-st">
+          <small>Next Coming Service</small>
+          <b>{nextEvent ? `${nextEvent.mo} ${nextEvent.d}` : "None"}</b>
+        </div>
       </div>
+
+      {/* Category Filter Pills */}
+      <div className="portal-cat-bar">
+        {categories.map((cat) => {
+          const count = cat === "All" ? events.length : events.filter((e: any) => e.category === cat).length;
+          return (
+            <button
+              key={cat}
+              type="button"
+              className={`portal-cat-btn ${catFilter === cat ? "active" : ""}`}
+              onClick={() => setCatFilter(cat)}
+            >
+              <span>{cat}</span>
+              <span className="portal-cat-count">{count}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Events Grid */}
+      {filteredEvents.length > 0 ? (
+        <div className="portal-events-grid">
+          {filteredEvents.map((ev: any, idx: number) => {
+            const capacity = ev.capacity || 250;
+            const rsvpCount = ev.r || 0;
+            const pct = Math.min(100, Math.round((rsvpCount / capacity) * 100));
+            return (
+              <div key={ev.id || idx} className="portal-event-card">
+                <div className="portal-event-card-top">
+                  <div className="portal-event-datebox">
+                    <span className="portal-event-datebox-mo">{ev.mo}</span>
+                    <span className="portal-event-datebox-day">{ev.d}</span>
+                  </div>
+                  <div className="portal-event-headline">
+                    <div className="portal-event-tags">
+                      <span className="portal-event-cat-tag">{ev.category || "Service"}</span>
+                      <span className={`portal-event-status-tag ${ev.status === "This Week" ? "this-week" : "upcoming"}`}>
+                        {ev.status || "Upcoming"}
+                      </span>
+                    </div>
+                    <h3 className="portal-event-title">{ev.t}</h3>
+                    {ev.theme && <p className="portal-event-theme">"{ev.theme}"</p>}
+                  </div>
+                </div>
+
+                <div className="portal-event-body">
+                  <div className="portal-event-meta-row">
+                    <SvgIcon name="cal" />
+                    <span>{ev.fullDate || `${ev.mo} ${ev.d}, 2026`} · {ev.tm}</span>
+                  </div>
+
+                  <div className="portal-event-meta-row">
+                    <SvgIcon name="shield" />
+                    <span>{ev.venue || "Main Sanctuary & Auditorium"}</span>
+                  </div>
+
+                  <div className="portal-event-meta-row">
+                    <SvgIcon name="user" />
+                    <span>Minister: <strong>{ev.preacher || "Pastor Tosin Adewale"}</strong></span>
+                  </div>
+
+                  <div className="portal-event-rsvp-block">
+                    <div className="portal-event-rsvp-header">
+                      <span>RSVP Attendance</span>
+                      <strong>{rsvpCount} / {capacity} ({pct}%)</strong>
+                    </div>
+                    <div className="portal-event-rsvp-bar">
+                      <i style={{ width: `${Math.max(4, pct)}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="portal-event-footer">
+                  <div className="portal-event-card-actions">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedRsvpEvent(ev)}
+                      className="portal-btn sm p"
+                    >
+                      + RSVP
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedAttendeesEvent(ev)}
+                      className="portal-btn sm"
+                    >
+                      Attendees ({rsvpCount})
+                    </button>
+                  </div>
+                  <div className="portal-event-card-actions">
+                    <button
+                      type="button"
+                      onClick={() => handleCopyInvite(ev)}
+                      className="portal-receipt-btn"
+                      title="Copy event invite"
+                    >
+                      Share
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onRemoveEvent(ev.id || ev.t)}
+                      className="portal-srch-clear"
+                      style={{ position: "static", transform: "none", fontSize: 13 }}
+                      title="Delete event"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="portal-cd portal-emp" style={{ padding: "48px 24px", textAlign: "center" }}>
+          <div className="portal-ico" style={{ margin: "0 auto 12px" }}>
+            <SvgIcon name="cal" />
+          </div>
+          <h3>No events found in this category</h3>
+          <p>Schedule your services, revivals, and ministry fellowships.</p>
+          <button onClick={onCreateEvent} className="portal-btn p" style={{ margin: "12px auto 0" }}>
+            Create event
+          </button>
+        </div>
+      )}
+
+      {/* RSVP Modal */}
+      {selectedRsvpEvent && (
+        <RsvpMemberModal
+          event={selectedRsvpEvent}
+          members={members}
+          onClose={() => setSelectedRsvpEvent(null)}
+          onRsvp={(attendee: any) => {
+            onRegister(selectedRsvpEvent.id || selectedRsvpEvent.t, attendee);
+            setSelectedRsvpEvent(null);
+          }}
+        />
+      )}
+
+      {/* Attendees Modal */}
+      {selectedAttendeesEvent && (
+        <EventAttendeesModal
+          event={selectedAttendeesEvent}
+          onClose={() => setSelectedAttendeesEvent(null)}
+        />
+      )}
     </>
   );
 }
 
 /* =====================================================================
-   VIEW 5: FINANCES & TITHES
+   VIEW 5: FINANCES & TITHES (MONTHLY LEDGER)
    ===================================================================== */
 function FinancesView({
   giving,
@@ -3532,17 +3903,59 @@ function FinancesView({
     );
   }
 
+  const [selectedMonth, setSelectedMonth] = useState("Nov 2026");
   const [viewingReceipt, setViewingReceipt] = useState<any | null>(null);
-  const totalGiving = giving.reduce((acc: number, g: any) => acc + g.a, 0);
-  const totalExp = expenses.reduce((acc: number, x: any) => acc + x.a, 0);
-  const net = totalGiving - totalExp;
+
+  // Month resolution helper
+  function getItemMonth(item: any): string {
+    if (item.month) return item.month;
+    const w = String(item.w || "");
+    if (w.includes("Nov") || w === "Today" || w === "Just now") return "Nov 2026";
+    if (w.includes("Oct")) return "Oct 2026";
+    if (w.includes("Sep")) return "Sep 2026";
+    if (w.includes("Aug")) return "Aug 2026";
+    return "Nov 2026";
+  }
+
+  const monthsList = ["Nov 2026", "Oct 2026", "Sep 2026", "All Time"];
+
+  // Filtered dataset
+  const filteredGiving = selectedMonth === "All Time"
+    ? giving
+    : giving.filter((g: any) => getItemMonth(g) === selectedMonth);
+
+  const filteredExpenses = selectedMonth === "All Time"
+    ? expenses
+    : expenses.filter((x: any) => getItemMonth(x) === selectedMonth);
+
+  const monthGiving = filteredGiving.reduce((acc: number, g: any) => acc + g.a, 0);
+  const monthExp = filteredExpenses.reduce((acc: number, x: any) => acc + x.a, 0);
+  const monthNet = monthGiving - monthExp;
+
+  // Monthly Statements Breakdown
+  const monthlyStatements = ["Nov 2026", "Oct 2026", "Sep 2026"].map((m) => {
+    const gList = giving.filter((g: any) => getItemMonth(g) === m);
+    const xList = expenses.filter((x: any) => getItemMonth(x) === m);
+    const gSum = gList.reduce((acc: number, g: any) => acc + g.a, 0);
+    const xSum = xList.reduce((acc: number, x: any) => acc + x.a, 0);
+    const net = gSum - xSum;
+    return {
+      month: m,
+      givingSum: gSum,
+      givingCount: gList.length,
+      expSum: xSum,
+      expCount: xList.length,
+      net,
+      isSurplus: net >= 0,
+    };
+  });
 
   return (
     <>
       <div className="portal-hd">
         <div>
-          <h1>Finances</h1>
-          <p>Tithes, Sunday offerings, special pledges, and ministry expenses</p>
+          <h1>Treasury &amp; Financials</h1>
+          <p>Tithes, Sunday offerings, pledges, and ministry expenses organized by month</p>
         </div>
         <div className="portal-acts">
           <button onClick={onExport} className="portal-btn">
@@ -3558,21 +3971,75 @@ function FinancesView({
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Month Filter Selector Ribbon */}
+      <div className="portal-month-bar">
+        {monthsList.map((m) => {
+          const isCurrent = m === "Nov 2026";
+          const mGives = m === "All Time" ? giving : giving.filter((g: any) => getItemMonth(g) === m);
+          const mTotal = mGives.reduce((acc: number, g: any) => acc + g.a, 0);
+          return (
+            <button
+              key={m}
+              type="button"
+              className={`portal-month-pill ${selectedMonth === m ? "active" : ""}`}
+              onClick={() => setSelectedMonth(m)}
+            >
+              <span>{m}{isCurrent ? " (Current)" : ""}</span>
+              <span className="portal-month-count">{formatNaira(mTotal)}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Active Month Indicator Banner */}
+      <div className="portal-month-banner">
+        <div>
+          <strong>
+            {selectedMonth === "All Time" ? "Viewing All-Time Cumulative Ledger" : `Viewing Financials for ${selectedMonth}`}
+          </strong>
+          <span style={{ color: "var(--mu)", marginLeft: 8 }}>
+            ({filteredGiving.length} giving entries · {filteredExpenses.length} expense vouchers)
+          </span>
+        </div>
+        {selectedMonth !== "Nov 2026" ? (
+          <button
+            type="button"
+            className="portal-receipt-btn"
+            onClick={() => setSelectedMonth("Nov 2026")}
+          >
+            Switch to Current Month (Nov 2026)
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="portal-receipt-btn"
+            onClick={() => setSelectedMonth("All Time")}
+          >
+            View Cumulative Ledger
+          </button>
+        )}
+      </div>
+
+      {/* Stats Cards (Dynamic to Selected Month) */}
       <div className="portal-gs">
         <div className="portal-cd portal-st">
-          <small>Total Giving</small>
-          <b>{formatNaira(totalGiving)}</b>
+          <small>Total Giving ({selectedMonth})</small>
+          <b>{formatNaira(monthGiving)}</b>
         </div>
         <div className="portal-cd portal-st">
-          <small>Total Expenses</small>
-          <b>{formatNaira(totalExp)}</b>
+          <small>Total Expenses ({selectedMonth})</small>
+          <b>{formatNaira(monthExp)}</b>
         </div>
         <div className="portal-cd portal-st">
-          <small>Net Treasury Balance</small>
-          <b style={{ color: net >= 0 ? "var(--tx)" : "var(--er)" }}>
-            {formatNaira(net)}
-          </b>
+          <small>Net Balance ({selectedMonth})</small>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <b style={{ color: monthNet >= 0 ? "var(--tx)" : "var(--er)" }}>
+              {formatNaira(monthNet)}
+            </b>
+            <span className={`portal-statement-badge ${monthNet >= 0 ? "surplus" : "deficit"}`}>
+              {monthNet >= 0 ? "Surplus" : "Deficit"}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -3582,20 +4049,26 @@ function FinancesView({
           className={tab === "give" ? "on" : ""}
           onClick={() => onTabChange("give")}
         >
-          Giving &amp; Tithes
+          Giving &amp; Tithes ({filteredGiving.length})
         </button>
         <button
           className={tab === "exp" ? "on" : ""}
           onClick={() => onTabChange("exp")}
         >
-          Expenses
+          Expenses ({filteredExpenses.length})
+        </button>
+        <button
+          className={tab === "statement" ? "on" : ""}
+          onClick={() => onTabChange("statement")}
+        >
+          Monthly Treasury Statement
         </button>
       </div>
 
-      {/* Table */}
-      <div className="portal-cd">
-        <div className="portal-tw">
-          {tab === "give" ? (
+      {/* TAB 1: GIVING TABLE */}
+      {tab === "give" && (
+        <div className="portal-cd">
+          <div className="portal-tw">
             <table>
               <thead>
                 <tr>
@@ -3607,7 +4080,7 @@ function FinancesView({
                 </tr>
               </thead>
               <tbody>
-                {giving.map((g: any) => (
+                {filteredGiving.map((g: any) => (
                   <tr key={g.id}>
                     <td>{getMemberName(g.m)}</td>
                     <td>
@@ -3672,7 +4145,14 @@ function FinancesView({
                 ))}
               </tbody>
             </table>
-          ) : (
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: EXPENSES TABLE */}
+      {tab === "exp" && (
+        <div className="portal-cd">
+          <div className="portal-tw">
             <table>
               <thead>
                 <tr>
@@ -3684,7 +4164,7 @@ function FinancesView({
                 </tr>
               </thead>
               <tbody>
-                {expenses.map((x: any, idx: number) => (
+                {filteredExpenses.map((x: any, idx: number) => (
                   <tr key={idx}>
                     <td>{x.t}</td>
                     <td>
@@ -3749,18 +4229,82 @@ function FinancesView({
                 ))}
               </tbody>
             </table>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Breakdown by Type */}
+      {/* TAB 3: MONTHLY COMPARATIVE STATEMENT */}
+      {tab === "statement" && (
+        <div className="portal-cd">
+          <div className="portal-tw">
+            <table>
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Total Giving &amp; Tithes</th>
+                  <th>Total Expenses</th>
+                  <th>Net Result</th>
+                  <th>Health</th>
+                  <th style={{ textAlign: "right" }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {monthlyStatements.map((stm) => (
+                  <tr key={stm.month}>
+                    <td>
+                      <strong>{stm.month}</strong>
+                      {stm.month === "Nov 2026" && (
+                        <span className="portal-statement-badge surplus" style={{ marginLeft: 6, fontSize: 10 }}>
+                          Current
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      <strong style={{ color: "var(--rd)" }}>{formatNaira(stm.givingSum)}</strong>
+                      <small style={{ color: "var(--mu)", marginLeft: 6 }}>({stm.givingCount} entries)</small>
+                    </td>
+                    <td>
+                      <strong>{formatNaira(stm.expSum)}</strong>
+                      <small style={{ color: "var(--mu)", marginLeft: 6 }}>({stm.expCount} vouchers)</small>
+                    </td>
+                    <td>
+                      <strong style={{ color: stm.isSurplus ? "var(--tx)" : "var(--er)" }}>
+                        {formatNaira(stm.net)}
+                      </strong>
+                    </td>
+                    <td>
+                      <span className={`portal-statement-badge ${stm.isSurplus ? "surplus" : "deficit"}`}>
+                        {stm.isSurplus ? "Surplus" : "Deficit"}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <button
+                        type="button"
+                        className="portal-btn sm"
+                        onClick={() => {
+                          setSelectedMonth(stm.month);
+                          onTabChange("give");
+                        }}
+                      >
+                        View Entries &rarr;
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Breakdown by Type (Filtered to Current Selected Month) */}
       <div className="portal-cd">
-        <h3>Giving breakdown by category</h3>
+        <h3>Giving breakdown by category {selectedMonth !== "All Time" ? `(${selectedMonth})` : "(All Time)"}</h3>
         {GIVING_TYPES.map((t) => {
-          const typeSum = giving
+          const typeSum = filteredGiving
             .filter((g: any) => g.t === t)
             .reduce((acc: number, g: any) => acc + g.a, 0);
-          const typePct = totalGiving ? Math.round((typeSum / totalGiving) * 100) : 0;
+          const typePct = monthGiving ? Math.round((typeSum / monthGiving) * 100) : 0;
           return (
             <div key={t} className="portal-li">
               <p>
@@ -6827,8 +7371,13 @@ function AddExpenseModal({ onClose, onSave }: any) {
    ===================================================================== */
 function CreateEventModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }: any) {
   const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("Worship Service");
   const [dateStr, setDateStr] = useState("");
-  const [timeStr, setTimeStr] = useState("6:00 PM");
+  const [timeStr, setTimeStr] = useState("09:00 AM");
+  const [venue, setVenue] = useState("Main Sanctuary & Auditorium");
+  const [preacher, setPreacher] = useState("Pastor Tosin Adewale");
+  const [theme, setTheme] = useState("");
+  const [capacity, setCapacity] = useState("350");
   const [error, setError] = useState("");
 
   const isStarterAtLimit = plan?.eventsPerMonth === 1 && currentCount >= 1;
@@ -6841,11 +7390,21 @@ function CreateEventModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
     }
     const d = dateStr ? new Date(dateStr + "T12:00:00") : new Date();
     onSave({
+      id: Date.now(),
       t: title.trim(),
+      category,
       d: ("0" + d.getDate()).slice(-2),
       mo: d.toLocaleString("en", { month: "short" }).toUpperCase(),
+      yr: String(d.getFullYear()),
+      fullDate: d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" }),
       tm: timeStr || "TBA",
+      venue: venue.trim() || "Main Sanctuary",
+      preacher: preacher.trim() || "Church Leadership",
+      theme: theme.trim(),
+      status: "Upcoming",
       r: 0,
+      capacity: Number(capacity) || 300,
+      attendees: [],
     });
   };
 
@@ -6856,6 +7415,7 @@ function CreateEventModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
         noValidate
+        style={{ maxWidth: 540 }}
       >
         <h2>Create church event</h2>
 
@@ -6876,7 +7436,7 @@ function CreateEventModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
         <div className={`portal-fi ${error ? "bad" : ""}`}>
           <label>Event Title</label>
           <input
-            placeholder="e.g. Night of Praise & Worship"
+            placeholder="e.g. Annual Thanksgiving & Anointing Celebration"
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
@@ -6887,20 +7447,73 @@ function CreateEventModal({ plan, currentCount = 0, onClose, onSave, onUpgrade }
         </div>
 
         <div className="portal-fi">
-          <label>Event Date</label>
-          <input
-            type="date"
-            value={dateStr}
-            onChange={(e) => setDateStr(e.target.value)}
-          />
+          <label>Event Category</label>
+          <select value={category} onChange={(e) => setCategory(e.target.value)}>
+            <option value="Worship Service">Worship Service</option>
+            <option value="Bible Study">Bible Study &amp; Digging Deep</option>
+            <option value="Youth & Singles">Youth &amp; Singles Fellowship</option>
+            <option value="Prayer & Vigil">Prayer &amp; All-Night Vigil</option>
+            <option value="Outreach & Community">Community Outreach &amp; Missions</option>
+            <option value="Special Program">Special Program &amp; Conference</option>
+          </select>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="portal-fi">
+            <label>Event Date</label>
+            <input
+              type="date"
+              value={dateStr}
+              onChange={(e) => setDateStr(e.target.value)}
+            />
+          </div>
+
+          <div className="portal-fi">
+            <label>Start Time</label>
+            <input
+              placeholder="09:00 AM"
+              value={timeStr}
+              onChange={(e) => setTimeStr(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="portal-fi">
-          <label>Start Time</label>
+          <label>Venue / Location</label>
           <input
-            placeholder="6:00 PM"
-            value={timeStr}
-            onChange={(e) => setTimeStr(e.target.value)}
+            placeholder="e.g. Main Sanctuary & Auditorium"
+            value={venue}
+            onChange={(e) => setVenue(e.target.value)}
+          />
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 12 }}>
+          <div className="portal-fi">
+            <label>Preacher / Minister</label>
+            <input
+              placeholder="e.g. Pastor Tosin Adewale"
+              value={preacher}
+              onChange={(e) => setPreacher(e.target.value)}
+            />
+          </div>
+
+          <div className="portal-fi">
+            <label>Target Capacity</label>
+            <input
+              type="number"
+              placeholder="350"
+              value={capacity}
+              onChange={(e) => setCapacity(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="portal-fi">
+          <label>Theme / Scripture / Description (Optional)</label>
+          <input
+            placeholder="e.g. Entering His Gates with Praise & Power"
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
           />
         </div>
 

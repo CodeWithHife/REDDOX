@@ -744,46 +744,69 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-  line-height: 1.2;
+  line-height: 1.25;
   min-width: 0;
+  gap: 2px;
 }
 
 .portal-user-name {
   font-size: 13px;
   font-weight: 700;
   color: var(--tx);
-  max-width: 170px;
+  max-width: 220px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .portal-user-role {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--mu);
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
+}
+
+.portal-user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 1px 6px;
+  border-radius: 4px;
+  line-height: 1.2;
+  width: fit-content;
 }
 
 .portal-user-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
-  background: rgba(109, 42, 60, 0.04);
-  border-radius: 10px;
-  margin-bottom: 6px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(109, 42, 60, 0.05), rgba(184, 134, 45, 0.04));
+  border: 1px solid rgba(109, 42, 60, 0.1);
+  border-radius: 12px;
+  margin-bottom: 8px;
 }
 
 .portal-user-card strong {
   display: block;
-  font-size: 13.5px;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--tx);
 }
 
 .portal-user-card small {
   color: var(--mu);
   font-size: 11.5px;
+  display: block;
+  margin-bottom: 4px;
 }
 
 .portal-dd-sep {
@@ -4634,6 +4657,203 @@
 .portal-statement-badge.neutral {
   background: #f3f4f6;
   color: #374151;
+}
+
+/* ========================================================
+   MODERN CHURCH EVENTS & RSVP SYSTEM
+   ======================================================== */
+.portal-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.portal-event-card {
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(43, 32, 21, 0.04);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.portal-event-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(109, 42, 60, 0.25);
+  box-shadow: 0 8px 24px rgba(43, 32, 21, 0.08);
+}
+
+.portal-event-card-top {
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid rgba(43, 32, 21, 0.06);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.portal-event-datebox {
+  width: 52px;
+  background: linear-gradient(135deg, #fbf7ee, #f5ebd5);
+  border: 1px solid #ebd09e;
+  border-radius: 12px;
+  text-align: center;
+  padding: 6px 2px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(184, 134, 45, 0.12);
+}
+
+.portal-event-datebox-mo {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  color: #7a5a12;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portal-event-datebox-day {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--tx);
+  line-height: 1.1;
+}
+
+.portal-event-headline {
+  flex: 1;
+  min-width: 0;
+}
+
+.portal-event-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.portal-event-cat-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: rgba(109, 42, 60, 0.08);
+  color: var(--rd);
+}
+
+.portal-event-status-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.portal-event-status-tag.upcoming {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.portal-event-status-tag.this-week {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.portal-event-status-tag.completed {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.portal-event-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tx);
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.portal-event-theme {
+  font-size: 12.5px;
+  color: var(--mu);
+  font-style: italic;
+  margin: 0;
+}
+
+.portal-event-body {
+  padding: 14px 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.portal-event-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--tx);
+}
+
+.portal-event-meta-row .portal-i {
+  color: var(--rd);
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.portal-event-rsvp-block {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(43, 32, 21, 0.08);
+}
+
+.portal-event-rsvp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.portal-event-rsvp-header strong {
+  color: var(--tx);
+}
+
+.portal-event-rsvp-bar {
+  height: 6px;
+  background: #f1ede7;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.portal-event-rsvp-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #059669, #10b981);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+.portal-event-footer {
+  padding: 12px 18px;
+  background: #faf7f2;
+  border-top: 1px solid rgba(43, 32, 21, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.portal-event-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 

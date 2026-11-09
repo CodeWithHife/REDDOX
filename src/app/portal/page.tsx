@@ -540,10 +540,119 @@ export default function ReddoxPortalDashboard() {
   const [currentSessionId, setCurrentSessionId] = useState(1);
 
   const [events, setEvents] = useState([
-    { t: "Midweek Bible Study", d: "28", mo: "OCT", tm: "5:30 PM", r: 18 },
-    { t: "Youth Fellowship", d: "30", mo: "OCT", tm: "4:00 PM", r: 9 },
-    { t: "Sunday Service", d: "01", mo: "NOV", tm: "9:00 AM", r: 0 },
-    { t: "Thanksgiving Service", d: "08", mo: "NOV", tm: "10:00 AM", r: 31 },
+    {
+      id: 1,
+      t: "Thanksgiving & Anointing Celebration",
+      category: "Worship Service",
+      d: "08",
+      mo: "NOV",
+      yr: "2026",
+      fullDate: "Sunday, Nov 08, 2026",
+      tm: "09:00 AM - 12:30 PM",
+      venue: "Main Sanctuary & Auditorium",
+      preacher: "Pastor Tosin Adewale",
+      theme: "Entering His Gates with Praise & Power",
+      status: "Upcoming",
+      r: 42,
+      capacity: 350,
+      attendees: [
+        { name: "Adaeze Okoye", role: "Choir", time: "Nov 05" },
+        { name: "Tunde Bakare", role: "Leader", time: "Nov 05" },
+        { name: "Samuel Adeyemi", role: "Youth", time: "Nov 06" },
+        { name: "Ruth Lawal", role: "Treasurer", time: "Nov 06" },
+      ],
+    },
+    {
+      id: 2,
+      t: "Midweek Digging Deep & Bible Exposition",
+      category: "Bible Study",
+      d: "11",
+      mo: "NOV",
+      yr: "2026",
+      fullDate: "Wednesday, Nov 11, 2026",
+      tm: "05:30 PM - 07:15 PM",
+      venue: "Main Hall & YouTube Live",
+      preacher: "Pastor Adewale",
+      theme: "Ephesians Chapter 4 - Walking in Your Calling",
+      status: "Upcoming",
+      r: 28,
+      capacity: 200,
+      attendees: [
+        { name: "Chidi Obi", role: "Member", time: "Nov 06" },
+        { name: "Bisi Ade", role: "Usher", time: "Nov 06" },
+      ],
+    },
+    {
+      id: 3,
+      t: "Youth Fire & Career Alignment Summit",
+      category: "Youth & Singles",
+      d: "13",
+      mo: "NOV",
+      yr: "2026",
+      fullDate: "Friday, Nov 13, 2026",
+      tm: "04:30 PM - 07:00 PM",
+      venue: "Youth Innovation Center",
+      preacher: "Bro Samuel Adeyemi",
+      theme: "Positioned for Marketplace Excellence",
+      status: "Upcoming",
+      r: 35,
+      capacity: 150,
+      attendees: [
+        { name: "Samuel Adeyemi", role: "Leader", time: "Nov 04" },
+        { name: "Peter Danjuma", role: "Student", time: "Nov 05" },
+      ],
+    },
+    {
+      id: 4,
+      t: "Faith Clinic & Healing Deliverance",
+      category: "Prayer & Vigil",
+      d: "17",
+      mo: "NOV",
+      yr: "2026",
+      fullDate: "Tuesday, Nov 17, 2026",
+      tm: "05:30 PM - 07:30 PM",
+      venue: "Main Sanctuary",
+      preacher: "Pastor Adewale",
+      theme: "By His Stripes We Are Healed",
+      status: "Upcoming",
+      r: 19,
+      capacity: 250,
+      attendees: [],
+    },
+    {
+      id: 5,
+      t: "All-Night Workers & Ministers Vigil",
+      category: "Prayer & Vigil",
+      d: "20",
+      mo: "NOV",
+      yr: "2026",
+      fullDate: "Friday, Nov 20, 2026",
+      tm: "11:00 PM - 04:30 AM",
+      venue: "Main Sanctuary",
+      preacher: "Pastor Tosin Adewale",
+      theme: "Fresh Fire & Spiritual Stamina for 2027",
+      status: "Upcoming",
+      r: 48,
+      capacity: 300,
+      attendees: [],
+    },
+    {
+      id: 6,
+      t: "Community Medical Fair & Welfare Outreach",
+      category: "Outreach & Community",
+      d: "28",
+      mo: "NOV",
+      yr: "2026",
+      fullDate: "Saturday, Nov 28, 2026",
+      tm: "08:00 AM - 02:00 PM",
+      venue: "Community Outreach Ground",
+      preacher: "Missions & Welfare Board",
+      theme: "Hands and Feet of Christ in Abeokuta",
+      status: "Upcoming",
+      r: 65,
+      capacity: 500,
+      attendees: [],
+    },
   ]);
 
   const [giving, setGiving] = useState([
@@ -1066,15 +1175,15 @@ export default function ReddoxPortalDashboard() {
                 >
                   <div className="portal-av-wrap">
                     <span className="portal-av">
-                      {user?.name ? getInitials(user.name) : "PT"}
+                      {user?.name ? getInitials(user.name) : "SB"}
                     </span>
                     <span className="portal-av-online" />
                   </div>
                   <div className="portal-user-text">
                     <span className="portal-user-name">
-                      {user?.name || "Pastor Tosin"}
+                      {user?.name || "Sister Blessing Adeyemi"}
                     </span>
-                    <span className="portal-user-role">Administrator</span>
+                    <span className="portal-user-badge">Administrator</span>
                   </div>
                   <SvgIcon name="chev" className="portal-user-chev" />
                 </button>
@@ -1082,11 +1191,15 @@ export default function ReddoxPortalDashboard() {
                   <div className="portal-dd">
                     <div className="portal-user-card">
                       <span className="portal-av lg">
-                        {user?.name ? getInitials(user.name) : "PT"}
+                        {user?.name ? getInitials(user.name) : "SB"}
                       </span>
-                      <div>
-                        <strong>{user?.name || "Pastor Tosin Adewale"}</strong>
-                        <small>{user?.email || "pastor@church.org"}</small>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <strong>{user?.name || "Sister Blessing Adeyemi"}</strong>
+                        <small>{user?.email || "blessing.adeyemi@gmail.com"}</small>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 4 }}>
+                          <span className="portal-user-badge">Administrator</span>
+                          <span style={{ fontSize: 11, color: "var(--mu)" }}>· {currentChurch.n}</span>
+                        </div>
                       </div>
                     </div>
                     <div className="portal-dd-sep" />
@@ -1280,6 +1393,7 @@ export default function ReddoxPortalDashboard() {
             {activeView === "events" && (
               <EventsView
                 events={events}
+                members={members}
                 plan={currentPlan}
                 onCreateEvent={() => {
                   if (currentPlan.eventsPerMonth === 1 && events.length >= 1) {
@@ -1287,16 +1401,32 @@ export default function ReddoxPortalDashboard() {
                   }
                   setActiveModal("createEvent");
                 }}
-                onRegister={(idx: any) => {
+                onRegister={(eventId: any, attendee?: any) => {
                   setEvents((prev) =>
-                    prev.map((ev, i) => (i === idx ? { ...ev, r: ev.r + 1 } : ev))
+                    prev.map((ev) =>
+                      ev.id === eventId || ev.t === eventId
+                        ? {
+                            ...ev,
+                            r: (ev.r || 0) + 1,
+                            attendees: [
+                              ...(ev.attendees || []),
+                              attendee || {
+                                name: "Congregation Member",
+                                role: "Worshipper",
+                                time: "Just now",
+                              },
+                            ],
+                          }
+                        : ev
+                    )
                   );
-                  showToast("Registration confirmed.");
+                  showToast("RSVP registered successfully.");
                 }}
-                onRemoveEvent={(idx: any) => {
-                  setEvents(events.filter((_, i) => i !== idx));
-                  showToast("Event removed.");
+                onRemoveEvent={(eventId: any) => {
+                  setEvents((prev) => prev.filter((ev) => ev.id !== eventId && ev.t !== eventId));
+                  showToast("Event deleted from calendar.");
                 }}
+                showToast={showToast}
               />
             )}
 

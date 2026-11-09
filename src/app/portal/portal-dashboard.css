@@ -4961,3 +4961,511 @@
 
 
 
+
+/* =========================================================================
+   COMPREHENSIVE MOBILE RESPONSIVE SYSTEM
+   Full coverage: Dashboard, Members, Finance, Attendance, Events,
+   Notifications, Settings, Staff & every section of the portal.
+   Breakpoints:  ≤900px (tablet),  ≤640px (large phone),  ≤480px (phone)
+   ========================================================================= */
+
+/* ── 900 px: Tablet / small-laptop ──────────────────────────────────────── */
+@media (max-width: 900px) {
+
+  /* ---- Dashboard stats grid ---- */
+  .portal-gs {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* ---- Topbar ---- */
+  .portal-chb-name { max-width: 110px; }
+
+  /* ---- View headings ---- */
+  .portal-vw-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .portal-vw-head-right { width: 100%; }
+
+  /* ---- Members table ---- */
+  .portal-tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .portal-tbl { min-width: 640px; }
+
+  /* ---- Finance ---- */
+  .portal-fin-kpi { grid-template-columns: repeat(2, 1fr) !important; }
+  .portal-fin-g2 { grid-template-columns: 1fr !important; }
+
+  /* ---- Events ---- */
+  .portal-events-grid { grid-template-columns: 1fr !important; }
+
+  /* ---- Attendance 2-col ---- */
+  .portal-att-2col { grid-template-columns: 1fr !important; }
+
+  /* ---- Settings sections ---- */
+  .portal-settings-topbar { flex-direction: column; align-items: flex-start; }
+  .portal-settings-meta-chips { flex-wrap: wrap; gap: 6px; }
+  .portal-tabs-nav { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+  .portal-tabs-nav::-webkit-scrollbar { display: none; }
+  .portal-tabs-nav button { flex-shrink: 0; }
+
+  /* ---- Staff & Roles ---- */
+  .portal-staff-row {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .portal-staff-role-cell {
+    flex: 1 1 100%;
+  }
+
+  /* ---- Notifications ---- */
+  .portal-notif-metric-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── 768 px: Phablet boundary ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* ---- Dashboard view ---- */
+  .portal-vw { padding-top: 4px; }
+
+  /* ---- Stat cards ---- */
+  .portal-gs {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  .portal-st { padding: 14px !important; }
+  .portal-st b { font-size: 22px; }
+
+  /* ---- Two-column grids → single ---- */
+  .portal-g2,
+  .portal-fin-g2,
+  .portal-staff-g2 { grid-template-columns: 1fr !important; }
+
+  /* ---- Members ---- */
+  .portal-mem-filter-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .portal-mem-filter-bar input {
+    min-width: 0;
+    flex: 1 1 160px;
+  }
+
+  /* ---- Finance entries ---- */
+  .portal-fin-entry {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .portal-fin-entry-right { width: 100%; display: flex; justify-content: flex-end; }
+
+  /* ---- Attendance nav pills ---- */
+  .portal-att-nav {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .portal-att-nav::-webkit-scrollbar { display: none; }
+  .portal-att-nav-btn { flex-shrink: 0; font-size: 12px; padding: 6px 12px; }
+
+  /* ---- Attendance ribbon ---- */
+  .portal-att-ribbon {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .portal-att-ribbon-right { width: 100%; flex-wrap: wrap; }
+
+  /* ---- Attendance category cards ---- */
+  .portal-att-cat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* ---- Events ---- */
+  .portal-event-card-top { flex-wrap: wrap; gap: 10px; }
+  .portal-events-grid { gap: 12px; }
+
+  /* ---- Notifications header ---- */
+  .portal-notif-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .portal-notif-header-right { width: 100%; }
+  .portal-notif-filter-bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .portal-notif-filter-bar::-webkit-scrollbar { display: none; }
+
+  /* ---- Settings hero ---- */
+  .portal-settings-hero { padding: 18px 16px !important; }
+  .portal-hid {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .portal-hid h1 { font-size: 20px !important; }
+  .portal-hs {
+    margin-left: 0 !important;
+    width: 100% !important;
+    flex-wrap: wrap;
+  }
+
+  /* ---- Settings tabs ---- */
+  .portal-sec {
+    grid-template-columns: 1fr !important;
+    padding: 16px !important;
+    gap: 14px !important;
+  }
+  .portal-sh { padding-right: 0 !important; border-right: none !important; border-bottom: 1.5px solid var(--bd); padding-bottom: 14px !important; }
+
+  /* ---- Password strength form ---- */
+  .portal-fg { grid-template-columns: 1fr !important; }
+  .portal-field.w { grid-column: 1 / -1 !important; }
+
+  /* ---- Plan quota ring box ---- */
+  .portal-plan-quota-row { flex-direction: column; align-items: flex-start !important; gap: 14px; }
+  .portal-plan-feat-grid { grid-template-columns: 1fr !important; }
+
+  /* ---- Branches list ---- */
+  .portal-branch-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .portal-branch-row-right { width: 100%; display: flex; justify-content: flex-end; }
+
+  /* ---- Data / Audit tab ---- */
+  .portal-audit-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+/* ── 640 px: Large phone ────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+
+  /* ---- Global padding ---- */
+  .portal-main { padding: 0 12px 36px !important; }
+  .portal-tb { margin: 0 -12px 14px -12px !important; padding: 8px 12px !important; }
+
+  /* ---- Stat grid: 2-col ---- */
+  .portal-gs { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+  .portal-st { padding: 12px !important; }
+  .portal-st b { font-size: 20px; }
+  .portal-st-head small { display: none; }
+
+  /* ---- View page heading ---- */
+  .portal-hd {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .portal-acts { width: 100%; flex-wrap: wrap; }
+  .portal-acts .portal-btn { flex: 1; justify-content: center; min-width: 120px; }
+
+  /* ---- Table: horizontal scroll ---- */
+  .portal-tbl-wrap { margin: 0 -12px; padding: 0 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .portal-tbl { min-width: 560px; font-size: 13px; }
+
+  /* ---- Member cards ---- */
+  .portal-mem-card { flex-wrap: wrap; gap: 10px; }
+  .portal-mem-card-actions { width: 100%; justify-content: flex-end; }
+
+  /* ---- Finance KPI ---- */
+  .portal-fin-kpi { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+  .portal-fin-kpi-card { padding: 12px 14px; }
+  .portal-fin-kpi-val { font-size: 20px; }
+
+  /* ---- Finance ledger rows ---- */
+  .portal-ledger-entry {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .portal-ledger-entry-right { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+
+  /* ---- Attendance category grid: 1-col on small ---- */
+  .portal-att-cat-grid { grid-template-columns: 1fr !important; }
+
+  /* ---- Attendance session card ---- */
+  .portal-att-svc-card { padding: 14px !important; }
+  .portal-att-svc-head { flex-wrap: wrap; gap: 10px; }
+
+  /* ---- Events grid: single column ---- */
+  .portal-events-grid { grid-template-columns: 1fr !important; gap: 10px; }
+  .portal-event-card-top { padding: 12px 14px 10px; }
+  .portal-event-body { padding: 12px 14px; }
+  .portal-event-footer { padding: 10px 14px; }
+
+  /* ---- Notifications cards ---- */
+  .portal-notif-card { padding: 12px 14px; gap: 10px; }
+  .portal-notif-metric-row { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+  .portal-notif-metric-card { padding: 12px 14px; }
+
+  /* ---- Notifications filter: scroll ---- */
+  .portal-notif-filter-row {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .portal-notif-filter-row::-webkit-scrollbar { display: none; }
+  .portal-notif-filter-btn { flex-shrink: 0; }
+
+  /* ---- Settings ---- */
+  .portal-settings-shell { padding-bottom: 40px; }
+  .portal-settings-topbar { display: none; }  /* hide breadcrumb on small — header is visible */
+  .portal-tabs-nav { gap: 4px; }
+  .portal-tabs-nav button { font-size: 12px; padding: 7px 10px; gap: 5px; }
+  .portal-tabs-nav button .portal-i { width: 14px; height: 14px; }
+  .portal-cred-grid { grid-template-columns: 1fr !important; }
+  .portal-admin-id-banner { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .portal-plan-cta-row { flex-direction: column; gap: 8px; }
+  .portal-plan-cta-row .portal-btn { width: 100%; justify-content: center; }
+
+  /* ---- Staff modal ---- */
+  .portal-staff-filter-row { flex-wrap: wrap; gap: 8px; }
+  .portal-staff-filter-row input { flex: 1 1 160px; }
+
+  /* ---- Month filter bar ---- */
+  .portal-month-bar { gap: 6px; padding: 2px 0 10px; }
+  .portal-month-pill { padding: 6px 11px; font-size: 12px; }
+
+  /* ---- Modal full-screen bottom sheet ---- */
+  .portal-mo { padding: 6px !important; align-items: flex-end !important; }
+  .portal-md {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 94dvh !important;
+    overflow-y: auto !important;
+    padding: 20px 14px 28px !important;
+    border-radius: 24px 24px 0 0 !important;
+    margin: 0 !important;
+  }
+  .portal-mf { flex-direction: column-reverse; gap: 8px; }
+  .portal-mf .portal-btn { width: 100%; justify-content: center; }
+
+  /* ---- QR kiosk modal ---- */
+  .portal-kiosk-card { padding: 22px 16px; border-radius: 20px; }
+  .portal-kiosk-card h2 { font-size: 18px; }
+}
+
+/* ── 480 px: Compact phone ──────────────────────────────────────────────── */
+@media (max-width: 480px) {
+
+  /* ---- Typography ---- */
+  .portal-root h1 { font-size: 20px !important; }
+  .portal-root h2 { font-size: 17px !important; }
+  .portal-root h3 { font-size: 15px !important; }
+
+  /* ---- Topbar ---- */
+  .portal-chb-name { max-width: 90px; }
+  .portal-plan-pill-name { display: none; }
+
+  /* ---- Stats: 1-col on tiny phones ---- */
+  .portal-gs { grid-template-columns: 1fr !important; }
+  .portal-st b { font-size: 24px; }
+  .portal-st-change { font-size: 11px; }
+
+  /* ---- KPI in finance: 1-col ---- */
+  .portal-fin-kpi { grid-template-columns: 1fr !important; }
+
+  /* ---- Ledger table ---- */
+  .portal-tbl { min-width: 480px; font-size: 12.5px; }
+  .portal-tbl th, .portal-tbl td { padding: 8px 10px; }
+
+  /* ---- Event card ---- */
+  .portal-event-datebox { width: 46px; }
+  .portal-event-datebox-day { font-size: 18px; }
+  .portal-event-title { font-size: 14px; }
+  .portal-event-tags { gap: 4px; }
+
+  /* ---- Notifications metrics: 2-col ---- */
+  .portal-notif-metric-row { grid-template-columns: 1fr 1fr !important; }
+
+  /* ---- Attendance mini chips ---- */
+  .portal-att-mini-stats { flex-wrap: wrap; }
+  .portal-att-mini-chip { flex: 1 1 calc(50% - 4px); }
+
+  /* ---- Settings tabs: compact icon-only on tiny ---- */
+  .portal-tabs-nav button span { display: none; }
+  .portal-tabs-nav button { padding: 8px 12px; }
+
+  /* ---- Buttons: larger tap target ---- */
+  .portal-btn { min-height: 42px; }
+  .portal-btn.sm { min-height: 36px; }
+
+  /* ---- Dropdown ---- */
+  .portal-dd { min-width: min(280px, 92vw); }
+
+  /* ---- Month bar pills ---- */
+  .portal-month-pill { padding: 5px 10px; font-size: 11.5px; }
+
+  /* ---- Settings section ---- */
+  .portal-sec { padding: 14px !important; }
+  .portal-cred-tile { padding: 12px 14px; }
+  .portal-edit-section-box { padding: 14px; border-radius: 14px; }
+
+  /* ---- Branches ---- */
+  .portal-branch-row { padding: 12px 14px; }
+
+  /* ---- Admin banner ---- */
+  .portal-admin-id-avatar { width: 42px; height: 42px; }
+
+  /* ---- Topbar icons ---- */
+  .portal-ic { width: 36px; height: 36px; }
+  .portal-ic.burger { width: 38px; height: 38px; }
+}
+
+/* ── Safe-area: notch / home-bar support ───────────────────────────────── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .portal-main {
+    padding-bottom: calc(50px + env(safe-area-inset-bottom, 0px));
+  }
+  .portal-tb {
+    padding-left: max(14px, env(safe-area-inset-left, 0px));
+    padding-right: max(14px, env(safe-area-inset-right, 0px));
+  }
+  .portal-sb {
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ── Landscape phone: prevent awkward tall layouts ─────────────────────── */
+@media (max-height: 500px) and (max-width: 900px) {
+  .portal-settings-hero { padding: 12px 16px !important; }
+  .portal-av { width: 56px !important; height: 56px !important; }
+  .portal-hs { gap: 12px !important; }
+  .portal-mo { align-items: center !important; padding: 10px !important; }
+  .portal-md { max-height: 90dvh !important; border-radius: 16px !important; overflow-y: auto !important; }
+}
+
+/* =========================================================================
+   TARGETED MOBILE POLISH — Finance, Members, Settings, Tabs
+   ========================================================================= */
+
+/* Finance tabs: horizontal scroll on mobile */
+@media (max-width: 640px) {
+  .portal-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    gap: 4px;
+  }
+  .portal-tabs::-webkit-scrollbar { display: none; }
+  .portal-tabs button { flex-shrink: 0; font-size: 12.5px; padding: 7px 12px; white-space: nowrap; }
+
+  /* Tables inside portal-tw: full scroll */
+  .portal-tw { margin: 0 -12px; padding: 0 12px; }
+  .portal-root table { min-width: 520px; font-size: 12.5px; }
+  .portal-root th, .portal-root td { padding: 8px 10px; }
+
+  /* Finance ledger actions */
+  .portal-fl { gap: 8px; }
+  .portal-fl input, .portal-fl select { font-size: 13px; }
+
+  /* Members filter row */
+  .portal-fl input { flex: 1 1 160px; min-width: 0; }
+
+  /* Staff view table */
+  .portal-staff-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -12px; padding: 0 12px; }
+
+  /* Attendance QR box: center on mobile */
+  .portal-qr-box { text-align: center; }
+  .portal-qr-code-wrapper { display: inline-block; }
+
+  /* Fast-scan bar: stack fields */
+  .portal-fast-scan-bar { padding: 10px 12px; }
+
+  /* Portal edit actions: stack buttons */
+  .portal-edit-actions { flex-direction: column !important; gap: 8px; }
+  .portal-edit-actions .portal-btn { width: 100% !important; justify-content: center !important; }
+}
+
+@media (max-width: 480px) {
+  /* Finance table: hide less important columns on tiny */
+  .portal-root table.fin-table th:nth-child(4),
+  .portal-root table.fin-table td:nth-child(4) { display: none; }
+
+  /* Event category filter: scroll pills */
+  .portal-event-cat-filter {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .portal-event-cat-filter::-webkit-scrollbar { display: none; }
+  .portal-event-cat-filter button { flex-shrink: 0; }
+
+  /* Month bar: compact */
+  .portal-month-bar { padding: 2px 0 8px; gap: 5px; }
+  .portal-month-pill { font-size: 11px; padding: 5px 9px; gap: 5px; }
+  .portal-month-count { font-size: 10px; padding: 1px 5px; }
+
+  /* Plan billing section */
+  .portal-plan-feat-grid {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  .portal-plan-cta-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .portal-plan-cta-row .portal-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Settings hero avatar */
+  .portal-av {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 20px !important;
+  }
+  .portal-av b {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* Notification cards: compact layout */
+  .portal-notif-card { padding: 10px 12px; gap: 8px; }
+  .portal-notif-icon-wrap { width: 34px; height: 34px; border-radius: 8px; }
+  .portal-notif-title { font-size: 12.5px; }
+  .portal-notif-body { font-size: 11.5px; }
+  .portal-notif-head { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .portal-notif-time { align-self: flex-end; }
+
+  /* Branches: single-col buttons */
+  .portal-branch-row button { font-size: 11px; padding: 4px 8px; }
+
+  /* Topbar: even tighter */
+  .portal-tb { gap: 6px !important; }
+  .portal-chb { padding: 0 6px 0 5px; gap: 5px; }
+  .portal-chb-name { max-width: 80px; font-size: 12px; }
+  .portal-chb-badge { width: 26px; height: 26px; font-size: 10px; }
+}
+
+/* Touch targets: all tappable elements ≥44px on mobile */
+@media (max-width: 900px) {
+  .portal-root button:not(.portal-nav button):not(.portal-out):not(.portal-tabs button):not(.portal-att-nav-btn) {
+    min-height: 36px;
+  }
+  .portal-ic { min-width: 40px; min-height: 40px; }
+  .portal-nav button { padding: 8px 10px; min-height: 40px; }
+}

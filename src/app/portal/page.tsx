@@ -313,52 +313,52 @@ function SvgIcon({ name, className = "portal-i" }: { name: string; className?: s
   }
 }
 
-// Plan Configurations
+// Plan Configurations — All Free & Unlimited for Every Church
 const PLANS = {
   starter: {
     id: "starter" as const,
-    n: "Starter",
-    pr: "₦0",
-    mem: 15,
-    admins: 1,
-    eventsPerMonth: 1,
-    qr: false,
-    fin: false,
-    med: false,
-    reports: "basic",
-    exports: false,
-    br: "1 workspace",
-    an: "Basic 7-day stats",
-  },
-  growth: {
-    id: "growth" as const,
-    n: "Growth",
-    pr: "₦15,000/mo",
-    mem: 1000,
-    admins: 10,
-    eventsPerMonth: 999999,
-    qr: true,
-    fin: true,
-    med: true,
-    reports: "growth",
-    exports: true,
-    br: "1 workspace",
-    an: "Full reports & analytics",
-  },
-  pro: {
-    id: "pro" as const,
-    n: "Pro",
-    pr: "₦35,000/mo",
-    mem: 5000,
-    admins: 50,
+    n: "Free Premium",
+    pr: "Free Forever",
+    mem: 999999,
+    admins: 999,
     eventsPerMonth: 999999,
     qr: true,
     fin: true,
     med: true,
     reports: "advanced",
     exports: true,
-    br: "Up to 3 branches",
-    an: "Advanced multi-branch intelligence",
+    br: "Unlimited branches",
+    an: "Full reports & analytics",
+  },
+  growth: {
+    id: "growth" as const,
+    n: "Free Premium",
+    pr: "Free Forever",
+    mem: 999999,
+    admins: 999,
+    eventsPerMonth: 999999,
+    qr: true,
+    fin: true,
+    med: true,
+    reports: "advanced",
+    exports: true,
+    br: "Unlimited branches",
+    an: "Full reports & analytics",
+  },
+  pro: {
+    id: "pro" as const,
+    n: "Free Premium",
+    pr: "Free Forever",
+    mem: 999999,
+    admins: 999,
+    eventsPerMonth: 999999,
+    qr: true,
+    fin: true,
+    med: true,
+    reports: "advanced",
+    exports: true,
+    br: "Unlimited branches",
+    an: "Full reports & analytics",
   },
 };
 
@@ -440,301 +440,125 @@ export default function ReddoxPortalDashboard() {
     { n: "Hope Fellowship", r: "Staff" },
   ]);
 
-  // Data Collections
-  const [members, setMembers] = useState([
-    { id: 1, n: "Adaeze Okoye", e: "adaeze@mail.com", ph: "0801 234 5678", d: "Choir", j: 2021 },
-    { id: 2, n: "Tunde Bakare", e: "tunde@mail.com", ph: "0802 345 6789", d: "Ushering", j: 2020 },
-    { id: 3, n: "Grace Eze", e: "grace@mail.com", ph: "0803 456 7890", d: "Children", j: 2022 },
-    { id: 4, n: "Samuel Adeyemi", e: "samuel@mail.com", ph: "0804 567 8901", d: "Media", j: 2019 },
-    { id: 5, n: "Ruth Lawal", e: "ruth@mail.com", ph: "0805 678 9012", d: "Prayer", j: 2021 },
-    { id: 6, n: "Daniel Kalu", e: "daniel@mail.com", ph: "0806 789 0123", d: "Choir", j: 2023 },
-    { id: 7, n: "Mercy Alabi", e: "mercy@mail.com", ph: "0807 890 1234", d: "Children", j: 2022 },
-    { id: 8, n: "Emeka Nwosu", e: "emeka@mail.com", ph: "0808 901 2345", d: "Ushering", j: 2020 },
-    { id: 9, n: "Funke Ojo", e: "funke@mail.com", ph: "0809 012 3456", d: "Prayer", j: 2024 },
-    { id: 10, n: "Chidi Obi", e: "chidi@mail.com", ph: "0801 123 4567", d: "Media", j: 2021 },
-    { id: 11, n: "Bisi Ade", e: "bisi@mail.com", ph: "0802 234 5678", d: "Choir", j: 2023 },
-    { id: 12, n: "Ngozi Eze", e: "ngozi@mail.com", ph: "0803 345 6789", d: "Children", j: 2022 },
-  ]);
-
-  const [sessions, setSessions] = useState([
-    {
-      id: 1,
-      category: "Sunday Celebration Service",
-      n: "Sunday Celebration Service (1st Service)",
-      d: "Oct 25",
-      time: "09:00 AM",
-      preacher: "Pastor Tosin Adewale",
-      notes: "Theme: Divine Supernatural Enlargement",
-      p: [1, 2, 4, 5, 7, 8, 10, 11],
-      qrScans: [
-        { id: "qr-1", memberId: 1, name: "Adaeze Okoye", time: "08:45 AM", device: "Mobile QR Scan" },
-        { id: "qr-2", memberId: 4, name: "Samuel Adeyemi", time: "08:52 AM", device: "Entrance Kiosk" },
-        { id: "qr-3", memberId: 10, name: "Chidi Obi", time: "09:02 AM", device: "Mobile QR Scan" },
-      ],
-      visitors: [
-        { id: 101, n: "Kemi Ajayi", ph: "0803 111 2233", em: "kemi@mail.com", g: "Female", w: "Tunde Bakare", dept: "Choir", nt: "Invited by colleague, interested in music ministry", tm: "08:55 AM", s: "New" },
-        { id: 102, n: "Obinna Eze", ph: "0805 444 7788", em: "obinna@mail.com", g: "Male", w: "Ruth Lawal", dept: "Youth", nt: "New resident in Abeokuta, seeking church home", tm: "09:10 AM", s: "Follow-up due" },
-      ],
-    },
-    {
-      id: 2,
-      category: "Sunday Celebration Service",
-      n: "Sunday Celebration Service",
-      d: "Oct 18",
-      time: "09:00 AM",
-      preacher: "Pastor Tosin Adewale",
-      notes: "Thanksgiving & Anointing Service",
-      p: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11],
-      qrScans: [
-        { id: "qr-4", memberId: 2, name: "Tunde Bakare", time: "08:50 AM", device: "Mobile QR Scan" },
-        { id: "qr-5", memberId: 5, name: "Ruth Lawal", time: "08:55 AM", device: "Entrance Kiosk" },
-      ],
-      visitors: [
-        { id: 103, n: "Halima Yusuf", ph: "0802 888 9900", em: "halima@mail.com", g: "Female", w: "Tunde Bakare", dept: "Media", nt: "Wants prayer for career direction", tm: "09:05 AM", s: "Contacted" },
-      ],
-    },
-    {
-      id: 3,
-      category: "Midweek Bible Study",
-      n: "Midweek Digging Deep",
-      d: "Oct 14",
-      time: "05:30 PM",
-      preacher: "Pastor Adewale",
-      notes: "Book of Ephesians Chapter 3 Expository",
-      p: [1, 2, 4, 5, 8, 10, 11],
-      qrScans: [
-        { id: "qr-6", memberId: 1, name: "Adaeze Okoye", time: "05:15 PM", device: "Mobile QR Scan" },
-      ],
-      visitors: [],
-    },
-    {
-      id: 4,
-      category: "Youth Fellowship",
-      n: "Youth Fire & Destiny Ignite",
-      d: "Oct 10",
-      time: "04:00 PM",
-      preacher: "Bro Samuel Adeyemi",
-      notes: "Youth Career and Destiny Alignment",
-      p: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12],
-      qrScans: [
-        { id: "qr-7", memberId: 4, name: "Samuel Adeyemi", time: "04:05 PM", device: "Mobile QR Scan" },
-        { id: "qr-8", memberId: 11, name: "Bisi Ade", time: "04:10 PM", device: "Mobile QR Scan" },
-      ],
-      visitors: [
-        { id: 104, n: "Peter Danjuma", ph: "0807 222 3344", em: "peter@mail.com", g: "Male", w: "Ruth Lawal", dept: "Youth", nt: "University student from FUNAAB", tm: "04:15 PM", s: "Became member" },
-      ],
-    },
-    {
-      id: 5,
-      category: "Faith Clinic & Prayer",
-      n: "Midweek Faith Clinic & Deliverance",
-      d: "Sep 27",
-      time: "05:30 PM",
-      preacher: "Pastor Adewale",
-      notes: "Healing and Deliverance Night",
-      p: [1, 4, 5, 7, 8, 10],
-      qrScans: [],
-      visitors: [],
-    },
-    {
-      id: 6,
-      category: "Workers & Leaders Meeting",
-      n: "Monthly Workers & Ministers Meeting",
-      d: "Sep 20",
-      time: "07:30 AM",
-      preacher: "Pastor Adewale",
-      notes: "Spiritual Preparedness and Ministry Excellence",
-      p: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12],
-      qrScans: [
-        { id: "qr-9", memberId: 2, name: "Tunde Bakare", time: "07:30 AM", device: "Mobile QR Scan" },
-      ],
-      visitors: [],
-    },
-  ]);
-  const [currentSessionId, setCurrentSessionId] = useState(1);
-
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      t: "Thanksgiving & Anointing Celebration",
-      category: "Worship Service",
-      d: "08",
-      mo: "NOV",
-      yr: "2026",
-      fullDate: "Sunday, Nov 08, 2026",
-      tm: "09:00 AM - 12:30 PM",
-      venue: "Main Sanctuary & Auditorium",
-      preacher: "Pastor Tosin Adewale",
-      theme: "Entering His Gates with Praise & Power",
-      status: "Upcoming",
-      r: 42,
-      capacity: 350,
-      attendees: [
-        { name: "Adaeze Okoye", role: "Choir", time: "Nov 05" },
-        { name: "Tunde Bakare", role: "Leader", time: "Nov 05" },
-        { name: "Samuel Adeyemi", role: "Youth", time: "Nov 06" },
-        { name: "Ruth Lawal", role: "Treasurer", time: "Nov 06" },
-      ],
-    },
-    {
-      id: 2,
-      t: "Midweek Digging Deep & Bible Exposition",
-      category: "Bible Study",
-      d: "11",
-      mo: "NOV",
-      yr: "2026",
-      fullDate: "Wednesday, Nov 11, 2026",
-      tm: "05:30 PM - 07:15 PM",
-      venue: "Main Hall & YouTube Live",
-      preacher: "Pastor Adewale",
-      theme: "Ephesians Chapter 4 - Walking in Your Calling",
-      status: "Upcoming",
-      r: 28,
-      capacity: 200,
-      attendees: [
-        { name: "Chidi Obi", role: "Member", time: "Nov 06" },
-        { name: "Bisi Ade", role: "Usher", time: "Nov 06" },
-      ],
-    },
-    {
-      id: 3,
-      t: "Youth Fire & Career Alignment Summit",
-      category: "Youth & Singles",
-      d: "13",
-      mo: "NOV",
-      yr: "2026",
-      fullDate: "Friday, Nov 13, 2026",
-      tm: "04:30 PM - 07:00 PM",
-      venue: "Youth Innovation Center",
-      preacher: "Bro Samuel Adeyemi",
-      theme: "Positioned for Marketplace Excellence",
-      status: "Upcoming",
-      r: 35,
-      capacity: 150,
-      attendees: [
-        { name: "Samuel Adeyemi", role: "Leader", time: "Nov 04" },
-        { name: "Peter Danjuma", role: "Student", time: "Nov 05" },
-      ],
-    },
-    {
-      id: 4,
-      t: "Faith Clinic & Healing Deliverance",
-      category: "Prayer & Vigil",
-      d: "17",
-      mo: "NOV",
-      yr: "2026",
-      fullDate: "Tuesday, Nov 17, 2026",
-      tm: "05:30 PM - 07:30 PM",
-      venue: "Main Sanctuary",
-      preacher: "Pastor Adewale",
-      theme: "By His Stripes We Are Healed",
-      status: "Upcoming",
-      r: 19,
-      capacity: 250,
-      attendees: [],
-    },
-    {
-      id: 5,
-      t: "All-Night Workers & Ministers Vigil",
-      category: "Prayer & Vigil",
-      d: "20",
-      mo: "NOV",
-      yr: "2026",
-      fullDate: "Friday, Nov 20, 2026",
-      tm: "11:00 PM - 04:30 AM",
-      venue: "Main Sanctuary",
-      preacher: "Pastor Tosin Adewale",
-      theme: "Fresh Fire & Spiritual Stamina for 2027",
-      status: "Upcoming",
-      r: 48,
-      capacity: 300,
-      attendees: [],
-    },
-    {
-      id: 6,
-      t: "Community Medical Fair & Welfare Outreach",
-      category: "Outreach & Community",
-      d: "28",
-      mo: "NOV",
-      yr: "2026",
-      fullDate: "Saturday, Nov 28, 2026",
-      tm: "08:00 AM - 02:00 PM",
-      venue: "Community Outreach Ground",
-      preacher: "Missions & Welfare Board",
-      theme: "Hands and Feet of Christ in Abeokuta",
-      status: "Upcoming",
-      r: 65,
-      capacity: 500,
-      attendees: [],
-    },
-  ]);
-
-  const [giving, setGiving] = useState([
-    // November 2026 (Current Month)
-    { id: 11, m: 1, t: "Tithe", a: 75000, w: "Nov 03", month: "Nov 2026", ref: "TX-948111", receiptName: "gtbank_transfer_nov03.png" },
-    { id: 12, m: 4, t: "Offering", a: 34000, w: "Nov 05", month: "Nov 2026", ref: "TX-948112" },
-    { id: 13, m: 7, t: "Building Fund", a: 50000, w: "Nov 06", month: "Nov 2026", ref: "TX-948113", receiptName: "zenith_cheque_nov.jpg" },
-    // October 2026
-    { id: 1, m: 1, t: "Tithe", a: 45000, w: "Oct 25", month: "Oct 2026", ref: "TX-948102", receiptName: "gtbank_transfer_oct25.png" },
-    { id: 2, m: 2, t: "Offering", a: 8000, w: "Oct 25", month: "Oct 2026", ref: "TX-948103" },
-    { id: 3, m: 4, t: "Building Fund", a: 60000, w: "Oct 25", month: "Oct 2026", ref: "TX-948104", receiptName: "zenith_cheque_slip.jpg" },
-    { id: 4, m: 5, t: "Tithe", a: 30000, w: "Oct 21", month: "Oct 2026", ref: "TX-948105" },
-    { id: 5, m: 7, t: "Missions", a: 15000, w: "Oct 25", month: "Oct 2026", ref: "TX-948106", receiptName: "pos_receipt_missions.png" },
-    { id: 6, m: 1, t: "Offering", a: 12000, w: "Oct 18", month: "Oct 2026", ref: "TX-948107" },
-    { id: 7, m: 10, t: "Tithe", a: 52000, w: "Oct 18", month: "Oct 2026", ref: "TX-948108", receiptName: "access_wire_slip.pdf" },
-    { id: 8, m: 8, t: "Building Fund", a: 25000, w: "Oct 21", month: "Oct 2026", ref: "TX-948109" },
-    // September 2026
-    { id: 9, m: 2, t: "Tithe", a: 38000, w: "Sep 28", month: "Sep 2026", ref: "TX-948091" },
-    { id: 10, m: 5, t: "Offering", a: 14000, w: "Sep 21", month: "Sep 2026", ref: "TX-948092" },
-  ]);
-
-  const [expenses, setExpenses] = useState([
-    // November 2026 (Current Month)
-    { id: 201, t: "Generator diesel fuel", c: "Utilities", a: 32000, w: "Nov 02", month: "Nov 2026", ref: "EXP-201", receiptName: "total_diesel_receipt.pdf" },
-    { id: 202, t: "Guest minister honorarium", c: "Honorarium", a: 40000, w: "Nov 05", month: "Nov 2026", ref: "EXP-202" },
-    // October 2026
-    { id: 101, t: "Sound equipment repair", c: "Equipment", a: 35000, w: "Oct 22", month: "Oct 2026", ref: "EXP-101", receiptName: "alaba_sound_invoice.pdf" },
-    { id: 102, t: "Electricity bill (Eko Electric)", c: "Utilities", a: 48000, w: "Oct 15", month: "Oct 2026", ref: "EXP-102", receiptName: "ekedc_token_receipt.png" },
-    { id: 103, t: "Children's class supplies", c: "Ministry", a: 12500, w: "Oct 12", month: "Oct 2026", ref: "EXP-103" },
-    // September 2026
-    { id: 301, t: "Altar floral decorations", c: "Maintenance", a: 18000, w: "Sep 15", month: "Sep 2026", ref: "EXP-301" },
-  ]);
-
-  const [visitors, setVisitors] = useState([
-    { id: 1, n: "Kemi Ajayi", d: "Oct 25", w: "Tunde Bakare", s: "New", nt: "Came with a friend" },
-    { id: 2, n: "Obinna Eze", d: "Oct 25", w: "Ruth Lawal", s: "Follow-up due", nt: "Asked about youth fellowship" },
-    { id: 3, n: "Halima Yusuf", d: "Oct 18", w: "Tunde Bakare", s: "Contacted", nt: "Wants a home visit" },
-    { id: 4, n: "Peter Danjuma", d: "Oct 11", w: "Ruth Lawal", s: "Became member", nt: "" },
-  ]);
-
-  const [sermons, setSermons] = useState([
-    { t: "Walking in Faith", sp: "Pastor Adewale", d: "Oct 25", l: "", v: "Public" },
-    { t: "The Power of Gratitude", sp: "Pastor Adewale", d: "Oct 18", l: "", v: "Members" },
-    { t: "Rooted in Love", sp: "Guest speaker", d: "Oct 11", l: "", v: "Public" },
-  ]);
-
-  const [staff, setStaff] = useState([
-    { n: "Pastor Adewale", e: "adewale@mail.com", r: "Admin", s: "Active" },
-    { n: "Tunde Bakare", e: "tunde@mail.com", r: "Leader", s: "Active" },
-    { n: "Ruth Lawal", e: "ruth@mail.com", r: "Treasurer", s: "Active" },
-    { n: "Funke Ojo", e: "funke@mail.com", r: "Usher", s: "Invited" },
-  ]);
-
-  const [notifications, setNotifications] = useState([
-    { id: 1, t: "Follow-up due: Obinna Eze", w: "2h ago", u: true },
-    { id: 2, t: "New visitor recorded: Kemi Ajayi", w: "Yesterday", u: true },
-    { id: 3, t: "Sunday attendance summary is ready", w: "Yesterday", u: false },
-    { id: 4, t: "Youth Fellowship is in 4 days", w: "2 days ago", u: false },
-  ]);
-
+  // Data Collections — 100% Dynamic, zero dummy data, synced to localStorage
+  const [members, setMembers] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<number | null>(null);
+  const [events, setEvents] = useState<any[]>([]);
+  const [giving, setGiving] = useState<any[]>([]);
+  const [expenses, setExpenses] = useState<any[]>([]);
+  const [visitors, setVisitors] = useState<any[]>([]);
+  const [sermons, setSermons] = useState<any[]>([]);
+  const [staff, setStaff] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [notifPrefs, setNotifPrefs] = useState({ fu: true, ev: true, vi: false });
+  const [activity, setActivity] = useState<any[]>([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  const [activity, setActivity] = useState([
-    { t: "Adaeze Okoye gave ₦45,000 tithe", w: "2h ago", i: "AO" },
-    { t: "Kemi Ajayi recorded as a visitor", w: "Yesterday", i: "KA" },
-    { t: "Sunday attendance saved", w: "Yesterday", i: "SS" },
-    { t: "Youth Fellowship created", w: "2 days ago", i: "YF" },
-  ]);
+  // Hydrate data from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const storedMembers = localStorage.getItem("reddox_members");
+        if (storedMembers) setMembers(JSON.parse(storedMembers));
+
+        const storedSessions = localStorage.getItem("reddox_sessions");
+        if (storedSessions) {
+          const parsed = JSON.parse(storedSessions);
+          setSessions(parsed);
+          if (parsed.length > 0) setCurrentSessionId(parsed[0].id);
+        }
+
+        const storedEvents = localStorage.getItem("reddox_events");
+        if (storedEvents) setEvents(JSON.parse(storedEvents));
+
+        const storedGiving = localStorage.getItem("reddox_giving");
+        if (storedGiving) setGiving(JSON.parse(storedGiving));
+
+        const storedExpenses = localStorage.getItem("reddox_expenses");
+        if (storedExpenses) setExpenses(JSON.parse(storedExpenses));
+
+        const storedVisitors = localStorage.getItem("reddox_visitors");
+        if (storedVisitors) setVisitors(JSON.parse(storedVisitors));
+
+        const storedSermons = localStorage.getItem("reddox_sermons");
+        if (storedSermons) setSermons(JSON.parse(storedSermons));
+
+        const storedStaff = localStorage.getItem("reddox_staff");
+        if (storedStaff) setStaff(JSON.parse(storedStaff));
+
+        const storedNotifs = localStorage.getItem("reddox_notifications");
+        if (storedNotifs) setNotifications(JSON.parse(storedNotifs));
+
+        const storedAct = localStorage.getItem("reddox_activity");
+        if (storedAct) setActivity(JSON.parse(storedAct));
+      } catch (err) {
+        console.error("Error reading portal data from localStorage:", err);
+      }
+      setIsDataLoaded(true);
+    }
+  }, []);
+
+  // Persist data collections to localStorage whenever they change
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_members", JSON.stringify(members));
+    }
+  }, [members, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_sessions", JSON.stringify(sessions));
+    }
+  }, [sessions, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_events", JSON.stringify(events));
+    }
+  }, [events, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_giving", JSON.stringify(giving));
+    }
+  }, [giving, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_expenses", JSON.stringify(expenses));
+    }
+  }, [expenses, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_visitors", JSON.stringify(visitors));
+    }
+  }, [visitors, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_sermons", JSON.stringify(sermons));
+    }
+  }, [sermons, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_staff", JSON.stringify(staff));
+    }
+  }, [staff, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_notifications", JSON.stringify(notifications));
+    }
+  }, [notifications, isDataLoaded]);
+
+  useEffect(() => {
+    if (isDataLoaded && typeof window !== "undefined") {
+      localStorage.setItem("reddox_activity", JSON.stringify(activity));
+    }
+  }, [activity, isDataLoaded]);
 
 
 
@@ -907,59 +731,15 @@ export default function ReddoxPortalDashboard() {
             </button>
           </nav>
 
-          {/* Plan Usage Box */}
+          {/* Plan Usage Box — 100% Free Full Premium Access */}
           <div className="portal-plan">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-              <b>{currentPlan.n} plan</b>
-              <span className="portal-chip" style={{ fontSize: 10, padding: "2px 6px" }}>{currentPlan.pr}</span>
+              <b>Free Premium Edition</b>
+              <span className="portal-chip" style={{ fontSize: 10, padding: "2px 6px" }}>FREE</span>
             </div>
-            <small suppressHydrationWarning>
-              {`${members.length} of ${currentPlan.mem.toLocaleString("en-NG")} members (${Math.round((members.length / currentPlan.mem) * 100)}%)`}
+            <small style={{ color: "var(--rd)", fontWeight: 600, display: "block", marginTop: 4 }}>
+              ✦ All Features Unlocked · Unlimited Members
             </small>
-            <div className="portal-pb">
-              <i
-                style={{
-                  width: `${Math.max(
-                    2,
-                    Math.min(100, (members.length / currentPlan.mem) * 100)
-                  )}%`,
-                  background: members.length >= currentPlan.mem ? "var(--er)" : undefined,
-                }}
-              />
-            </div>
-            {selectedPlan === "starter" ? (
-              <Link
-                href="/checkout?plan=growth"
-                className="portal-btn sm p"
-                style={{
-                  marginTop: 8,
-                  width: "100%",
-                  justifyContent: "center",
-                  textDecoration: "none",
-                  fontSize: 12,
-                }}
-              >
-                Upgrade to Growth &rarr;
-              </Link>
-            ) : selectedPlan === "growth" ? (
-              <Link
-                href="/checkout?plan=pro"
-                className="portal-btn sm"
-                style={{
-                  marginTop: 8,
-                  width: "100%",
-                  justifyContent: "center",
-                  textDecoration: "none",
-                  fontSize: 12,
-                }}
-              >
-                Upgrade to Pro &rarr;
-              </Link>
-            ) : (
-              <small style={{ color: "var(--rd)", fontWeight: 600, display: "block", marginTop: 4 }}>
-                ✦ Pro Tier Active
-              </small>
-            )}
           </div>
         </aside>
 
@@ -1097,39 +877,22 @@ export default function ReddoxPortalDashboard() {
             <div className="portal-tr">
               {/* Active Plan Pill Indicator */}
               <div
-                className={`portal-plan-pill ${selectedPlan}`}
+                className="portal-plan-pill"
                 onClick={() => changeView("settings")}
-                title={`Active Plan: ${currentPlan.n} (${members.length}/${currentPlan.mem.toLocaleString("en-NG")} members)`}
+                title="Free Premium Workspace — All Features Unlocked"
+                style={{ cursor: "pointer" }}
               >
-                <span className="portal-plan-dot" />
+                <span className="portal-status-dot-green" />
                 <div className="portal-plan-details">
-                  <span className="portal-plan-name">{currentPlan.n}</span>
+                  <span className="portal-plan-name">Free Premium</span>
                   <span className="portal-plan-sep">·</span>
                   <span className="portal-plan-count">
-                    {members.length}/{currentPlan.mem.toLocaleString("en-NG")}
+                    {members.length} {members.length === 1 ? "member" : "members"}
                   </span>
                 </div>
-                {selectedPlan === "starter" ? (
-                  <Link
-                    href="/checkout?plan=growth"
-                    onClick={(e) => e.stopPropagation()}
-                    className="portal-plan-up"
-                  >
-                    <span>Upgrade</span>
-                    <span className="portal-plan-arrow">&rarr;</span>
-                  </Link>
-                ) : selectedPlan === "growth" ? (
-                  <Link
-                    href="/checkout?plan=pro"
-                    onClick={(e) => e.stopPropagation()}
-                    className="portal-plan-up"
-                  >
-                    <span>Pro</span>
-                    <span className="portal-plan-arrow">&rarr;</span>
-                  </Link>
-                ) : (
-                  <span className="portal-plan-pro-tag">✦ Pro Active</span>
-                )}
+                <span className="portal-plan-pro-tag" style={{ background: "rgba(109,42,60,0.1)", color: "var(--bl)" }}>
+                  ✦ Full Access
+                </span>
               </div>
 
               {/* Notifications Dropdown */}
@@ -2104,38 +1867,6 @@ function MembersView({
       </div>
 
       <div className="portal-cd">
-        {plan.id === "starter" && (
-          <div
-            style={{
-              background: members.length >= 15 ? "rgba(179,38,30,0.08)" : "rgba(109,42,60,0.05)",
-              border: `1px solid ${members.length >= 15 ? "var(--er)" : "var(--bd)"}`,
-              borderRadius: 12,
-              padding: "12px 16px",
-              marginBottom: 16,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
-            <div>
-              <strong style={{ color: members.length >= 15 ? "var(--er)" : "var(--bl)", display: "block" }}>
-                {members.length >= 15
-                  ? "⚠️ Starter Plan Member Limit Reached (15 of 15)"
-                  : `Starter Plan Capacity: ${members.length} of 15 members used (${Math.round((members.length / 15) * 100)}%)`}
-              </strong>
-              <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
-                {members.length >= 15
-                  ? "You have reached the maximum 15 members on the free Starter plan. Upgrade to Growth to add up to 1,000 members."
-                  : "Churches with over 15 members can upgrade to Growth at any time for 1,000 members and full ministry tools."}
-              </p>
-            </div>
-            <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
-              Upgrade to Growth (₦15k/mo) &rarr;
-            </Link>
-          </div>
-        )}
 
         {/* Filters */}
         <div className="portal-fl">
@@ -3678,37 +3409,6 @@ function EventsView({
         </div>
       </div>
 
-      {plan?.id === "starter" && (
-        <div
-          style={{
-            background: "rgba(109,42,60,0.05)",
-            border: "1px solid var(--bd)",
-            borderRadius: 12,
-            padding: "12px 16px",
-            marginBottom: 16,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <strong style={{ color: "var(--bl)", display: "block" }}>
-              Starter Plan Quota: 1 Event Per Month
-            </strong>
-            <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
-              {events.length >= 1
-                ? "You have reached your 1-event monthly allowance on Starter. Upgrade to Growth for unlimited scheduled events & ticket registrations."
-                : "Free Starter churches can publish 1 event per month. Upgrade to Growth for unlimited scheduled events."}
-            </p>
-          </div>
-          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
-            Upgrade to Growth &rarr;
-          </Link>
-        </div>
-      )}
-
       {/* Events Metrics Row */}
       <div className="portal-gs">
         <div className="portal-cd portal-st">
@@ -3897,33 +3597,6 @@ function FinancesView({
         </div>
         <h3>Restricted Access</h3>
         <p>Your current staff role does not have financial ledger permissions.</p>
-      </div>
-    );
-  }
-
-  if (!plan?.fin) {
-    return (
-      <div className="portal-cd portal-emp" style={{ padding: "54px 24px", textAlign: "center", maxWidth: 640, margin: "20px auto" }}>
-        <div className="portal-ico" style={{ margin: "0 auto 16px", width: 56, height: 56 }}>
-          <SvgIcon name="lock" />
-        </div>
-        <span className="portal-pill" style={{ marginBottom: 12, display: "inline-block" }}>
-          Growth &amp; Pro Feature
-        </span>
-        <h2 style={{ fontFamily: "var(--font-playfair), Georgia, serif", fontSize: 24, margin: "8px 0 12px" }}>
-          Financial Management is Locked
-        </h2>
-        <p style={{ margin: "0 auto 24px", color: "var(--mu)", lineHeight: 1.6, fontSize: 15 }}>
-          The free Starter plan includes member management and manual attendance. To record tithes, offerings, ministry expenses, track donor histories, and export financial statements, upgrade to the Growth plan.
-        </p>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/checkout?plan=growth" className="portal-btn p" style={{ textDecoration: "none" }}>
-            Upgrade to Growth (₦15,000/mo) &rarr;
-          </Link>
-          <a href="#settings" className="portal-btn" style={{ textDecoration: "none" }}>
-            Compare All Plans
-          </a>
-        </div>
       </div>
     );
   }
@@ -4451,33 +4124,6 @@ function VisitorsView({ visitors, onRecordVisitor, onStatusChange }: any) {
    VIEW 7: SERMONS & MEDIA
    ===================================================================== */
 function SermonsView({ sermons, plan, onAddSermon, onRemoveSermon }: any) {
-  if (!plan?.med) {
-    return (
-      <div className="portal-cd portal-emp" style={{ padding: "54px 24px", textAlign: "center", maxWidth: 640, margin: "20px auto" }}>
-        <div className="portal-ico" style={{ margin: "0 auto 16px", width: 56, height: 56 }}>
-          <SvgIcon name="lock" />
-        </div>
-        <span className="portal-pill" style={{ marginBottom: 12, display: "inline-block" }}>
-          Growth &amp; Pro Feature
-        </span>
-        <h2 style={{ fontFamily: "var(--font-playfair), Georgia, serif", fontSize: 24, margin: "8px 0 12px" }}>
-          Sermon &amp; Media Library is Locked
-        </h2>
-        <p style={{ margin: "0 auto 24px", color: "var(--mu)", lineHeight: 1.6, fontSize: 15 }}>
-          Archive Sunday message recordings, audio files, sermon series, and outlines for your congregation. Included with Growth and Pro subscriptions.
-        </p>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/checkout?plan=growth" className="portal-btn p" style={{ textDecoration: "none" }}>
-            Upgrade to Growth &rarr;
-          </Link>
-          <a href="#settings" className="portal-btn" style={{ textDecoration: "none" }}>
-            View Plan Comparison
-          </a>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       <div className="portal-hd">

@@ -593,10 +593,6 @@ export default function ChurchManagerLanding() {
             <React.Fragment key={group}>
               <div className="rolling-marquee-item">
                 <span className="rolling-marquee-star">✦</span>
-                <span>1,420+ Active Churches Connected</span>
-              </div>
-              <div className="rolling-marquee-item">
-                <span className="rolling-marquee-star">✦</span>
                 <span>Instant Sunday Check-In Under 3 Seconds</span>
               </div>
               <div className="rolling-marquee-item">

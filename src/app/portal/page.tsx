@@ -5357,80 +5357,81 @@ function SettingsView({
   return (
     <div className="portal-settings-shell">
       <div className="portal-settings-wrap">
-        {/* Workspace Command Topbar */}
-        <div className="portal-settings-topbar">
-          <div className="portal-settings-crumb">
-            <span className="portal-crumb-node">
-              <SvgIcon name="church" />
-              <span>{profileData.churchName}</span>
-            </span>
-            <span className="portal-crumb-sep">/</span>
-            <span style={{ fontWeight: 600 }}>Workspace Settings</span>
-            <span className="portal-crumb-sep">/</span>
-            <span className="portal-crumb-active">
-              {TABS_CONFIG.find((t) => t.id === activeTab)?.label}
-            </span>
+        {/* Settings Page Header — compact inline breadcrumb strip */}
+        <div className="portal-settings-pageheader">
+          <div className="portal-settings-pageheader-left">
+            <div className="portal-settings-pageheader-icon">
+              <SvgIcon name="gear" />
+            </div>
+            <div>
+              <h2 className="portal-settings-pageheader-title">Workspace Settings</h2>
+              <div className="portal-settings-pageheader-crumb">
+                <SvgIcon name="church" />
+                <span>{profileData.churchName}</span>
+                <span className="portal-crumb-sep">/</span>
+                <span className="portal-crumb-active">{TABS_CONFIG.find((t) => t.id === activeTab)?.label}</span>
+              </div>
+            </div>
           </div>
-
-          <div className="portal-settings-meta-chips">
+          <div className="portal-settings-pageheader-chips">
             <div className="portal-meta-chip">
               <span className="portal-status-dot-green" />
-              <span>Live Node: <strong>af-south-1</strong></span>
+              <span>af-south-1</span>
             </div>
             <div className="portal-meta-chip">
               <SvgIcon name="shield" />
-              <span>Role: <strong>Level 1 Admin</strong></span>
-            </div>
-            <div className="portal-meta-chip">
-              <SvgIcon name="lock" />
-              <span>Tenant: <strong>RDX-WS-84920</strong></span>
+              <span>Level 1 Admin</span>
             </div>
           </div>
         </div>
 
-        {/* Hero Section */}
-        <section className="portal-settings-hero">
-          <span className="portal-rn" />
-          <span className="portal-rn" />
-          <div className="portal-hid">
-            <div
-              className="portal-av"
-              title="Registered Church Emblem"
-              style={{ cursor: "default" }}
-            >
-              {logoUrl ? (
-                <img src={logoUrl} alt="Church logo" />
-              ) : (
-                getInitials(profileData.churchName)
-              )}
-              <b>
-                <SvgIcon name="church" />
-              </b>
-            </div>
-            <div>
-              <h1>{profileData.churchName}</h1>
-              <p>{profileData.denomination} &bull; Church Workspace</p>
-              <div className="portal-bdg">
-                <span className="gd">{currentPlanConfig.n} plan</span>
-                <span>Owner: {accountData.name}</span>
-              </div>
-            </div>
-            <div className="portal-hs">
-              <div>
-                <b>{memberCount}</b>
-                <small>Members</small>
-              </div>
-              <div>
-                <b>{branches.length}</b>
-                <small>Branch{branches.length > 1 ? "es" : ""}</small>
-              </div>
-              <div>
-                <b>{sessionsCount}</b>
-                <small>Sessions</small>
-              </div>
+        {/* Church Identity Card — cleaner hero */}
+        <div className="portal-settings-idcard">
+          {/* Avatar */}
+          <div className="portal-settings-idcard-avatar">
+            {logoUrl ? (
+              <img src={logoUrl} alt="Church logo" />
+            ) : (
+              <span>{getInitials(profileData.churchName)}</span>
+            )}
+            <span className="portal-settings-idcard-avatar-badge">
+              <SvgIcon name="church" />
+            </span>
+          </div>
+
+          {/* Name & meta */}
+          <div className="portal-settings-idcard-body">
+            <h1 className="portal-settings-idcard-name">{profileData.churchName}</h1>
+            <p className="portal-settings-idcard-denom">{profileData.denomination} &bull; Church Workspace</p>
+            <div className="portal-settings-idcard-tags">
+              <span className="portal-settings-idcard-plan-tag">{currentPlanConfig.n} plan</span>
+              <span className="portal-settings-idcard-owner-tag">
+                <SvgIcon name="user" />
+                {accountData.name}
+              </span>
+              <span className="portal-ro-tag-green">
+                <SvgIcon name="check" />
+                <span>Verified</span>
+              </span>
             </div>
           </div>
-        </section>
+
+          {/* Stats */}
+          <div className="portal-settings-idcard-stats">
+            <div className="portal-settings-idcard-stat">
+              <b>{memberCount}</b>
+              <small>Members</small>
+            </div>
+            <div className="portal-settings-idcard-stat">
+              <b>{sessionsCount}</b>
+              <small>Sessions</small>
+            </div>
+            <div className="portal-settings-idcard-stat">
+              <b>{branches.length}</b>
+              <small>{branches.length === 1 ? "Branch" : "Branches"}</small>
+            </div>
+          </div>
+        </div>
 
         {/* Tabs Navigation */}
         <nav className="portal-tabs-nav" aria-label="Settings sections">

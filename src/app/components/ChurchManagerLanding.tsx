@@ -327,7 +327,7 @@ export default function ChurchManagerLanding() {
             <a href="#home">Home</a>
             <a href="#features">Features</a>
             <a href="#how">How It Works</a>
-            <a href="#pricing">Pricing</a>
+            <a href="#free">Free For All</a>
             <a href="#faq">FAQ</a>
             <a href="#contact">Contact</a>
           </div>
@@ -366,7 +366,7 @@ export default function ChurchManagerLanding() {
             <a href="#home">Home</a>
             <a href="#features">Features</a>
             <a href="#how">How It Works</a>
-            <a href="#pricing">Pricing</a>
+            <a href="#free">Free For All</a>
             <a href="#faq">FAQ</a>
             <a href="#contact">Contact</a>
           </div>
@@ -802,241 +802,112 @@ export default function ChurchManagerLanding() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="alt" id="pricing">
+      {/* 100% Free For All Churches Section */}
+      <section className="alt" id="free">
         <div className="w">
-          <h2 className="rv">Simple, predictable pricing</h2>
-          <p className="sub rv">
-            Start free and scale seamlessly as your congregation expands. No hidden charges.
-          </p>
-
-          {/* Monthly / Annual Billing Toggle */}
-          <div className="pricing-toggle-container rv">
-            <div className="pricing-toggle-pill">
-              <button
-                type="button"
-                className={`pricing-toggle-btn ${billingCycle === "monthly" ? "active" : ""}`}
-                onClick={() => setBillingCycle("monthly")}
-              >
-                Monthly billing
-              </button>
-              <button
-                type="button"
-                className={`pricing-toggle-btn ${billingCycle === "annual" ? "active" : ""}`}
-                onClick={() => setBillingCycle("annual")}
-              >
-                <span>Annual billing</span>
-                <span className="pricing-save-badge">Save 2 months free</span>
-              </button>
-            </div>
+          <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 40px" }}>
+            <span className="badge" style={{ marginBottom: "16px", display: "inline-block" }}>
+              ✦ Free For All Churches
+            </span>
+            <h2 className="rv" style={{ fontSize: "36px", margin: "0 0 16px" }}>
+              100% Free Premium Church Management
+            </h2>
+            <p className="sub rv" style={{ fontSize: "17px", lineHeight: "1.6" }}>
+              No subscriptions, no hidden tier limits, and no payment required. Every ministry—large or small—enjoys full unlimited access to all features completely free forever.
+            </p>
           </div>
 
-          <div className="pg">
-            {/* PLAN 1: STARTER */}
-            <div className="pc rv" style={{ "--d": "0ms" } as React.CSSProperties}>
-              <h3>STARTER</h3>
-              <p className="tg">Designed for small churches getting started with digital church management.</p>
-              <div className="pr">
-                <span className="dol">₦</span>
-                <b>0</b>
-                <span>/free forever</span>
+          <div
+            className="pc rv pop"
+            style={{
+              maxWidth: "840px",
+              margin: "0 auto",
+              background: "#ffffff",
+              border: "2px solid var(--rd)",
+              borderRadius: "24px",
+              padding: "36px 32px",
+              boxShadow: "0 20px 50px rgba(109, 42, 60, 0.08)",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
+              <div>
+                <span className="badge" style={{ background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff" }}>
+                  Full Access Guarantee
+                </span>
+                <h3 style={{ fontSize: "28px", margin: "8px 0 4px", color: "var(--tx)" }}>
+                  All-In-One Church Workspace
+                </h3>
+                <p style={{ margin: 0, color: "var(--mu)", fontSize: "14px" }}>
+                  Unlimited members · Instant QR check-in · Tithes &amp; offerings · Multi-campus
+                </p>
               </div>
-              <Link href={`/checkout?plan=starter&billing=${billingCycle}`} className="btn">
-                Get Started Free
-                <svg viewBox="0 0 24 24">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </Link>
-              <hr />
-              <h5>Features Included</h5>
-              <ul>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Up to 15 members
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  1 church administrator
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  1 event per month
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Manual attendance tracking
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Basic dashboard
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  7-day attendance history
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Basic member records
-                </li>
-              </ul>
-              <ul className="excluded-list">
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                  Financial management
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                  QR attendance
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                  Advanced reports and exports
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                  Sermon and media library
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                  Advanced analytics
-                </li>
-              </ul>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: "34px", fontWeight: 800, color: "var(--bl)" }}>
+                  ₦0
+                </div>
+                <span style={{ fontSize: "13px", fontWeight: 700, color: "#059669", textTransform: "uppercase" }}>
+                  Free Forever · No Card Required
+                </span>
+              </div>
             </div>
 
-            {/* PLAN 2: GROWTH (MOST POPULAR) */}
-            <div className="pc rv pop" style={{ "--d": "100ms" } as React.CSSProperties}>
-              <span className="badge">Most Popular</span>
-              <h3>GROWTH</h3>
-              <p className="tg">Designed for growing churches that need more complete management tools.</p>
-              <div className="pr">
-                <span className="dol">₦</span>
-                <b>{billingCycle === "annual" ? "150,000" : "15,000"}</b>
-                <span>{billingCycle === "annual" ? "/year" : "/month"}</span>
+            <hr style={{ border: 0, borderTop: "1px solid var(--bd)", margin: "0 0 24px" }} />
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px 24px", marginBottom: "32px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
+                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
+                <strong>Unlimited members &amp; families</strong>
               </div>
-              <Link href={`/checkout?plan=growth&billing=${billingCycle}`} className="btn r">
-                Choose Growth
-                <svg viewBox="0 0 24 24">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </Link>
-              <hr />
-              <h5>Features Included</h5>
-              <ul>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  <strong>Up to 1,000 members</strong>
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Multiple authorized staff accounts
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Member and department management
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  QR attendance &amp; attendance history
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Unlimited events
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Giving and expense records
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Financial reports and receipts
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Visitor records and follow-up
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Sermon and media library
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Dashboard analytics
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Data exports
-                </li>
-              </ul>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
+                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
+                <strong>Instant QR check-in &amp; kiosk</strong>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
+                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
+                <strong>Giving, tithes &amp; financial reports</strong>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
+                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
+                <strong>Multi-site campus branches</strong>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
+                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
+                <strong>Unlimited church events &amp; RSVPs</strong>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
+                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
+                <strong>Sermon &amp; media library</strong>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
+                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
+                <strong>First-timer tracking &amp; follow-up</strong>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
+                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
+                <strong>Unlimited staff &amp; ministry roles</strong>
+              </div>
             </div>
 
-            {/* PLAN 3: PRO */}
-            <div className="pc rv" style={{ "--d": "200ms" } as React.CSSProperties}>
-              <h3>PRO</h3>
-              <p className="tg">Designed for larger churches and churches with multiple branches.</p>
-              <div className="pr">
-                <span className="dol">₦</span>
-                <b>{billingCycle === "annual" ? "350,000" : "35,000"}</b>
-                <span>{billingCycle === "annual" ? "/year" : "/month"}</span>
-              </div>
-              <Link href={`/checkout?plan=pro&billing=${billingCycle}`} className="btn">
-                Choose Pro
-                <svg viewBox="0 0 24 24">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
+            <div style={{ textAlign: "center" }}>
+              <Link
+                href="/auth#signup"
+                className="btn r"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "14px 32px",
+                  fontSize: "16px",
+                  borderRadius: "14px",
+                }}
+              >
+                Create Free Church Account &rarr;
               </Link>
-              <hr />
-              <h5>Features Included</h5>
-              <ul>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  <strong>Up to 5,000 members</strong>
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  <strong>Up to 3 branches</strong>
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Everything in Growth
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Consolidated multi-branch dashboards
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Advanced analytics &amp; financial comparisons
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Custom staff permissions
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Automated follow-up tools
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Expanded audit logs
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Bulk member imports
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Higher storage and notification limits
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10" /></svg>
-                  Priority support
-                </li>
-              </ul>
+              <p style={{ margin: "12px 0 0", color: "var(--mu)", fontSize: "13px" }}>
+                Zero installation · Immediate 3-minute access · No payment ever required
+              </p>
             </div>
           </div>
-          <p className="pnote rv">
-            Prices in Nigerian Naira (₦). Annual plans save 2 months free. Switch or cancel anytime.
-          </p>
         </div>
       </section>
 
@@ -1155,7 +1026,7 @@ export default function ChurchManagerLanding() {
               <h4>Product</h4>
               <a href="#features">Features</a>
               <a href="#how">How It Works</a>
-              <a href="#pricing">Pricing</a>
+              <a href="#free">Free Forever</a>
               <a href="#security">Security</a>
             </div>
             <div>

@@ -238,54 +238,61 @@ export default function ChurchManagerLanding() {
 
     let active = true;
     async function loop() {
+      // Start in Overview
+      show(0);
       const m2 = document.getElementById("m2");
       if (m2) await go(m2);
-      await sl(500);
+      await sl(1200);
+
       while (active) {
-        for (let i = 0; i < 5 && active; i++) {
-          if (nv[i]) {
-            await go(nv[i]);
+        // 1. Highlight stats on Overview
+        show(0);
+        const m3 = document.getElementById("m3");
+        if (m3) await go(m3);
+        await sl(2500);
+        if (!active) break;
+
+        const chEl = document.getElementById("ch");
+        if (chEl) await go(chEl);
+        await sl(2500);
+        if (!active) break;
+
+        // 2. Brief tour click to Members
+        if (nv[1]) {
+          await go(nv[1]);
+          if (!active) break;
+          clk();
+          show(1);
+          await sl(2000);
+        }
+        if (!active) break;
+
+        // 3. Brief tour click to Attendance & toggle
+        if (nv[2]) {
+          await go(nv[2]);
+          if (!active) break;
+          clk();
+          show(2);
+          const t = document.querySelectorAll(".tg")[1];
+          if (t) {
+            await go(t);
             if (!active) break;
             clk();
-            show(i);
-            await sl(600);
+            t.classList.toggle("on");
+            t.classList.toggle("off");
+            t.textContent = t.classList.contains("on") ? "Present" : "Absent";
           }
+          await sl(1800);
+        }
+        if (!active) break;
+
+        // 4. Return immediately to the main Overview dashboard
+        if (nv[0]) {
+          await go(nv[0]);
           if (!active) break;
-          if (i === 0) {
-            const m3Parent = document.getElementById("m3")?.parentNode as HTMLElement;
-            if (m3Parent) await go(m3Parent);
-          }
-          if (i === 1) {
-            const r = document.querySelectorAll(".mr");
-            for (let j = 1; j < 4 && active; j++) {
-              if (r[j - 1]) r[j - 1].classList.remove("hv");
-              if (r[j]) {
-                r[j].classList.add("hv");
-                await go(r[j]);
-              }
-            }
-          }
-          if (i === 2) {
-            const t = document.querySelectorAll(".tg")[1];
-            if (t) {
-              await go(t);
-              if (!active) break;
-              clk();
-              t.classList.toggle("on");
-              t.classList.toggle("off");
-              t.textContent = t.classList.contains("on") ? "Present" : "Absent";
-            }
-          }
-          if (i === 3) {
-            const gt = document.getElementById("gt");
-            if (gt) await go(gt);
-          }
-          if (i === 4) {
-            const ev = document.querySelector(".ev");
-            if (ev) await go(ev);
-          }
-          if (!active) break;
-          await sl(900);
+          clk();
+          show(0);
+          await sl(4000);
         }
       }
     }
@@ -473,15 +480,18 @@ export default function ChurchManagerLanding() {
                     <span className="dash-ws-name">Grace Chapel</span>
                     <span className="dash-ws-role">ADMIN · MAIN BRANCH</span>
                   </div>
+                  <svg className="dash-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 6l4 4 4-4" />
+                  </svg>
                 </div>
               </div>
 
               <div className="dash-srch-box">
-                <svg className="dash-srch-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="dash-srch-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                <span className="dash-srch-placeholder">Search members, attendance, events...</span>
+                <span className="dash-srch-placeholder">Search members, attendance, events…</span>
                 <kbd className="dash-kbd">⌘K</kbd>
               </div>
 
@@ -496,8 +506,8 @@ export default function ChurchManagerLanding() {
                 <div className="dash-user-pill">
                   <span className="dash-user-avatar">BA</span>
                   <div className="dash-user-text">
-                    <span className="dash-user-name">Blessing Adeyemi</span>
-                    <span className="dash-user-sub">Senior Admin</span>
+                    <span className="dash-user-name">Sister Blessing</span>
+                    <span className="dash-user-sub">Administrator</span>
                   </div>
                 </div>
                 <span id="rt" className="dash-rec-badge">REC 0:00</span>
@@ -509,9 +519,13 @@ export default function ChurchManagerLanding() {
               <div className="sb">
                 <header className="dash-sb-brand">
                   <span className="dash-sb-logo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#6d2a3c" strokeWidth="2.5" width="15" height="15">
-                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                    </svg>
+                    <Image
+                      src="/logo.png"
+                      alt="REDDOX"
+                      width={22}
+                      height={22}
+                      className="logo-img"
+                    />
                   </span>
                   <span className="dash-sb-brandname">RED<b>DOX</b></span>
                 </header>
@@ -728,7 +742,7 @@ export default function ChurchManagerLanding() {
                   <div className="s u">
                     <div className="s-head">
                       <span className="s-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
                           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                           <circle cx="9" cy="7" r="4" />
                           <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -739,23 +753,25 @@ export default function ChurchManagerLanding() {
                     </div>
                     <small>Total Members</small>
                     <b id="m1">248</b>
+                    <span className="s-sub">Active congregation</span>
                   </div>
                   <div className="s">
                     <div className="s-head">
                       <span className="s-icon" style={{ background: "#e6f4ea", color: "#137333" }}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
-                          <path d="M20 6L9 17l-5-5" />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" width="16" height="16">
+                          <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </span>
                       <span className="s-trend pos">85% present</span>
                     </div>
                     <small>Sunday Attendance</small>
                     <b id="m2">0</b>
+                    <span className="s-sub">Target: 180 worshippers</span>
                   </div>
                   <div className="s r">
                     <div className="s-head">
                       <span className="s-icon" style={{ background: "#fef7e0", color: "#b06000" }}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
                           <circle cx="12" cy="12" r="9" />
                           <path d="M14.8 9A2 2 0 0 0 13 8h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1-1.8-1" />
                           <path d="M12 6v2m0 8v2" />
@@ -765,11 +781,12 @@ export default function ChurchManagerLanding() {
                     </div>
                     <small>Giving Recorded</small>
                     <b id="m3">₦0</b>
+                    <span className="s-sub">Tithes &amp; offerings</span>
                   </div>
                   <div className="s">
                     <div className="s-head">
                       <span className="s-icon" style={{ background: "#f3e4e6", color: "#6d2a3c" }}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
                           <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                           <circle cx="8.5" cy="7" r="4" />
                           <line x1="20" y1="8" x2="20" y2="14" />
@@ -780,6 +797,7 @@ export default function ChurchManagerLanding() {
                     </div>
                     <small>First-Timers</small>
                     <b id="m4">0</b>
+                    <span className="s-sub">Follow-up scheduled</span>
                   </div>
                 </div>
 

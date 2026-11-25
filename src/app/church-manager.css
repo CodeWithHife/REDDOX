@@ -875,6 +875,417 @@ h1 u {
   white-space: nowrap;
 }
 
+/* ========================================================
+   REDDOX Hero Dashboard Mockup Luxury Additions
+   ======================================================== */
+.dash-header {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(232, 217, 191, 0.75) !important;
+}
+
+.dt-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.dt-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.dt-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dt-dot.red { background: #ea4335; }
+.dt-dot.yellow { background: #fbbc04; }
+.dt-dot.green { background: #34a853; }
+
+.dash-ws-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 8px;
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(43, 32, 21, 0.04);
+}
+
+.dash-ws-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #6d2a3c, #8c364e);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.dash-ws-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.dash-ws-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.dash-ws-role {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #b8862d;
+  letter-spacing: 0.04em;
+}
+
+.dash-srch-box {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #ffffff;
+  border: 1px solid rgba(232, 217, 191, 0.85);
+  border-radius: 8px;
+  padding: 4px 10px;
+  flex: 1;
+  max-width: 280px;
+  font-size: 11.5px;
+  color: var(--mu);
+}
+
+.dash-srch-icon {
+  width: 13px;
+  height: 13px;
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.dash-srch-placeholder {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-kbd {
+  font-size: 9.5px;
+  font-weight: 700;
+  background: #f3e4e6;
+  color: #6d2a3c;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.dt-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.dash-icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  display: grid;
+  place-items: center;
+  position: relative;
+  color: var(--mu);
+}
+
+.dash-notif-dot {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b3261e;
+  border: 1px solid #fff;
+}
+
+.dash-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 2.5px 8px;
+}
+
+.dash-user-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #6d2a3c;
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.dash-user-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.dash-user-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.dash-user-sub {
+  font-size: 8.5px;
+  color: var(--mu);
+}
+
+.dash-rec-badge {
+  margin-left: 0 !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  color: #b3261e !important;
+  background: #fce8e6;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid #f8c9c6;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dash-rec-badge:before {
+  content: "" !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: #b3261e !important;
+  animation: p 1.2s infinite;
+}
+
+.dash-sb-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 6px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(232, 217, 191, 0.6);
+}
+
+.dash-sb-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid var(--bd);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 5px rgba(109, 42, 60, 0.1);
+  flex-shrink: 0;
+}
+
+.dash-sb-brandname {
+  font-family: var(--font-heading, "Outfit", sans-serif);
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #1f1912;
+}
+
+.dash-sb-brandname b {
+  color: #6d2a3c;
+}
+
+.sb div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mu);
+  transition: all 0.2s ease;
+}
+
+.sb div:hover {
+  background: rgba(109, 42, 60, 0.07);
+  color: #6d2a3c;
+}
+
+.sb div.on {
+  background: #6d2a3c !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 8px rgba(109, 42, 60, 0.24) !important;
+}
+
+.sb div.on svg {
+  stroke: #ffffff;
+}
+
+.dash-sb-badge {
+  margin-left: auto;
+  background: #b8862d;
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 99px;
+}
+
+.dash-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.dash-pill-btn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dash-pill-btn.primary {
+  background: #6d2a3c;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(109, 42, 60, 0.2);
+}
+
+.dash-pill-btn.secondary {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+}
+
+.s-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.s-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(232, 217, 191, 0.8);
+  display: grid;
+  place-items: center;
+  color: #6d2a3c;
+  flex-shrink: 0;
+}
+
+.s-trend {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.s-trend.pos {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.s-trend.warn {
+  background: #fef7e0;
+  color: #b06000;
+}
+
+.s-trend.gold {
+  background: #f7ecd2;
+  color: #7a5a12;
+}
+
+.dash-bx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.dash-bx-header h4 {
+  margin: 0 !important;
+}
+
+.dash-tag-count {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--mu);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(232, 217, 191, 0.7);
+}
+
+.rw-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.rw-meta strong {
+  font-size: 12.5px;
+  color: var(--tx);
+}
+
+.rw-meta small {
+  font-size: 10.5px;
+  color: var(--mu);
+}
+
+.dash-dept-pill {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 1.5px 7px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--mu);
+  border: 1px solid var(--bd);
+}
+
+.dash-amount {
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #6d2a3c;
+}
+
+.dash-time {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b8862d;
+}
+
 @keyframes in {
   from {
     opacity: 0;
@@ -1206,6 +1617,28 @@ footer {
   .sr {
     display: none;
   }
+  .dash-srch-box {
+    display: none !important;
+  }
+  .dash-actions {
+    display: none !important;
+  }
+  .dash-sb-brand {
+    display: none !important;
+  }
+  .dash-ws-role {
+    display: none !important;
+  }
+  .dash-user-text {
+    display: none !important;
+  }
+  .dash-user-pill {
+    padding: 2px 4px !important;
+  }
+  .dash-header {
+    padding: 7px 10px !important;
+    gap: 8px !important;
+  }
   .rw {
     font-size: 13px;
     padding: 9px 10px;
@@ -1297,6 +1730,21 @@ footer {
     margin-top: 10px;
     margin-bottom: 6px;
     border-radius: 16px;
+  }
+  .dash-ws-name {
+    max-width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dash-rec-badge {
+    display: none !important;
+  }
+  .dash-icon-btn {
+    display: none !important;
+  }
+  .dt-dots {
+    display: none !important;
   }
   .sb {
     padding: 8px 10px;

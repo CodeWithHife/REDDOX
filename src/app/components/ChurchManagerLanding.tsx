@@ -327,7 +327,6 @@ export default function ChurchManagerLanding() {
             <a href="#home">Home</a>
             <a href="#features">Features</a>
             <a href="#how">How It Works</a>
-            <a href="#free">Free For All</a>
             <a href="#faq">FAQ</a>
             <a href="#contact">Contact</a>
           </div>
@@ -366,7 +365,6 @@ export default function ChurchManagerLanding() {
             <a href="#home">Home</a>
             <a href="#features">Features</a>
             <a href="#how">How It Works</a>
-            <a href="#free">Free For All</a>
             <a href="#faq">FAQ</a>
             <a href="#contact">Contact</a>
           </div>
@@ -449,7 +447,7 @@ export default function ChurchManagerLanding() {
             </span>
           </div>
 
-          <div className="dash" aria-label="Dashboard demo">
+          <div className="dash" aria-label="REDDOX Live Portal Demo">
             <svg className="cur" id="cur" viewBox="0 0 24 24">
               <path
                 d="M3 2l14 8-6 2-2 7z"
@@ -460,123 +458,352 @@ export default function ChurchManagerLanding() {
               />
             </svg>
             <span className="rip" id="rip"></span>
-            <div className="dt">
-              <i></i>
-              <i></i>
-              <i></i>
-              <span id="rt">REC 0:00</span>
-            </div>
-            <div className="db">
-              <div className="sb">
-                <div className="on">Overview</div>
-                <div>Members</div>
-                <div>Attendance</div>
-                <div>Giving</div>
-                <div>Services</div>
+
+            {/* Topbar matching original REDDOX portal */}
+            <div className="dt dash-header">
+              <div className="dt-left">
+                <div className="dt-dots">
+                  <i className="dt-dot red"></i>
+                  <i className="dt-dot yellow"></i>
+                  <i className="dt-dot green"></i>
+                </div>
+                <div className="dash-ws-badge">
+                  <span className="dash-ws-icon">GC</span>
+                  <div className="dash-ws-info">
+                    <span className="dash-ws-name">Grace Chapel</span>
+                    <span className="dash-ws-role">ADMIN · MAIN BRANCH</span>
+                  </div>
+                </div>
               </div>
+
+              <div className="dash-srch-box">
+                <svg className="dash-srch-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <span className="dash-srch-placeholder">Search members, attendance, events...</span>
+                <kbd className="dash-kbd">⌘K</kbd>
+              </div>
+
+              <div className="dt-right">
+                <div className="dash-icon-btn" title="Notifications">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                  <span className="dash-notif-dot"></span>
+                </div>
+                <div className="dash-user-pill">
+                  <span className="dash-user-avatar">BA</span>
+                  <div className="dash-user-text">
+                    <span className="dash-user-name">Blessing Adeyemi</span>
+                    <span className="dash-user-sub">Senior Admin</span>
+                  </div>
+                </div>
+                <span id="rt" className="dash-rec-badge">REC 0:00</span>
+              </div>
+            </div>
+
+            <div className="db">
+              {/* Sidebar with REDDOX logo & portal nav icons */}
+              <div className="sb">
+                <header className="dash-sb-brand">
+                  <span className="dash-sb-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#6d2a3c" strokeWidth="2.5" width="15" height="15">
+                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                  </span>
+                  <span className="dash-sb-brandname">RED<b>DOX</b></span>
+                </header>
+
+                <div className="on">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                  </svg>
+                  <span>Overview</span>
+                </div>
+                <div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  <span>Members</span>
+                  <b className="dash-sb-badge">248</b>
+                </div>
+                <div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
+                    <path d="M9 11l3 3L22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                  </svg>
+                  <span>Attendance</span>
+                </div>
+                <div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M14.8 9A2 2 0 0 0 13 8h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1-1.8-1" />
+                    <path d="M12 6v2m0 8v2" />
+                  </svg>
+                  <span>Giving</span>
+                </div>
+                <div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <span>Services</span>
+                </div>
+              </div>
+
+              {/* Main Content Area */}
               <div className="mn">
                 <div className="tb">
                   <div>
-                    <b>Good morning, Pastor</b>
-                    <small>Sunday service · 9:00 AM</small>
+                    <b>Welcome back, Pastor</b>
+                    <small>Here’s how Grace Chapel is doing today · Sunday Service</small>
                   </div>
-                  <div className="sr">Search members, services…</div>
-                  <i className="av">PA</i>
+                  <div className="dash-actions">
+                    <span className="dash-pill-btn primary">+ Add Member</span>
+                    <span className="dash-pill-btn secondary">Take Attendance</span>
+                  </div>
                 </div>
+
+                {/* Subviews toggled by sidebar */}
                 <div className="v" id="v1">
                   <div className="bx">
-                    <h4>Members · 248</h4>
-                    <div className="rw mr">
-                      <i>AO</i>Adaeze Okoye<span>Choir</span>
+                    <div className="dash-bx-header">
+                      <h4>Members Directory · Grace Chapel</h4>
+                      <span className="dash-tag-count">248 Active</span>
                     </div>
                     <div className="rw mr">
-                      <i>TB</i>Tunde Bakare<span>Ushering</span>
+                      <i>AO</i>
+                      <div className="rw-meta">
+                        <strong>Adaeze Okoye</strong>
+                        <small>adaeze.okoye@email.com · 0803 234 5678</small>
+                      </div>
+                      <span className="dash-dept-pill">Choir</span>
                     </div>
                     <div className="rw mr">
-                      <i>GE</i>Grace Eze<span>Children</span>
+                      <i>TB</i>
+                      <div className="rw-meta">
+                        <strong>Tunde Bakare</strong>
+                        <small>tunde.bakare@email.com · 0805 876 5432</small>
+                      </div>
+                      <span className="dash-dept-pill">Ushering</span>
                     </div>
                     <div className="rw mr">
-                      <i>SA</i>Samuel Adeyemi<span>Media</span>
+                      <i>GE</i>
+                      <div className="rw-meta">
+                        <strong>Grace Eze</strong>
+                        <small>grace.eze@email.com · 0812 345 6789</small>
+                      </div>
+                      <span className="dash-dept-pill">Children</span>
+                    </div>
+                    <div className="rw mr">
+                      <i>SA</i>
+                      <div className="rw-meta">
+                        <strong>Samuel Adeyemi</strong>
+                        <small>samuel.adeyemi@email.com · 0708 901 2345</small>
+                      </div>
+                      <span className="dash-dept-pill">Media</span>
                     </div>
                   </div>
                 </div>
+
                 <div className="v" id="v2">
                   <div className="bx">
-                    <h4>Sunday service attendance</h4>
-                    <div className="rw">
-                      <i>AO</i>Adaeze Okoye<span className="tg on">Present</span>
+                    <div className="dash-bx-header">
+                      <h4>Sunday Service Check-in · Roll Call</h4>
+                      <span className="dash-tag-count">Live Session</span>
                     </div>
                     <div className="rw">
-                      <i>TB</i>Tunde Bakare<span className="tg on">Present</span>
+                      <i>AO</i>
+                      <div className="rw-meta">
+                        <strong>Adaeze Okoye</strong>
+                        <small>Choir Unit · Checked in via QR</small>
+                      </div>
+                      <span className="tg on">Present</span>
                     </div>
                     <div className="rw">
-                      <i>GE</i>Grace Eze<span className="tg off">Absent</span>
+                      <i>TB</i>
+                      <div className="rw-meta">
+                        <strong>Tunde Bakare</strong>
+                        <small>Ushering Unit · Manual Roster</small>
+                      </div>
+                      <span className="tg on">Present</span>
                     </div>
                     <div className="rw">
-                      <i>SA</i>Samuel Adeyemi<span className="tg on">Present</span>
+                      <i>GE</i>
+                      <div className="rw-meta">
+                        <strong>Grace Eze</strong>
+                        <small>Children Ministry · Excused</small>
+                      </div>
+                      <span className="tg off">Absent</span>
+                    </div>
+                    <div className="rw">
+                      <i>SA</i>
+                      <div className="rw-meta">
+                        <strong>Samuel Adeyemi</strong>
+                        <small>Media Unit · Self Check-in</small>
+                      </div>
+                      <span className="tg on">Present</span>
                     </div>
                   </div>
                 </div>
+
                 <div className="v" id="v3">
                   <div className="bx">
-                    <h4>Giving this month</h4>
+                    <div className="dash-bx-header">
+                      <h4>Giving &amp; Treasury Ledger · This Month</h4>
+                      <span className="dash-tag-count">Verified</span>
+                    </div>
                     <div className="rw" id="gt">
-                      <i>₦</i>Tithes<span>₦640,000</span>
+                      <i>₦</i>
+                      <div className="rw-meta">
+                        <strong>Tithes &amp; Seed Offering</strong>
+                        <small>28 member contributions received</small>
+                      </div>
+                      <span className="dash-amount">₦640,000</span>
                     </div>
                     <div className="rw">
-                      <i>₦</i>Offerings<span>₦380,000</span>
+                      <i>₦</i>
+                      <div className="rw-meta">
+                        <strong>Sunday General Offering</strong>
+                        <small>4 service collections combined</small>
+                      </div>
+                      <span className="dash-amount">₦380,000</span>
                     </div>
                     <div className="rw">
-                      <i>₦</i>Building fund<span>₦230,000</span>
+                      <i>₦</i>
+                      <div className="rw-meta">
+                        <strong>Sanctuary Building Fund</strong>
+                        <small>Pledges &amp; Bank Transfers</small>
+                      </div>
+                      <span className="dash-amount">₦230,000</span>
                     </div>
                   </div>
                 </div>
+
                 <div className="v" id="v4">
                   <div className="bx">
-                    <h4>Upcoming services</h4>
+                    <div className="dash-bx-header">
+                      <h4>Upcoming Services &amp; Events</h4>
+                      <span className="dash-tag-count">Scheduled</span>
+                    </div>
                     <div className="rw">
-                      <i>25</i>Sunday Service<span>9:00 AM</span>
+                      <i>25</i>
+                      <div className="rw-meta">
+                        <strong>Sunday Celebration Service</strong>
+                        <small>Theme: Wonders of Grace · 9:00 AM</small>
+                      </div>
+                      <span className="dash-time">Main Hall</span>
                     </div>
                     <div className="rw ev">
-                      <i>28</i>Midweek Bible Study<span>5:30 PM</span>
+                      <i>28</i>
+                      <div className="rw-meta">
+                        <strong>Midweek Communion &amp; Prayer</strong>
+                        <small>Faith Clinic &amp; Study · 5:30 PM</small>
+                      </div>
+                      <span className="dash-time">Chapel</span>
                     </div>
                     <div className="rw">
-                      <i>31</i>Youth Fellowship<span>4:00 PM</span>
+                      <i>31</i>
+                      <div className="rw-meta">
+                        <strong>Youth Mega Fellowship Night</strong>
+                        <small>Praise, Word &amp; Worship · 4:00 PM</small>
+                      </div>
+                      <span className="dash-time">Youth Hall</span>
                     </div>
                   </div>
                 </div>
+
+                {/* KPI Stat Cards */}
                 <div className="st ov">
                   <div className="s u">
-                    <small>Congregation</small>
+                    <div className="s-head">
+                      <span className="s-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                          <circle cx="9" cy="7" r="4" />
+                          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                      </span>
+                      <span className="s-trend pos">↑ +12%</span>
+                    </div>
+                    <small>Total Members</small>
                     <b id="m1">248</b>
                   </div>
                   <div className="s">
-                    <small>In service today</small>
+                    <div className="s-head">
+                      <span className="s-icon" style={{ background: "#e6f4ea", color: "#137333" }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                      </span>
+                      <span className="s-trend pos">85% present</span>
+                    </div>
+                    <small>Sunday Attendance</small>
                     <b id="m2">0</b>
                   </div>
                   <div className="s r">
-                    <small>Tithes &amp; offerings</small>
+                    <div className="s-head">
+                      <span className="s-icon" style={{ background: "#fef7e0", color: "#b06000" }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                          <circle cx="12" cy="12" r="9" />
+                          <path d="M14.8 9A2 2 0 0 0 13 8h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1-1.8-1" />
+                          <path d="M12 6v2m0 8v2" />
+                        </svg>
+                      </span>
+                      <span className="s-trend gold">This Month</span>
+                    </div>
+                    <small>Giving Recorded</small>
                     <b id="m3">₦0</b>
                   </div>
                   <div className="s">
-                    <small>First-timers</small>
+                    <div className="s-head">
+                      <span className="s-icon" style={{ background: "#f3e4e6", color: "#6d2a3c" }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                          <circle cx="8.5" cy="7" r="4" />
+                          <line x1="20" y1="8" x2="20" y2="14" />
+                          <line x1="23" y1="11" x2="17" y2="11" />
+                        </svg>
+                      </span>
+                      <span className="s-trend warn">2 Pending</span>
+                    </div>
+                    <small>First-Timers</small>
                     <b id="m4">0</b>
                   </div>
                 </div>
+
+                {/* 2-Column Section: Attendance Chart & Live Stream */}
                 <div className="pn ov">
                   <div className="bx">
-                    <h4>Sunday attendance</h4>
+                    <div className="dash-bx-header">
+                      <h4>Attendance summary</h4>
+                      <span className="dash-tag-count">Target: 200</span>
+                    </div>
                     <div className="ch" id="ch"></div>
                     <div className="cl">
-                      <span>Wk1</span>
-                      <span>Wk2</span>
-                      <span>Wk3</span>
-                      <span>Wk4</span>
+                      <span>Oct 10</span>
+                      <span>Oct 17</span>
+                      <span>Oct 24</span>
+                      <span>Nov 01</span>
                       <span>Today</span>
                     </div>
                   </div>
                   <div className="bx">
-                    <h4>This Sunday</h4>
+                    <div className="dash-bx-header">
+                      <h4>This Sunday · Live Stream</h4>
+                      <span className="dash-tag-count" style={{ color: "#137333", background: "#e6f4ea" }}>● Live Feed</span>
+                    </div>
                     <div className="fd" id="fd"></div>
                   </div>
                 </div>
@@ -802,115 +1029,6 @@ export default function ChurchManagerLanding() {
         </div>
       </section>
 
-      {/* 100% Free For All Churches Section */}
-      <section className="alt" id="free">
-        <div className="w">
-          <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 40px" }}>
-            <span className="badge" style={{ marginBottom: "16px", display: "inline-block" }}>
-              ✦ Free For All Churches
-            </span>
-            <h2 className="rv" style={{ fontSize: "36px", margin: "0 0 16px" }}>
-              100% Free Premium Church Management
-            </h2>
-            <p className="sub rv" style={{ fontSize: "17px", lineHeight: "1.6" }}>
-              No subscriptions, no hidden tier limits, and no payment required. Every ministry—large or small—enjoys full unlimited access to all features completely free forever.
-            </p>
-          </div>
-
-          <div
-            className="pc rv pop"
-            style={{
-              maxWidth: "840px",
-              margin: "0 auto",
-              background: "#ffffff",
-              border: "2px solid var(--rd)",
-              borderRadius: "24px",
-              padding: "36px 32px",
-              boxShadow: "0 20px 50px rgba(109, 42, 60, 0.08)",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
-              <div>
-                <span className="badge" style={{ background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff" }}>
-                  Full Access Guarantee
-                </span>
-                <h3 style={{ fontSize: "28px", margin: "8px 0 4px", color: "var(--tx)" }}>
-                  All-In-One Church Workspace
-                </h3>
-                <p style={{ margin: 0, color: "var(--mu)", fontSize: "14px" }}>
-                  Unlimited members · Instant QR check-in · Tithes &amp; offerings · Multi-campus
-                </p>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: "34px", fontWeight: 800, color: "var(--bl)" }}>
-                  ₦0
-                </div>
-                <span style={{ fontSize: "13px", fontWeight: 700, color: "#059669", textTransform: "uppercase" }}>
-                  Free Forever · No Card Required
-                </span>
-              </div>
-            </div>
-
-            <hr style={{ border: 0, borderTop: "1px solid var(--bd)", margin: "0 0 24px" }} />
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px 24px", marginBottom: "32px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
-                <strong>Unlimited members &amp; families</strong>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
-                <strong>Instant QR check-in &amp; kiosk</strong>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
-                <strong>Giving, tithes &amp; financial reports</strong>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
-                <strong>Multi-site campus branches</strong>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
-                <strong>Unlimited church events &amp; RSVPs</strong>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
-                <strong>Sermon &amp; media library</strong>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
-                <strong>First-timer tracking &amp; follow-up</strong>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14.5px" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, stroke: "#059669", strokeWidth: 2.5, fill: "none" }}><path d="m5 12 4 4 10-10" /></svg>
-                <strong>Unlimited staff &amp; ministry roles</strong>
-              </div>
-            </div>
-
-            <div style={{ textAlign: "center" }}>
-              <Link
-                href="/auth#signup"
-                className="btn r"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "14px 32px",
-                  fontSize: "16px",
-                  borderRadius: "14px",
-                }}
-              >
-                Create Free Church Account &rarr;
-              </Link>
-              <p style={{ margin: "12px 0 0", color: "var(--mu)", fontSize: "13px" }}>
-                Zero installation · Immediate 3-minute access · No payment ever required
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Security Section */}
       <section id="security">
         <div className="w">
@@ -1026,7 +1144,6 @@ export default function ChurchManagerLanding() {
               <h4>Product</h4>
               <a href="#features">Features</a>
               <a href="#how">How It Works</a>
-              <a href="#free">Free Forever</a>
               <a href="#security">Security</a>
             </div>
             <div>

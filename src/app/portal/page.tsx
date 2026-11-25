@@ -730,17 +730,6 @@ export default function ReddoxPortalDashboard() {
               <span>Sign out</span>
             </button>
           </nav>
-
-          {/* Plan Usage Box — 100% Free Full Premium Access */}
-          <div className="portal-plan">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-              <b>Free Premium Edition</b>
-              <span className="portal-chip" style={{ fontSize: 10, padding: "2px 6px" }}>FREE</span>
-            </div>
-            <small style={{ color: "var(--rd)", fontWeight: 600, display: "block", marginTop: 4 }}>
-              ✦ All Features Unlocked · Unlimited Members
-            </small>
-          </div>
         </aside>
 
         {/* Mobile Drawer Backdrop */}
@@ -875,26 +864,6 @@ export default function ReddoxPortalDashboard() {
 
             {/* Top Right Actions */}
             <div className="portal-tr">
-              {/* Active Plan Pill Indicator */}
-              <div
-                className="portal-plan-pill"
-                onClick={() => changeView("settings")}
-                title="Free Premium Workspace — All Features Unlocked"
-                style={{ cursor: "pointer" }}
-              >
-                <span className="portal-status-dot-green" />
-                <div className="portal-plan-details">
-                  <span className="portal-plan-name">Free Premium</span>
-                  <span className="portal-plan-sep">·</span>
-                  <span className="portal-plan-count">
-                    {members.length} {members.length === 1 ? "member" : "members"}
-                  </span>
-                </div>
-                <span className="portal-plan-pro-tag" style={{ background: "rgba(109,42,60,0.1)", color: "var(--bl)" }}>
-                  ✦ Full Access
-                </span>
-              </div>
-
               {/* Notifications Dropdown */}
               <div className="portal-ddw">
                 <button
@@ -1071,20 +1040,20 @@ export default function ReddoxPortalDashboard() {
                 onSelectSession={setCurrentSessionId}
                 onToggleAttendance={(memberId: any) => {
                   setSessions((prev) =>
-                    prev.map((s) => {
+                    prev.map((s: any) => {
                       if (s.id !== currentSessionId) return s;
-                      const has = s.p.includes(memberId);
+                      const has = (s.p || []).includes(memberId);
                       return {
                         ...s,
-                        p: has ? s.p.filter((id) => id !== memberId) : [...s.p, memberId],
+                        p: has ? (s.p || []).filter((id: any) => id !== memberId) : [...(s.p || []), memberId],
                       };
                     })
                   );
                 }}
                 onMarkAllPresent={() => {
                   setSessions((prev) =>
-                    prev.map((s) =>
-                      s.id === currentSessionId ? { ...s, p: members.map((m) => m.id) } : s
+                    prev.map((s: any) =>
+                      s.id === currentSessionId ? { ...s, p: members.map((m: any) => m.id) } : s
                     )
                   );
                   showToast("All members marked present for this session.");
@@ -1685,41 +1654,19 @@ function DashboardView({
         </div>
 
         {/* Card 5: Finances */}
-        {plan.fin ? (
-          <div className="portal-cd portal-st">
-            <div className="portal-st-head">
-              <div className="portal-ico">
-                <SvgIcon name="coin" />
-              </div>
-              <span className="portal-trend pos">This Month</span>
+        <div className="portal-cd portal-st">
+          <div className="portal-st-head">
+            <div className="portal-ico">
+              <SvgIcon name="coin" />
             </div>
-            <span className="portal-st-lbl">Giving Recorded</span>
-            <div className="portal-st-val-row">
-              <b>{formatNaira(totalGiving)}</b>
-            </div>
-            <span className="portal-st-sub">{giving.length} contributions received</span>
+            <span className="portal-trend pos">This Month</span>
           </div>
-        ) : (
-          <Link
-            href="/checkout?plan=growth"
-            className="portal-cd portal-st"
-            style={{ textDecoration: "none", color: "inherit", cursor: "pointer", border: "1px dashed var(--bd)" }}
-          >
-            <div className="portal-st-head">
-              <div className="portal-ico">
-                <SvgIcon name="lock" />
-              </div>
-              <span className="portal-trend gold">Growth &amp; Pro</span>
-            </div>
-            <span className="portal-st-lbl">Tithes &amp; Offerings</span>
-            <div className="portal-st-val-row">
-              <b style={{ fontSize: 22 }}>Locked</b>
-            </div>
-            <span className="portal-st-sub" style={{ color: "var(--bl)", fontWeight: 600 }}>
-              Upgrade to Unlock &rarr;
-            </span>
-          </Link>
-        )}
+          <span className="portal-st-lbl">Giving Recorded</span>
+          <div className="portal-st-val-row">
+            <b>{formatNaira(totalGiving)}</b>
+          </div>
+          <span className="portal-st-sub">{giving.length} contributions received</span>
+        </div>
       </div>
 
       {/* 2-Column Grid: Attendance Chart & First-timers */}
@@ -4230,35 +4177,6 @@ function ReportsView({ members, sessions, events, giving, plan, onExport }: any)
         </div>
       </div>
 
-      {plan?.id === "starter" && (
-        <div
-          style={{
-            background: "rgba(109,42,60,0.05)",
-            border: "1px solid var(--bd)",
-            borderRadius: 12,
-            padding: "12px 16px",
-            marginBottom: 16,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <strong style={{ color: "var(--bl)", display: "block" }}>
-              Starter Plan: Basic 7-Day Attendance Reports
-            </strong>
-            <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
-              Data exports, multi-month attendance trends, and financial reports require Growth or Pro.
-            </p>
-          </div>
-          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
-            Upgrade to Growth &rarr;
-          </Link>
-        </div>
-      )}
-
       <div className="portal-gs">
         <div className="portal-cd portal-st">
           <small>Total Members</small>
@@ -4337,21 +4255,10 @@ function ReportsView({ members, sessions, events, giving, plan, onExport }: any)
 
       <div className="portal-cd">
         <h3>Advanced ministry intelligence</h3>
-        {plan?.id === "pro" ? (
-          <p style={{ margin: 0, color: "var(--mu)" }}>
-            Multi-branch retention metrics, first-timer guest conversion ratios, and departmental duty
-            insights are continuously updated with live service activity.
-          </p>
-        ) : (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-            <p style={{ margin: 0, color: "var(--mu)" }}>
-              Multi-branch comparisons and executive ministry health metrics are included in the Pro tier.
-            </p>
-            <Link href="/checkout?plan=pro" className="portal-btn sm" style={{ textDecoration: "none" }}>
-              Unlock Pro Intelligence &rarr;
-            </Link>
-          </div>
-        )}
+        <p style={{ margin: 0, color: "var(--mu)" }}>
+          Multi-branch retention metrics, first-timer guest conversion ratios, and departmental duty
+          insights are continuously updated with live service activity.
+        </p>
       </div>
     </>
   );
@@ -4379,7 +4286,7 @@ function StaffView({ staff, plan, churchRole, onInviteStaff, onRoleChange, onRev
         <div>
           <h1>Staff &amp; Roles</h1>
           <p>
-            Manage access permissions for pastors, department leaders, and ushers · {plan?.admins === 1 ? "1 admin limit (Starter)" : `Up to ${plan?.admins} staff accounts`}
+            Manage access permissions for pastors, department leaders, and ushers
           </p>
         </div>
         <div className="portal-acts">
@@ -4389,35 +4296,6 @@ function StaffView({ staff, plan, churchRole, onInviteStaff, onRoleChange, onRev
           </button>
         </div>
       </div>
-
-      {plan?.id === "starter" && (
-        <div
-          style={{
-            background: "rgba(109,42,60,0.05)",
-            border: "1px solid var(--bd)",
-            borderRadius: 12,
-            padding: "12px 16px",
-            marginBottom: 16,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <strong style={{ color: "var(--bl)", display: "block" }}>
-              Starter Plan: 1 Administrator Account Included
-            </strong>
-            <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--mu)" }}>
-              Multi-staff logins, departmental role permissions, and treasurer access are available on Growth (up to 10 staff) and Pro (up to 50 staff).
-            </p>
-          </div>
-          <Link href="/checkout?plan=growth" className="portal-btn sm p" style={{ textDecoration: "none" }}>
-            Upgrade to Growth &rarr;
-          </Link>
-        </div>
-      )}
 
       <div className="portal-cd">
         <div className="portal-tw">
